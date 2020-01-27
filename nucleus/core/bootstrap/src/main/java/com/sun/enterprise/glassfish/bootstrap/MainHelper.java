@@ -538,7 +538,10 @@ public class MainHelper {
             ClassLoaderBuilder clb = new ClassLoaderBuilder(ctx, delegate);
             clb.addFrameworkJars();
             clb.addBootstrapApiJar(); // simple-glassfish-api.jar
-            clb.addJDKToolsJar();
+            //JEP-220 In JDK9 and later, tools.jar is not available.
+            if(getMajorJdkVersion() < 9){
+                clb.addJDKToolsJar();
+            }
             return clb.build();
         } catch (IOException e) {
             throw new Error(e);

@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sun.enterprise.util.JDK;
 import com.sun.enterprise.util.OS;
 import com.sun.enterprise.util.StringUtils;
 
@@ -31,6 +32,8 @@ import static com.sun.enterprise.util.StringUtils.ok;
  */
 class JvmOptions {
 
+    static final Pattern PREFIX_PATTERN = Pattern.compile("^\\[(\\d*)\\,(\\d*)\\](.*)");
+
     JvmOptions(List<String> options) throws GFLauncherException {
         // We get them from domain.xml as a list of Strings
         // -Dx=y   -Dxx  -XXfoo -XXgoo=zzz -client  -server
@@ -39,6 +42,20 @@ class JvmOptions {
 
         for (String s : options) {
             s = StringUtils.removeEnclosingQuotes(s);
+
+            // There are JVM options that Java 11 and Java 8 cannot use each other.
+            // So, enable the following prefixes:
+            //   [<lower limit>,<upper limit>]<option>
+            // For example, "[9,]--add-opens=java.base/java.lang=ALL-UNNAMED" means
+            // "[9,]--add-opens=java.base/java.lang=ALL-UNNAMED" is valid for JDK 9 and later".
+            JvmOption option = new JvmOption(s);
+            if (option.hasVersionPattern()) {
+                if (option.isMatchedJdkVersion()) {
+		    s = option.getJvmOptionAsString();
+                } else {
+                    continue;
+                }
+            }
 
             if (s.startsWith("-D")) {
                 addSysProp(s);
@@ -348,6 +365,59 @@ class JvmOptions {
         }
         private String name;
         private String value;
+    }
+
+    class JvmOption {
+        private String option;
+        private int minVersion;
+        private int maxVersion;
+        private boolean hasVersionPatternFlag;
+
+        public JvmOption(String s) throws GFLauncherException {
+            Matcher matcher = PREFIX_PATTERN.matcher(s);
+            if (matcher.matches()) {
+                option = matcher.group(3);
+                hasVersionPatternFlag = true;
+                String minStr = matcher.group(1);
+                String maxStr = matcher.group(2);
+                if (!minStr.isEmpty()) {
+                    minVersion = Integer.parseInt(minStr);
+                }
+                if (!maxStr.isEmpty()) {
+                    maxVersion = Integer.parseInt(maxStr);
+		    if (minVersion > maxVersion) {
+                        throw new GFLauncherException("InvalidJdkVersionRange", s);
+                    }
+                }
+            }
+        }
+
+        public boolean hasVersionPattern() {
+            return hasVersionPatternFlag;
+        }
+
+        public boolean isMatchedJdkVersion() {
+            int runtimeJdkVersion;
+            int major = JDK.getMajor();
+            int minor = JDK.getMinor();
+            if (major < 9) {
+                runtimeJdkVersion = minor;
+            } else {
+                runtimeJdkVersion = major;
+            }
+
+            if (runtimeJdkVersion < minVersion) {
+                return false;
+            }
+            if (maxVersion != 0 && runtimeJdkVersion > maxVersion) {
+                return false;
+            }
+            return true;
+        }
+
+        public String getJvmOptionAsString() {
+            return option;
+        }
     }
 }
 /**
