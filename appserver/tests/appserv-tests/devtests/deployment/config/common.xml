@@ -1268,7 +1268,6 @@ AS_ADMIN_MASTERPASSWORD=changeit
         <jvmarg value="-Dcom.sun.aas.installRoot=${inst}"/>
         <jvmarg value="-Djava.library.path=${inst}/lib"/>
         <jvmarg value="-Dcom.sun.aas.configRoot=${inst}/config"/>
-        <jvmarg value="-Djava.endorsed.dirs=${inst}/lib/endorsed"/> 
         <classpath>
             <pathelement path="${build}:${inst}/lib/j2ee.jar:${inst}/lib/appserv-rt.jar:${inst}/lib/appserv-admin.jar:${inst}/lib/dom.jar:${inst}/lib/xalan.jar:${inst}/lib/xercesImpl.jar"/>
         </classpath>
