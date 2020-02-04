@@ -41,7 +41,6 @@
                destdir="${build}"
                debug="on"
                failonerror="true">
-           <compilerarg line="-endorseddirs ${inst}/modules/endorsed"/>
            <classpath>
                 <path refid="gfv3.classpath"/>
             </classpath>
