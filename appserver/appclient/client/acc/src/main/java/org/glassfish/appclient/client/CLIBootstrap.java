@@ -89,8 +89,6 @@ public class CLIBootstrap {
     private final static String INSTALL_ROOT_PROPERTY_EXPR = "-Dcom.sun.aas.installRoot=";
     private final static String SECURITY_POLICY_PROPERTY_EXPR = "-Djava.security.policy=";
     private final static String SECURITY_AUTH_LOGIN_CONFIG_PROPERTY_EXPR = "-Djava.security.auth.login.config=";
-    private final static String SYSTEM_CLASS_LOADER_PROPERTY_EXPR =
-            "-Djava.system.class.loader=org.glassfish.appclient.client.acc.agent.ACCAgentClassLoader";
 
     private final static String[] ENV_VARS = {
         "_AS_INSTALL", "APPCPATH", "VMARGS"};
@@ -925,7 +923,6 @@ public class CLIBootstrap {
 
         command.append(' ').append(INSTALL_ROOT_PROPERTY_EXPR).append(quote(gfInfo.home().getAbsolutePath()));
         command.append(' ').append(SECURITY_POLICY_PROPERTY_EXPR).append(quote(gfInfo.securityPolicy().getAbsolutePath()));
-        command.append(' ').append(SYSTEM_CLASS_LOADER_PROPERTY_EXPR);
         command.append(' ').append(SECURITY_AUTH_LOGIN_CONFIG_PROPERTY_EXPR).append(quote(gfInfo.loginConfig().getAbsolutePath()));
         
     }
