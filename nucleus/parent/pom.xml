@@ -796,6 +796,11 @@
                 <artifactId>glassfish-corba-internal-api</artifactId>
                 <version>${glassfish-corba.version}</version>
             </dependency>
+	    <dependency>
+		<groupId>org.glassfish.corba</groupId>
+		<artifactId>rmic</artifactId>
+		<version>${glassfish-corba.version}</version>
+	    </dependency>
             <dependency>
                 <groupId>jakarta.mail</groupId>
                 <artifactId>jakarta.mail-api</artifactId>
