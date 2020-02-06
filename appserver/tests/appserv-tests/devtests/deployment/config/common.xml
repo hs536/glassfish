@@ -824,7 +824,6 @@ AS_ADMIN_MASTERPASSWORD=changeit
         <sysproperty key="server" value="${appserver.instance.name}"/>
         <sysproperty key="java.library.path" value="${inst}/lib"/>
         <sysproperty key="com.sun.aas.configRoot" value="${inst}/config"/>
-        <sysproperty key="java.endorsed.dirs" value="${inst}/lib/endorsed"/>
 <!--
         <jvmarg value="-Xdebug"/>
         <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9999"/>
