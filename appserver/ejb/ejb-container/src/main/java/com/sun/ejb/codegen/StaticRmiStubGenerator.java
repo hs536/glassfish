@@ -318,9 +318,11 @@ public class StaticRmiStubGenerator {
 
         String stubName = packageName + "_" + className + "_Stub";
 
-    	if(isSpecialPackage(fullName))
+    	if(isSpecialPackage(fullName)){
             stubName = ORG_OMG_STUB_PREFIX + stubName;
-
+            System.out.println("[Debug innner]stubName: "+stubName);
+        }
+        System.out.println("[Debug after]stubName: "+stubName);
         return stubName;
     }
 
