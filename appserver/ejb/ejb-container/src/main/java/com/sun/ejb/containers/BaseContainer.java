@@ -640,7 +640,7 @@ public abstract class BaseContainer
                 hasRemoteHomeView = true;
 
                 String homeClassName = ejbDescriptor.getHomeClassName();
-
+                if(homeClassName.startsWith("javax.management.j2ee.")){homeClassName = "org.omg.stub." + homeClassName;}
                 homeIntf = loader.loadClass(homeClassName);
                 remoteIntf = loader.loadClass(ejbDescriptor.getRemoteClassName());
 
