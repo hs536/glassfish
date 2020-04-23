@@ -82,6 +82,9 @@ public class ACCAgentClassLoader extends URLClassLoader {
         super(urls, parent, factory);
     }
 
+    // a custom system class loader need to define this method in order to load the java agent.
+    // TODO: implement log handling and write javadocs for this.
+    public void appendToClassPathForInstrumentation(String path) {}
 
     @Override
     public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {

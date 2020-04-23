@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.glassfish.appclient.client.acc.UserError;
 
 /**
@@ -672,6 +673,20 @@ public class CLIBootstrap {
         @Override
         boolean matches(final String element) {
             return ( ! jvmMainSetting.isJarSetting()) && super.matches(element);
+        }
+
+        @Override
+        int processValue(String[] args, int slot) throws UserError {
+            ensureNonOptionNextArg(args, slot);
+            String key = args[slot++];
+            String value = args[slot++];
+            if(key.equals("-cp")) {
+               value = Arrays.stream(value.split(";"))
+                       .map(classpath -> quote(classpath))
+                       .collect(Collectors.joining());
+            }
+            optValues.add(new OptionValue(key, value));
+            return slot;
         }
     }
 
