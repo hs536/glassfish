@@ -80,7 +80,7 @@
         <javaee.version>${javaee.major_version}.${minor_version}${javaee.version_qualifier}</javaee.version>
 
         <jsftemplating.version>2.1.4</jsftemplating.version>
-        <webservices.version>2.4.3</webservices.version>
+        <webservices.version>2.4.3-SNAPSHOT</webservices.version>
         <woodstox.version>5.1.0</woodstox.version>
         <stax2-api.version>4.1</stax2-api.version>
         <jakarta.xml.registry-api.version>1.0.9</jakarta.xml.registry-api.version>
