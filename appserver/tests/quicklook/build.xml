@@ -423,6 +423,7 @@
                <include name="**/amx-core.jar"/>
                <include name="**/amx-javaee.jar"/>
                <include name="**/management-api.jar"/>
+               <include name="**/jaxws-api.jar"/>
             </fileset>
             <fileset dir="${glassfish.home}/lib">
                <include name="**/gf-client.jar"/>
