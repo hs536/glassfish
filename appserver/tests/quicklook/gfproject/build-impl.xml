@@ -397,7 +397,8 @@
 
 <!-- the following targets are for running the wsit tests -->
     <path id="wsit.classpath">
-        <pathelement location="${java.home}/../lib/tools.jar"/>
+<!--        <pathelement location="${java.home}/../lib/tools.jar"/>   -->
+        <pathelement location="${glassfish.home}/modules/webservices-osgi.jar"/>
     </path>
 
     <condition property="wsjar.available">
