@@ -1931,20 +1931,6 @@
                                         </rule>
 
                                         <rule>
-                                            <groupId>org.glassfish.jsftemplating</groupId>
-                                            <ignoreVersions>
-                                                <ignoreVersion>
-                                                    <type>range</type>
-                                                    <version>[4.1.0,)</version>
-                                                </ignoreVersion>
-                                                <ignoreVersion>
-                                                    <type>regex</type>
-                                                    <version>.*-M.*</version>
-                                                </ignoreVersion>
-                                            </ignoreVersions>
-                                        </rule>
-
-                                        <rule>
                                             <groupId>org.glassfish.grizzly</groupId>
                                             <ignoreVersions>
                                                 <ignoreVersion>
