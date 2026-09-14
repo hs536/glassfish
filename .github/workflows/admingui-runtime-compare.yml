@@ -1,0 +1,99 @@
+# Crawls the admin console built from main and from the upstream 9.0 branch (Jakarta Faces 5.0) with the same tool and
+# the same test domain, to find screens that behave differently on 9.0 (調査計画.md S13、課題 V-11).
+#
+# This file is the source of truth. It is copied, together with tools/runtime and inventory/screens.yaml, to the fork's
+# dedicated branch ci/admingui-runtime-compare. The upstream repository is only read (checked out); nothing is pushed
+# to it. That branch is never proposed upstream.
+name: Admin console runtime on main and 9.0
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "ci/admingui-runtime-compare" ]
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: main
+            repository: hs536/glassfish
+            ref: a0a853d155ea56170dadcbf28e5615f9bef27a0e
+          - name: upstream-9.0
+            repository: eclipse-ee4j/glassfish
+            ref: '9.0'
+    steps:
+    - name: Checkout the tools
+      uses: actions/checkout@v4
+      with:
+        path: ci
+
+    - name: Checkout GlassFish (${{ matrix.name }})
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ matrix.repository }}
+        ref: ${{ matrix.ref }}
+        path: glassfish
+
+    - name: Record the commit
+      working-directory: glassfish
+      run: git log -1 --format='%H %cI %s' | tee ../commit.txt
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+        cache-dependency-path: glassfish/**/pom.xml
+
+    - name: Build GlassFish
+      working-directory: glassfish
+      run: mvn -B -e -ntp install -Pfastest,snapshots -T4C
+
+    - name: Build the observer
+      run: mvn -B -e -ntp -f ci/.admingui-runtime/runtime/pom.xml package
+
+    - name: Install Chromium and its system dependencies
+      run: java -cp ci/.admingui-runtime/runtime/target/runtime-observer.jar com.microsoft.playwright.CLI install --with-deps chromium
+
+    - name: Create the test domain
+      run: |
+        GF=$(ls -d "$GITHUB_WORKSPACE"/glassfish/appserver/distributions/glassfish/target/stage/glassfish*/glassfish | head -1)
+        echo "GF=$GF" >> "$GITHUB_ENV"
+        java -jar ci/.admingui-runtime/runtime/target/runtime-observer.jar fixture-create "$GF" baseline 10000 | tee fixture.log
+
+    - name: Crawl the console
+      env:
+        PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      run: |
+        java -jar ci/.admingui-runtime/runtime/target/runtime-observer.jar crawl \
+          http://localhost:10048 ci/.admingui-runtime/screens.yaml out/screens \
+          --skip-file ci/.admingui-runtime/runtime/skip-screens.txt | tee crawl.log
+        java -jar ci/.admingui-runtime/runtime/target/runtime-observer.jar crawl-urls \
+          http://localhost:10048 ci/.admingui-runtime/runtime/param-urls.txt out/params | tee crawl-params.log
+
+    - name: Stop the test domain
+      if: always()
+      run: |
+        java -jar ci/.admingui-runtime/runtime/target/runtime-observer.jar fixture-delete "$GF" baseline || true
+
+    - name: Upload the observations
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: admingui-runtime-${{ matrix.name }}
+        path: |
+          commit.txt
+          fixture.log
+          crawl.log
+          crawl-params.log
+          out/screens/runtime-observations.yaml
+          out/params/url-observations.yaml
+        retention-days: 30

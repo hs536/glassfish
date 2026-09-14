@@ -1,0 +1,102 @@
+# Screens that need query parameters (課題 V-12), with the names of the test domain created by fixture-create.
+# Parameter names come from the links to each screen in the admingui sources. Used with: crawl-urls <base> <this file> <out>
+#
+# Not listed, with the reason:
+#   /common/gadgets/gadget.jsf        dashboard gadget, not reachable (D-02, D-05)
+#   /common/pluginPage.jsf            needs a navigation node with external content; no plugin provides one
+#   /common/registration.jsf          calls an undefined handler (B-02)
+#   /common/applications/endpoint.jsf needs a deployed web service endpoint
+
+# cluster
+/cluster/cluster/clusterApplications.jsf?clusterName=baselineCluster&configName=baselineCluster-config
+/cluster/cluster/clusterInstanceConfigProperties.jsf?clusterName=baselineCluster&instanceName=baselineClusterInstance&configName=baselineCluster-config
+/cluster/cluster/clusterInstanceEdit.jsf?clusterName=baselineCluster&instanceName=baselineClusterInstance&configName=baselineCluster-config
+/cluster/cluster/clusterInstanceNew.jsf?clusterName=baselineCluster&configName=baselineCluster-config
+/cluster/cluster/clusterInstanceProperties.jsf?clusterName=baselineCluster&instanceName=baselineClusterInstance&configName=baselineCluster-config
+/cluster/cluster/clusterInstanceRecoverTransactions.jsf?clusterName=baselineCluster&instanceName=baselineClusterInstance&isStopped=true&configName=baselineCluster-config
+/cluster/cluster/clusterInstances.jsf?clusterName=baselineCluster&configName=baselineCluster-config
+/cluster/cluster/clusterNew.jsf?configName=server-config
+/cluster/cluster/clusterProperties.jsf?clusterName=baselineCluster&configName=baselineCluster-config
+/cluster/cluster/clusterResources.jsf?clusterName=baselineCluster&configName=baselineCluster-config
+/cluster/cluster/clusterSystemProperties.jsf?clusterName=baselineCluster&configName=baselineCluster-config
+/cluster/cluster/listEjbTimers.jsf?clusterName=baselineCluster&configName=baselineCluster-config
+/cluster/cluster/migrateEjbTimers.jsf?clusterName=baselineCluster&configName=baselineCluster-config
+/cluster/node/nodeEdit.jsf?nodeName=localhost-baseline&configName=server-config
+/cluster/node/nodeNew.jsf?configName=server-config
+/cluster/standalone/standaloneApplications.jsf?instanceName=baselineStandalone&configName=baselineStandalone-config
+/cluster/standalone/standaloneInstanceConfigProperties.jsf?instanceName=baselineStandalone&configName=baselineStandalone-config
+/cluster/standalone/standaloneInstanceNew.jsf?configName=server-config
+/cluster/standalone/standaloneInstanceProperties.jsf?instanceName=baselineStandalone&configName=baselineStandalone-config
+/cluster/standalone/standaloneInstanceResources.jsf?instanceName=baselineStandalone&configName=baselineStandalone-config
+/cluster/standalone/standaloneRecoverTransactions.jsf?instanceName=baselineStandalone&isStopped=true&configName=baselineStandalone-config
+
+# common: server
+/common/appServer/domainLogs.jsf?configName=server-config
+/common/appServer/instanceConfigProperties.jsf?instanceName=server&configName=server-config
+/common/appServer/instanceProperties.jsf?instanceName=server&configName=server-config
+/common/appServer/serverInstAdminPassword.jsf?configName=server-config
+/common/appServer/serverInstAppsConfig.jsf?configName=server-config
+/common/appServer/serverRecoverTransactions.jsf?instanceName=server&configName=server-config
+/common/configuration/configurationNew.jsf?configName=server-config
+/common/monitor/serverInstMonitoringAppsPage.jsf?instanceName=server&configName=server-config
+/common/logViewer/logViewer.jsf?instanceName=server&loglevel=INFO&viewResults=true
+/common/logViewer/logEntryDetail.jsf?instanceName=server&logFile=server.log&logLevel=INFO&recNumber=1
+
+# common: applications
+/common/applications/appclientLaunch.jsf?appName=baselineClient&moduleName=baselineClient
+/common/applications/editDefaultType.jsf?appName=baselineApp
+/common/applications/lifecycleEdit.jsf?appName=baselineLifecycle
+/common/applications/manageVirtualServers.jsf?appName=baselineApp&targetName=server
+/common/applications/redeployFrame.jsf?appName=baselineApp
+/common/applications/resources/appScopedResources.jsf?appName=baselineApp
+/common/applications/viewDD.jsf?appName=baselineEar&moduleName=baselineEar&ddPath=META-INF/application.xml
+/common/applications/webDDEdit.jsf?appName=baselineApp
+
+# common: security
+/common/security/msgSecurity/providers.jsf?configName=server-config&name=SOAP
+/common/security/msgSecurity/providerEdit.jsf?configName=server-config&msgSecurityName=SOAP&name=XWS_ServerProvider
+/common/security/realms/manageUsers.jsf?configName=server-config&name=file
+/common/security/realms/manageUserEdit.jsf?configName=server-config&name=file&user=baselineUser
+
+# corba
+/corba/sslEdit.jsf?configName=server-config&name=SSL
+
+# full: applications, batch (tabSetName as passed by batch/batchTabs*.jsf), resources
+/full/apps/editAppClient.jsf?appName=baselineClient
+/full/apps/editEar.jsf?appName=baselineEar
+/full/apps/editEjb.jsf?appName=baselineEjb
+/full/batch/batchConfigurationServer.jsf?target=server&tabSetName=serverInstTabs
+/full/batch/batchConfigurationCluster.jsf?target=baselineCluster&isCluster=true&tabSetName=clusterTabs
+/full/batch/batchConfigurationStandalone.jsf?target=baselineStandalone&tabSetName=standaloneInstanceTabs
+/full/batch/batchJobsServer.jsf?target=server&tabSetName=serverInstTabs
+/full/batch/batchJobsCluster.jsf?target=baselineCluster&isCluster=true&tabSetName=clusterTabs
+/full/batch/batchJobsStandalone.jsf?target=baselineStandalone&tabSetName=standaloneInstanceTabs
+/full/batch/batchJobExecution.jsf?executionId=1&target=server&isCluster=false&tabSetName=serverInstTabs
+/full/batch/batchStepListing.jsf?executionId=1&target=server&isCluster=false&tabSetName=serverInstTabs
+/full/externalResourceEdit.jsf?name=jndi%2Fbaseline
+
+# jca
+/jca/apps/editRar.jsf?appName=baselineRar
+/jca/connectorConnectionPoolProperty.jsf?name=jms%2FbaselineFactory-Connection-Pool
+/jca/connectorSecurityMapNew.jsf?name=jms%2FbaselineFactory-Connection-Pool
+/jca/connectorSecurityMapEdit.jsf?name=jms%2FbaselineFactory-Connection-Pool&mapName=baselineMap
+/jca/resourceAdapterConfigEdit.jsf?name=jmsra
+
+# jdbc
+/jdbc/jdbcConnectionPoolAdvance.jsf?name=baselinePool
+/jdbc/jdbcConnectionPoolProperty.jsf?name=baselinePool
+
+# jms physical destinations
+/jms/physdest/serverPhysDest.jsf?configName=server-config
+/jms/physdest/clusterPhysDest.jsf?target=baselineCluster&configName=baselineCluster-config
+/jms/physdest/standaloneInstPhysDest.jsf?target=baselineStandalone&configName=baselineStandalone-config
+/jms/physdest/jmsPhysicalDestinations.jsf?configName=server-config
+/jms/physdest/jmsPhysicalDestinationNew.jsf?target=server&parentPage=jms/physdest/serverPhysDest.jsf&configName=server-config
+/jms/physdest/jmsPhysicalDestinationEdit.jsf?name=mq.sys.dmq&type=queue&target=server&parentPage=jms/physdest/serverPhysDest.jsf&configName=server-config
+/jms/physdest/jmsPhysicalDestinationStats.jsf?name=mq.sys.dmq&type=queue&target=server&parentPage=jms/physdest/serverPhysDest.jsf&configName=server-config
+
+# web: grizzly
+/web/grizzly/protocolHttp.jsf?name=http-listener-1&configName=server-config&cancelTo=web/grizzly/protocols.jsf
+/web/grizzly/protocolFileCache.jsf?name=http-listener-1&configName=server-config&cancelTo=web/grizzly/protocols.jsf
+/web/grizzly/listenerHttpEdit.jsf?name=http-listener-1&listenerName=http-listener-1&configName=server-config&cancelTo=web/grizzly/networkListeners.jsf
+/web/grizzly/listenerFileCache.jsf?name=http-listener-1&listenerName=http-listener-1&configName=server-config&cancelTo=web/grizzly/networkListeners.jsf
