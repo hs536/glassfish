@@ -1,0 +1,87 @@
+# Regenerates the inventories on Linux and compares them with the ones generated on Windows (調査計画.md 第1章、
+# 課題 V-08).
+#
+# This file is the source of truth. It is copied, together with tools/inventory/extractor and the generated
+# inventory/*.yaml files, to the fork's dedicated branch ci/admingui-inventory. That branch is never proposed upstream.
+name: Admin console inventory on Linux
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "ci/admingui-inventory" ]
+
+permissions:
+  contents: read
+
+env:
+  # The commits the committed inventories were generated from (inventory/_sources.yaml)
+  GLASSFISH_COMMIT: a0a853d155ea56170dadcbf28e5615f9bef27a0e
+  DOCS_COMMIT: c4da587dd198638783bf054537258d533c0bb20b
+
+jobs:
+  inventory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+    - name: Checkout the tools
+      uses: actions/checkout@v4
+      with:
+        path: ci
+
+    - name: Checkout GlassFish at the inventory commit
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.repository }}
+        ref: ${{ env.GLASSFISH_COMMIT }}
+        path: work/glassfish
+
+    - name: Checkout glassfish-docs next to GlassFish
+      uses: actions/checkout@v4
+      with:
+        repository: eclipse-ee4j/glassfish-docs
+        ref: ${{ env.DOCS_COMMIT }}
+        path: work/glassfish-docs
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+        cache-dependency-path: work/glassfish/**/pom.xml
+
+    - name: Build GlassFish
+      # The handlers and integration-points inventories read the built distribution
+      working-directory: work/glassfish
+      run: mvn -B -e -ntp install -Pfastest,snapshots -T4C
+
+    - name: Build the extractor
+      run: mvn -B -e -ntp -f ci/.admingui-inventory/extractor/pom.xml package
+
+    - name: Regenerate the inventories
+      run: |
+        mkdir -p out
+        for command in modules handlers jsft-features woodstock help-i18n screens operations integration-points test-coverage external-deps; do
+          case "$command" in
+            woodstock) file=woodstock-usage.yaml ;;
+            *) file="$command.yaml" ;;
+          esac
+          echo "::group::$command"
+          java -jar ci/.admingui-inventory/extractor/target/inventory-extractor.jar "$command" work/glassfish "out/$file"
+          echo "::endgroup::"
+        done
+
+    - name: Compare with the inventories generated on Windows
+      run: |
+        diff -ru ci/.admingui-inventory/expected out | tee inventory.diff
+        echo "Differences: $(grep -c '^[-+][^-+]' inventory.diff || true) changed lines"
+
+    - name: Upload the inventories
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: admingui-inventory-linux
+        path: |
+          out
+          inventory.diff
+        retention-days: 30
