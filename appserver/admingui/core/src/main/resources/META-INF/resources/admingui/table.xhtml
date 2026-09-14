@@ -1,0 +1,57 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype (adr/0009): a list table with a title and row count, an actions bar (facet "actions"), a header row
+    (facet "header", adm:sortHeader cells) and the rows (children, usually a ui:repeat of tr elements). The style
+    classes are those of the console theme.
+-->
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="jakarta.faces.facelets"
+              xmlns:cc="jakarta.faces.composite">
+    <cc:interface>
+        <cc:attribute name="title" required="true"/>
+        <cc:attribute name="count" required="true"/>
+        <cc:attribute name="columns" required="true"/>
+        <cc:attribute name="emptyText"/>
+        <cc:facet name="actions"/>
+        <cc:facet name="header"/>
+    </cc:interface>
+    <cc:implementation>
+        <table id="#{cc.clientId}" class="Tbl_sun4" width="100%" border="0" cellpadding="0" cellspacing="0">
+            <caption class="TblTtlTxt_sun4">#{cc.attrs.title} (#{cc.attrs.count})</caption>
+            <tbody>
+                <ui:fragment rendered="#{not empty cc.facets.actions}">
+                    <tr>
+                        <td class="TblActTd_sun4" colspan="#{cc.attrs.columns}" nowrap="nowrap">
+                            <cc:renderFacet name="actions"/>
+                        </td>
+                    </tr>
+                </ui:fragment>
+                <tr>
+                    <cc:renderFacet name="header"/>
+                </tr>
+                <ui:fragment rendered="#{cc.attrs.count == 0 and not empty cc.attrs.emptyText}">
+                    <tr>
+                        <td class="TblTdLyt_sun4" align="left" colspan="#{cc.attrs.columns}"><span class="TblMsgTxt_sun4">#{cc.attrs.emptyText}</span></td>
+                    </tr>
+                </ui:fragment>
+                <cc:insertChildren/>
+            </tbody>
+        </table>
+    </cc:implementation>
+</ui:component>

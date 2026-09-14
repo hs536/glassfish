@@ -1,0 +1,47 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype (adr/0009): a column header cell of an adm:table. With a key and a sorter (an object with sort(key),
+    sortKey and ascending), the header sorts the rows by that key with an Ajax request and shows the direction.
+-->
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="jakarta.faces.facelets"
+              xmlns:h="jakarta.faces.html"
+              xmlns:f="jakarta.faces.core"
+              xmlns:cc="jakarta.faces.composite">
+    <cc:interface>
+        <cc:attribute name="text" required="true"/>
+        <cc:attribute name="key"/>
+        <cc:attribute name="sorter"/>
+        <cc:attribute name="render" default="@form"/>
+        <cc:attribute name="width"/>
+    </cc:interface>
+    <cc:implementation>
+        <th class="TblColHdr_sun4" align="left" scope="col" width="#{cc.attrs.width}">
+            <ui:fragment rendered="#{empty cc.attrs.key}">
+                <span class="TblHdrTxt_sun4">#{cc.attrs.text}</span>
+            </ui:fragment>
+            <ui:fragment rendered="#{not empty cc.attrs.key}">
+                <h:commandLink id="sort" styleClass="TblHdrLnk_sun4" action="#{cc.attrs.sorter.sort(cc.attrs.key)}">
+                    <f:ajax render="#{cc.attrs.render}"/>
+                    #{cc.attrs.text}#{cc.attrs.sorter.sortKey eq cc.attrs.key ? (cc.attrs.sorter.ascending ? ' &#9650;' : ' &#9660;') : ''}
+                </h:commandLink>
+            </ui:fragment>
+        </th>
+    </cc:implementation>
+</ui:component>
