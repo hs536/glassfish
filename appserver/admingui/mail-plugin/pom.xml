@@ -42,6 +42,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish.main.admingui</groupId>
             <artifactId>console-plugin-service</artifactId>
             <version>${project.version}</version>
@@ -76,7 +81,7 @@
                         <!-- _include does not work. See Felix-620.
                         <_include>osgi.bundle</_include>
                         -->
-                        <Export-Package>org.glassfish.jmail.admingui</Export-Package>
+                        <Export-Package>org.glassfish.jmail.admingui,org.glassfish.jmail.admingui.prototype</Export-Package>
                     </instructions>
                 </configuration>
                 <executions>

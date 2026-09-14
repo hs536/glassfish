@@ -56,6 +56,11 @@ public abstract class ResourceNewView implements Serializable {
     /** The list page shown after the resource is created, for example {@code /jdbc/jdbcResources.jsf}. */
     protected abstract String listPage();
 
+    /** Attributes sent as {@code false} when they have no value; {@code enabled} by default. */
+    protected List<String> convertToFalse() {
+        return List.of("enabled");
+    }
+
     protected AdminRestService rest() {
         return rest;
     }
@@ -91,7 +96,7 @@ public abstract class ResourceNewView implements Serializable {
             // The enabled state is kept on the resource references; the resource itself is always enabled
             attributes.put("enabled", "true");
             attributes.put("target", "domain");
-            rest.create(rest.url("resources", childType()), attributes, List.of("enabled"));
+            rest.create(rest.url("resources", childType()), attributes, convertToFalse());
             ResourceTargets resourceTargets = ResourceTargets.load(rest);
             for (String target : targets.getSelected()) {
                 Map<String, Object> reference = Map.of("id", name, "enabled", String.valueOf(enabled), "target", target);

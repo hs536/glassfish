@@ -74,6 +74,11 @@ public abstract class ResourceEditView implements Serializable {
         return Set.of("jndiName");
     }
 
+    /** Attributes sent as {@code false} when they have no value; {@code enabled} by default. */
+    protected List<String> convertToFalse() {
+        return List.of("enabled");
+    }
+
     protected AdminRestService rest() {
         return rest;
     }
@@ -116,7 +121,7 @@ public abstract class ResourceEditView implements Serializable {
             readOnlyAttributes().forEach(attributes::remove);
             // The enabled state is kept on the resource references; the resource itself stays enabled
             attributes.put("enabled", "true");
-            rest.create(selfUrl(), attributes, List.of("enabled"));
+            rest.create(selfUrl(), attributes, convertToFalse());
             if (onlyServer) {
                 String references = ResourceTargets.load(rest).referencesUrl("server");
                 if (rest.attributes(rest.child(references, name)).isEmpty()) {

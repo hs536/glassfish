@@ -1,0 +1,61 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype (adr/0006, adr/0008): the new Jakarta Mail session page as a Facelets page. It takes precedence over
+    mailResourceNew.jsf. The target section comes from the integration point TargetSectionForResource.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18njmail" value="#{consoleBundles.get('jmail', 'org.glassfish.jmail.admingui.Strings')}"/>
+    <c:set var="bean" value="#{mailResourceNewView}"/>
+
+    <h:form id="form">
+        <adm:pageTitle id="propertyContentPage" title="#{i18njmail['javaMail.newPageTitle']}" helpText="#{i18njmail['javaMail.newPageTitleHelp']}">
+            <f:facet name="buttons">
+                <h:panelGroup id="topButtons">
+                    <h:commandButton id="newButton" value="#{i18n['button.OK']}" styleClass="Btn1_sun4" action="#{bean.create}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <input id="form:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
+                           onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/jmail/jakartaMailResources.jsf'}); return false;"/>
+                </h:panelGroup>
+            </f:facet>
+            <h:commandButton id="sendTestEmail" value="#{i18njmail['button.SendTestEmail']}" styleClass="Btn2_sun4" action="#{bean.sendTestEmail}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+        </adm:pageTitle>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <ui:include src="/jmail/mailResourceAttr.xhtml">
+            <ui:param name="bean" value="#{bean}"/>
+            <ui:param name="edit" value="#{false}"/>
+        </ui:include>
+
+        <adm:propertyTable id="basicTable" rows="#{bean.properties}" title="#{i18n['common.AdditionalProperties']}"/>
+
+        <c:forEach items="#{consoleIntegrationPoints.faceletsViews('org.glassfish.admingui:TargetSectionForResource')}" var="targetView">
+            <ui:include src="#{targetView}"/>
+        </c:forEach>
+    </h:form>
+    <script>document.title = '#{i18njmail['javaMail.newPageTitle']}';</script>
+</ui:composition>
