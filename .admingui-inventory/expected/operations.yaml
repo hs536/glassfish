@@ -4170,6 +4170,7 @@ operations:
       command: 6
     screens:
       - "/jca/connectorConnectionPoolProperty.jsf"
+      - "/jdbc/jdbcConnectionPoolAdvance.jsf"
       - "/jdbc/jdbcConnectionPoolEdit.jsf"
       - "/jdbc/jdbcConnectionPoolNew2.jsf"
       - "/jdbc/jdbcConnectionPoolProperty.jsf"
@@ -8671,6 +8672,7 @@ operations:
     events:
       command: 4
     screens:
+      - "/jdbc/jdbcConnectionPoolAdvance.jsf"
       - "/jdbc/jdbcConnectionPoolEdit.jsf"
     sources:
       - "appserver/admingui/jdbc/src/main/resources/jdbcConnectionPoolAdvanceButtons.inc"

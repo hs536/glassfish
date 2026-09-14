@@ -5283,10 +5283,11 @@ screens:
       i18n: "org.glassfish.admingui.core.Strings"
     includes: []
     integrationPointTypes: []
-    includedBy: []
+    includedBy:
+      - "/templates/treeLayout.xhtml"
     references:
       - "/common/commonTask.jsf"
-    reachable: false
+    reachable: true
   - url: "/common/pluginPage.jsf"
     source: "appserver/admingui/common/src/main/resources/pluginPage.jsf"
     module: "common"
@@ -10542,6 +10543,7 @@ screens:
       - "/common/shared/alertMsg_1.inc"
       - "/common/shared/editPageLoadDefaultButton.inc"
       - "/jdbc/advancePool.inc"
+      - "/jdbc/jdbcConnectionPoolAdvanceButtons.inc"
       - "/jdbc/jdbcConnectionPoolAdvanceJS.inc"
       - "/jdbc/jdbcConnectionPoolTabs.inc"
       - "/jdbc/lazyConnectionJS.inc"
@@ -10554,6 +10556,7 @@ screens:
       - "/common/shared/editPageLoadDefaultButton.inc"
       - "/jdbc/advancePool.inc"
       - "/jdbc/jdbcConnectionPoolAdvance.jsf"
+      - "/jdbc/jdbcConnectionPoolAdvanceButtons.inc"
       - "/jdbc/jdbcConnectionPoolAdvanceJS.inc"
       - "/jdbc/jdbcConnectionPoolTabs.inc"
       - "/jdbc/jdbcConnectionPools.jsf"
@@ -10570,9 +10573,10 @@ screens:
     bundles: {}
     includes: []
     integrationPointTypes: []
-    includedBy: []
+    includedBy:
+      - "/jdbc/jdbcConnectionPoolAdvance.jsf"
     references: []
-    reachable: false
+    reachable: true
   - url: "/jdbc/jdbcConnectionPoolAdvanceJS.inc"
     source: "appserver/admingui/jdbc/src/main/resources/jdbcConnectionPoolAdvanceJS.inc"
     module: "jdbc"
@@ -12260,10 +12264,12 @@ screens:
     title: null
     helpKey: null
     bundles: {}
-    includes: []
+    includes:
+      - "/common/peTree.inc"
     integrationPointTypes: []
     includedBy: []
     references:
+      - "/common/peTree.inc"
       - "/templates/baseLayout.xhtml"
     reachable: true
   - url: "/web/apps/deploymentWar.jsf"

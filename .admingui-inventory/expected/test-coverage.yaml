@@ -11,9 +11,9 @@ summary:
   testMethodsTouchingScreens: 110
   literalResolution:
     ambiguous: 259
-    context: 1596
+    context: 1599
     ids: 259
-    module: 594
+    module: 591
     page: 140
     tree: 283
   screensByKind:
@@ -209,7 +209,6 @@ seleniumTests:
       - "/common/index.jsf"
       - "/jdbc/jdbcConnectionPoolAdvance.jsf"
       - "/jdbc/jdbcConnectionPoolEdit.jsf"
-      - "/jdbc/jdbcConnectionPoolNew1.jsf"
       - "/jdbc/jdbcConnectionPoolProperty.jsf"
       - "/jdbc/jdbcResourceEdit.jsf"
     ambiguousIds: 8
@@ -602,6 +601,7 @@ seleniumTests:
       - "/common/appServer/serverInstGeneralPe.jsf"
       - "/common/appServer/serverInstResources.jsf"
       - "/common/index.jsf"
+      - "/jdbc/jdbcConnectionPoolAdvance.jsf"
       - "/jdbc/jdbcConnectionPoolEdit.jsf"
       - "/jdbc/jdbcConnectionPoolProperty.jsf"
       - "/jdbc/jdbcResourceEdit.jsf"
@@ -780,6 +780,7 @@ seleniumTests:
       - "/cluster/cluster/clusters.jsf"
       - "/cluster/standalone/standaloneInstances.jsf"
       - "/common/index.jsf"
+      - "/jdbc/jdbcConnectionPoolAdvance.jsf"
       - "/jdbc/jdbcConnectionPoolEdit.jsf"
       - "/jdbc/jdbcConnectionPoolProperty.jsf"
       - "/jdbc/jdbcConnectionPools.jsf"
@@ -801,6 +802,7 @@ seleniumTests:
       - "/common/applications/targetListing.jsf"
       - "/common/index.jsf"
       - "/common/resourceNode/resourceEditTargets.jsf"
+      - "/jdbc/jdbcConnectionPoolAdvance.jsf"
       - "/jdbc/jdbcConnectionPoolEdit.jsf"
       - "/jdbc/jdbcConnectionPoolNew1.jsf"
       - "/jdbc/jdbcConnectionPoolProperty.jsf"
@@ -2716,6 +2718,9 @@ coveredScreens:
     tests:
       - "AppScopedResourcesTest.testConnectorAppScopedresources"
       - "AppScopedResourcesTest.testJdbcAppScopedresources"
+      - "EnterpriseServerTest.testServerResourcesPage"
+      - "JdbcTest.testJdbcResources"
+      - "JdbcTest.testJdbcResourcesWithTargets"
   /jdbc/jdbcConnectionPoolEdit.jsf:
     kind: "page"
     tests:
@@ -2727,7 +2732,6 @@ coveredScreens:
   /jdbc/jdbcConnectionPoolNew1.jsf:
     kind: "page"
     tests:
-      - "AppScopedResourcesTest.testJdbcAppScopedresources"
       - "JdbcTest.testCreatingConnectionPool"
       - "JdbcTest.testCreatingJdbcPoolWithoutDatabaseVendor"
       - "JdbcTest.testJdbcResourcesWithTargets"
