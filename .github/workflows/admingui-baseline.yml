@@ -1,0 +1,72 @@
+# Screenshot and DOM baseline of the admin console on a fixed Linux environment (調査計画.md S11, adr/0001).
+#
+# This file is the source of truth. It is copied, together with tools/runtime and inventory/screens.yaml, to the
+# fork's dedicated branch ci/admingui-baseline (see docs/as-is/runtime-observations.md). That branch is never
+# proposed upstream.
+name: Admin console baseline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "ci/admingui-baseline" ]
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build GlassFish
+      # Same profiles as the upstream Jenkinsfile build, without its CI-only profile
+      run: mvn -B -e -ntp install -Pfastest,snapshots -T4C
+
+    - name: Build the observer
+      run: mvn -B -e -ntp -f .admingui-baseline/runtime/pom.xml package
+
+    - name: Install Chromium and its system dependencies
+      run: java -cp .admingui-baseline/runtime/target/runtime-observer.jar com.microsoft.playwright.CLI install --with-deps chromium
+
+    - name: Create the test domain
+      run: |
+        java -jar .admingui-baseline/runtime/target/runtime-observer.jar fixture-create \
+          "$GITHUB_WORKSPACE/appserver/distributions/glassfish/target/stage/glassfish8/glassfish" baseline 10000 \
+          | tee fixture.log
+
+    - name: Crawl the console
+      env:
+        # Chromium was installed above; do not download the other browsers
+        PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      run: |
+        java -jar .admingui-baseline/runtime/target/runtime-observer.jar crawl \
+          http://localhost:10048 .admingui-baseline/screens.yaml baseline/linux --screenshots \
+          --skip-file .admingui-baseline/runtime/skip-screens.txt \
+          | tee crawl.log
+
+    - name: Stop the test domain
+      if: always()
+      run: |
+        java -jar .admingui-baseline/runtime/target/runtime-observer.jar fixture-delete \
+          "$GITHUB_WORKSPACE/appserver/distributions/glassfish/target/stage/glassfish8/glassfish" baseline || true
+
+    - name: Upload the baseline
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: admingui-baseline-linux
+        path: |
+          baseline/linux
+          fixture.log
+          crawl.log
+        retention-days: 30

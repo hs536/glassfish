@@ -1,0 +1,4 @@
+# Screens the crawler must not open, one URL per line, followed by the reason after '#'.
+# Opening these screens changes the server state by itself (docs/課題一覧.md S-17).
+/common/appServer/restart-2.jsf  # requests restart-domain from the body onLoad handler
+/common/appServer/shutdown.jsf  # requests stop from the body onLoad handler
