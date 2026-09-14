@@ -34,8 +34,13 @@ final class PageIndex {
 
     static final List<String> PAGE_EXTENSIONS = List.of(".jsf", ".inc", ".layout", ".xhtml");
 
-    /** Page includes; the closing quote is optional because some pages omit it (JSFTemplating reads to the end of the line). */
-    private static final Pattern INCLUDE = Pattern.compile("(?m)^\\s*#include\\s+\"([^\"\\r\\n]+\\.(?:jsf|inc|layout|xhtml))\"?");
+    /**
+     * Page includes: {@code #include "path"} (the space and the closing quote are optional, because some pages omit
+     * them and JSFTemplating reads to the end of the line) and the tag form {@code <!include src="path"/>} used in
+     * templates. Lines commented out with {@code //} do not match.
+     */
+    private static final Pattern INCLUDE = Pattern.compile(
+            "(?m)^\\s*(?:#include\\s*\"?|<!include\\s+src=\")([^\"\\r\\n]+?\\.(?:jsf|inc|layout|xhtml))\"?");
     private static final Pattern TEMPLATE = Pattern.compile("<!composition\\s+template=\"([^\"#]+)\"");
 
     record Page(String url, String module, String source, String text, Set<String> includes) {
