@@ -40,6 +40,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish.main.admingui</groupId>
             <artifactId>console-plugin-service</artifactId>
             <version>${project.version}</version>
@@ -133,10 +137,6 @@
             <groupId>jakarta.servlet.jsp</groupId>
             <artifactId>jakarta.servlet.jsp-api</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
         </dependency>
     </dependencies>
 
