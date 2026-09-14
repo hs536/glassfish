@@ -16,22 +16,112 @@
 
 -->
 <!--
-    Prototype only (docs/試作計画.md P-3): the JDBC resources list as a Facelets page. It takes precedence over
+    Prototype (docs/試作計画.md P-3 to P-5): the JDBC resources list as a Facelets page. It takes precedence over
     jdbcResources.jsf and renders only the page content; the page frame comes from facesShell.jsf or from the page
-    that loads it with Ajax.
+    that loads it with Ajax. All actions are Ajax requests, because a full postback would replace the frame.
 -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
-                xmlns:h="jakarta.faces.html">
-    <div id="facesPage" class="guiPageContent">
-        <h1 id="pageTitle">JDBC Resources</h1>
-        <p>JDBC resources provide applications with a means to connect to a database.</p>
-        <h:dataTable id="resources" value="#{jdbcResourcesView.names}" var="name">
-            <h:column>
-                <f:facet name="header" xmlns:f="jakarta.faces.core">JNDI Name</f:facet>
-                #{name}
-            </h:column>
-        </h:dataTable>
-    </div>
-    <script>document.title = 'JDBC Resources';</script>
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:pt="jakarta.faces.passthrough"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18njdbc" value="#{consoleBundles.get('jdbc', 'org.glassfish.jdbc.admingui.Strings')}"/>
+    <c:set var="themeImages" value="#{request.contextPath}/theme/com/sun/webui/jsf/suntheme/images"/>
+
+    <h:form id="propertyForm">
+        <adm:pageTitle id="propertyContentPage" title="#{i18njdbc['jdbcResources.pageTitle']}"
+                       helpText="#{i18njdbc['jdbcResources.pageTitleHelp']}"/>
+        <br/><br/>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <table id="propertyForm:resourcesTable" class="Tbl_sun4" width="100%" border="0" cellpadding="0" cellspacing="0">
+            <caption class="TblTtlTxt_sun4">#{i18njdbc['resourcesTable.resources']} (#{jdbcResourcesView.rows.size()})</caption>
+            <tbody>
+                <tr>
+                    <td class="TblActTd_sun4" colspan="6" nowrap="nowrap">
+                        <h:panelGroup id="actions">
+                            <h:commandLink id="selectAll" title="#{i18n['table.selectAll']}" action="#{jdbcResourcesView.selectAll}">
+                                <f:ajax execute="@form" render="@form"/>
+                                <img src="#{themeImages}/table/select_multiple.gif" alt="#{i18n['table.selectAll']}" height="20" width="23" border="0" align="top"/>
+                            </h:commandLink>
+                            <h:commandLink id="deselectAll" title="#{i18n['table.deselectAll']}" action="#{jdbcResourcesView.deselectAll}">
+                                <f:ajax execute="@form" render="@form"/>
+                                <img src="#{themeImages}/table/deselect_multiple.gif" alt="#{i18n['table.deselectAll']}" height="20" width="23" border="0" align="top"/>
+                            </h:commandLink>
+                            <input id="propertyForm:newButton" type="button" class="Btn1_sun4" value="#{i18n['button.New']}"
+                                   onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/jdbc/jdbcResourceNew.jsf'}); return false;"/>
+                            <h:commandButton id="deleteButton" value="#{i18n['button.Delete']}"
+                                             styleClass="#{jdbcResourcesView.anySelected ? 'Btn2_sun4' : 'Btn2Dis_sun4'}"
+                                             disabled="#{not jdbcResourcesView.anySelected}"
+                                             pt:data-confirm="#{i18njdbc['msg.JS.confirmDeleteJR']}"
+                                             onclick="if (!confirm(this.dataset.confirm)) { return false; }"
+                                             action="#{jdbcResourcesView.delete}">
+                                <f:ajax execute="@form" render="@form"/>
+                            </h:commandButton>
+                            <h:commandButton id="enableButton" value="#{i18n['button.Enable']}"
+                                             styleClass="#{jdbcResourcesView.anySelected ? 'Btn2_sun4' : 'Btn2Dis_sun4'}"
+                                             disabled="#{not jdbcResourcesView.anySelected}"
+                                             action="#{jdbcResourcesView.enable}">
+                                <f:ajax execute="@form" render="@form"/>
+                            </h:commandButton>
+                            <h:commandButton id="disableButton" value="#{i18n['button.Disable']}"
+                                             styleClass="#{jdbcResourcesView.anySelected ? 'Btn2_sun4' : 'Btn2Dis_sun4'}"
+                                             disabled="#{not jdbcResourcesView.anySelected}"
+                                             action="#{jdbcResourcesView.disable}">
+                                <f:ajax execute="@form" render="@form"/>
+                            </h:commandButton>
+                        </h:panelGroup>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="TblColHdr_sun4" nowrap="nowrap" align="left" scope="col" width="3%"><span class="TblHdrTxt_sun4">#{i18n['common.SelectHeader']}</span></th>
+                    <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18njdbc['resourcesTable.colJndiName']}</span></th>
+                    <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18n['common.resourcesTable.colLogicalJndiName']}</span></th>
+                    <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{jdbcResourcesView.onlyServer ? i18n['deployTable.colEnabled'] : i18n['deployTable.colStatus']}</span></th>
+                    <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18njdbc['resourcesTable.colPool']}</span></th>
+                    <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18njdbc['resourcesTable.colDesc']}</span></th>
+                </tr>
+                <ui:repeat id="rows" value="#{jdbcResourcesView.rows}" var="row">
+                    <tr>
+                        <td class="TblTdSel_sun4" align="left">
+                            <span class="CbSpn_sun4">
+                                <h:selectBooleanCheckbox id="select" value="#{row.selected}" title="#{i18n['common.select']}">
+                                    <f:ajax render=":propertyForm:actions"/>
+                                </h:selectBooleanCheckbox>
+                            </span>
+                        </td>
+                        <th class="TblTdLyt_sun4" align="left" scope="row">
+                            <h:outputLink id="link" value="#{request.contextPath}/jdbc/jdbcResourceEdit.jsf">
+                                <f:param name="name" value="#{row.name}"/>
+                                <f:param name="logicalJndiName" value="#{row.logicalJndiName}"/>
+                                #{row.name}
+                            </h:outputLink>
+                        </th>
+                        <td class="TblTdLyt_sun4" align="left">#{row.logicalJndiName}</td>
+                        <td class="TblTdLyt_sun4" align="left">
+                            <h:outputLink id="targetLink" rendered="#{not jdbcResourcesView.onlyServer}"
+                                          value="#{request.contextPath}/common/resourceNode/resourceEditTargets.jsf">
+                                <f:param name="name" value="#{row.name}"/>
+                                <f:param name="generalPage" value="/jdbc/jdbcResourceEdit.jsf?name=#{row.name}"/>
+                                #{jdbcResourcesView.status(row)}
+                            </h:outputLink>
+                            <h:graphicImage id="enabledImage" rendered="#{jdbcResourcesView.onlyServer}"
+                                            value="/resource/images/#{jdbcResourcesView.enabledOnServer(row) ? 'enabled.png' : 'disabled.png'}"/>
+                        </td>
+                        <td class="TblTdLyt_sun4" align="left">
+                            <h:outputLink id="pool" value="#{request.contextPath}/jdbc/jdbcConnectionPoolEdit.jsf">
+                                <f:param name="name" value="#{row.poolName}"/>
+                                #{row.poolName}
+                            </h:outputLink>
+                        </td>
+                        <td class="TblTdLyt_sun4" align="left">#{row.description}</td>
+                    </tr>
+                </ui:repeat>
+            </tbody>
+        </table>
+    </h:form>
+    <script>document.title = '#{i18njdbc['jdbcResources.pageTitle']}';</script>
 </ui:composition>
