@@ -66,7 +66,7 @@ public class AdminGuiViewHandler extends ViewHandlerWrapper {
         return getWrapped().createView(context, viewId);
     }
 
-    private enum Route {
+    enum Route {
         /** The request is handled by the default Faces view handler (Facelets). */
         FACELETS,
         /** A Facelets page opened directly: JSFTemplating renders the page frame, which then loads the page. */
@@ -84,25 +84,45 @@ public class AdminGuiViewHandler extends ViewHandlerWrapper {
         ExternalContext externalContext = context.getExternalContext();
         String servletPath = externalContext.getRequestServletPath();
         if (servletPath == null || !servletPath.endsWith(TEMPLATING_SUFFIX)) {
-            // Also the case during application startup, where the request map cannot be written
-            return servletPath != null && servletPath.endsWith(FACELETS_SUFFIX) ? Route.FACELETS : Route.TEMPLATING;
+            // No view lookup and no request map write; also the case during application startup, where the request
+            // map cannot be written
+            return route(servletPath, viewId -> false, Map::of);
         }
         Map<String, Object> requestMap = externalContext.getRequestMap();
         Route route = (Route) requestMap.get(ROUTE);
         if (route == null) {
-            route = findRoute(context, servletPath);
+            route = route(servletPath,
+                    viewId -> context.getApplication().getResourceHandler().createViewResource(context, viewId) != null,
+                    externalContext::getRequestParameterMap);
             requestMap.put(ROUTE, route);
         }
         return route;
     }
 
-    private static Route findRoute(FacesContext context, String servletPath) {
-        String viewId = servletPath.substring(0, servletPath.length() - TEMPLATING_SUFFIX.length()) + FACELETS_SUFFIX;
-        if (context.getApplication().getResourceHandler().createViewResource(context, viewId) == null) {
+    /**
+     * The routing rule. The request parameters are read only for a {@code .jsf} page that has a Facelets view.
+     *
+     * @param servletPath the servlet path of the request, or {@code null}
+     * @param hasFaceletsView tells whether a Facelets view with the given view id exists
+     * @param parameters the request parameters
+     */
+    static Route route(String servletPath, java.util.function.Predicate<String> hasFaceletsView,
+            java.util.function.Supplier<Map<String, String>> parameters) {
+        if (servletPath == null) {
             return Route.TEMPLATING;
         }
-        Map<String, String> parameters = context.getExternalContext().getRequestParameterMap();
-        if ("true".equals(parameters.get(BARE_PARAMETER)) || parameters.containsKey(ResponseStateManager.VIEW_STATE_PARAM)) {
+        if (servletPath.endsWith(FACELETS_SUFFIX)) {
+            return Route.FACELETS;
+        }
+        if (!servletPath.endsWith(TEMPLATING_SUFFIX)) {
+            return Route.TEMPLATING;
+        }
+        String viewId = servletPath.substring(0, servletPath.length() - TEMPLATING_SUFFIX.length()) + FACELETS_SUFFIX;
+        if (!hasFaceletsView.test(viewId)) {
+            return Route.TEMPLATING;
+        }
+        Map<String, String> requestParameters = parameters.get();
+        if ("true".equals(requestParameters.get(BARE_PARAMETER)) || requestParameters.containsKey(ResponseStateManager.VIEW_STATE_PARAM)) {
             return Route.FACELETS;
         }
         return Route.SHELL;
