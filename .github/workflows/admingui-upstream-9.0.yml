@@ -1,0 +1,92 @@
+# Builds the upstream 9.0 branch (Jakarta Faces 5.0) and checks that the admin console starts (調査計画.md S13、
+# 課題 V-11、adr/0001).
+#
+# This file is the source of truth. It is copied to the fork's dedicated branch ci/admingui-upstream-9.0. The upstream
+# repository is only read (checked out); nothing is pushed to it. That branch is never proposed upstream.
+name: Admin console on upstream 9.0
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "ci/admingui-upstream-9.0" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+    - name: Checkout upstream 9.0
+      uses: actions/checkout@v4
+      with:
+        repository: eclipse-ee4j/glassfish
+        ref: '9.0'
+        path: glassfish
+
+    - name: Record the commit
+      working-directory: glassfish
+      run: git log -1 --format='%H %cI %s' | tee ../commit.txt
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+        cache-dependency-path: glassfish/**/pom.xml
+
+    - name: Build GlassFish
+      working-directory: glassfish
+      run: |
+        set -o pipefail
+        mvn -B -e -ntp install -Pfastest,snapshots -T4C 2>&1 | tee ../build.log
+
+    - name: Rebuild the admin console with compiler warnings
+      if: always()
+      working-directory: glassfish
+      run: |
+        set -o pipefail
+        mvn -B -e -ntp -f appserver/admingui/pom.xml clean install -Pfastest,snapshots \
+          -Dmaven.compiler.showWarnings=true -Dmaven.compiler.showDeprecation=true 2>&1 | tee ../admingui-build.log
+        grep -E '^\[(WARNING|ERROR)\]' ../admingui-build.log | sort | uniq -c | sort -rn > ../admingui-warnings.txt || true
+
+    - name: Start the domain and open the console
+      working-directory: glassfish
+      run: |
+        GF=appserver/distributions/glassfish/target/stage/glassfish9/glassfish
+        [ -d "$GF" ] || GF=$(ls -d appserver/distributions/glassfish/target/stage/glassfish*/glassfish | head -1)
+        "$GF/bin/asadmin" start-domain
+        B=http://localhost:4848
+        J=../cookies.txt
+        for i in $(seq 1 60); do
+          curl -s -o ../login.html -L -c "$J" -b "$J" "$B/" || true
+          grep -q j_security_check ../login.html && break
+          sleep 3
+        done
+        curl -s -o /dev/null -w 'j_security_check: %{http_code}\n' -c "$J" -b "$J" \
+          --data-urlencode j_username=admin --data-urlencode j_password= "$B/j_security_check" | tee ../console.txt
+        for page in /common/index.jsf /jdbc/jdbcResources.jsf /jmail/jakartaMailResources.jsf; do
+          code=$(curl -s -o ../page.html -w '%{http_code}' -L -c "$J" -b "$J" "$B$page")
+          title=$(grep -o -i -m1 '<title>[^<]*</title>' ../page.html || true)
+          error=$(grep -c -E 'An error has occurred|Exception' ../page.html || true)
+          echo "$page: $code $title errors=$error" | tee -a ../console.txt
+        done
+        "$GF/bin/asadmin" stop-domain || true
+        cp "$GF/domains/domain1/logs/server.log" ../server.log || true
+
+    - name: Upload the logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: admingui-upstream-9.0
+        path: |
+          commit.txt
+          build.log
+          admingui-build.log
+          admingui-warnings.txt
+          console.txt
+          login.html
+          server.log
+        retention-days: 30
