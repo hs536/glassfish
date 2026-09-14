@@ -1,0 +1,93 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype (docs/試作計画.md P-5): the additional properties table (name, value, description) with the add and
+    delete buttons. The rows are an org.glassfish.admingui.common.util.PropertyRows. The buttons process only this
+    table, so that adding a row does not validate the rest of the form.
+-->
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="jakarta.faces.facelets"
+              xmlns:h="jakarta.faces.html"
+              xmlns:f="jakarta.faces.core"
+              xmlns:c="jakarta.tags.core"
+              xmlns:cc="jakarta.faces.composite">
+    <cc:interface>
+        <cc:attribute name="rows" required="true"/>
+        <cc:attribute name="title" required="true"/>
+    </cc:interface>
+    <cc:implementation>
+        <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+        <div id="#{cc.clientId}" style="padding: 10pt">
+            <table class="Tbl_sun4" width="100%" border="0" cellpadding="0" cellspacing="0">
+                <caption class="TblTtlTxt_sun4">#{cc.attrs.title} (#{cc.attrs.rows.rows.size()})</caption>
+                <tbody>
+                    <tr>
+                        <td class="TblActTd_sun4" colspan="4" nowrap="nowrap">
+                            <h:panelGroup id="actions">
+                                <h:commandButton id="addButton" value="#{i18n['button.AddProperty']}" styleClass="Btn1_sun4"
+                                                 action="#{cc.attrs.rows.add()}">
+                                    <f:ajax execute=":#{cc.clientId}" render=":#{cc.clientId}"/>
+                                </h:commandButton>
+                                <h:commandButton id="deleteButton" value="#{i18n['button.DeleteProperties']}"
+                                                 styleClass="#{cc.attrs.rows.anySelected ? 'Btn2_sun4' : 'Btn2Dis_sun4'}"
+                                                 disabled="#{not cc.attrs.rows.anySelected}"
+                                                 action="#{cc.attrs.rows.deleteSelected()}">
+                                    <f:ajax execute=":#{cc.clientId}" render=":#{cc.clientId}"/>
+                                </h:commandButton>
+                            </h:panelGroup>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="TblColHdr_sun4" nowrap="nowrap" align="left" scope="col" width="3%"><span class="TblHdrTxt_sun4">#{i18n['common.SelectHeader']}</span></th>
+                        <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18n['common.PropertyName']}</span></th>
+                        <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18n['common.PropertyValue']}</span></th>
+                        <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18n['common.description.header']}</span></th>
+                    </tr>
+                    <ui:fragment rendered="#{empty cc.attrs.rows.rows}">
+                        <tr>
+                            <td class="TblTdLyt_sun4" align="left" colspan="4"><span class="TblMsgTxt_sun4">#{i18n['table.noItems']}</span></td>
+                        </tr>
+                    </ui:fragment>
+                    <ui:repeat id="rows" value="#{cc.attrs.rows.rows}" var="property">
+                        <tr>
+                            <td class="TblTdSel_sun4" align="left">
+                                <span class="CbSpn_sun4">
+                                    <h:selectBooleanCheckbox id="select" value="#{property.selected}" title="#{i18n['common.select']}">
+                                        <f:ajax render=":#{cc.clientId}:actions"/>
+                                    </h:selectBooleanCheckbox>
+                                </span>
+                            </td>
+                            <td class="TblTdLyt_sun4" align="left">
+                                <h:inputText id="name" value="#{property.name}" size="40" styleClass="TxtFld_sun4"
+                                             pt:aria-label="#{i18n['common.PropertyName']}" xmlns:pt="jakarta.faces.passthrough"/>
+                            </td>
+                            <td class="TblTdLyt_sun4" align="left">
+                                <h:inputText id="value" value="#{property.value}" size="40" styleClass="TxtFld_sun4"
+                                             pt:aria-label="#{i18n['common.PropertyValue']}" xmlns:pt="jakarta.faces.passthrough"/>
+                            </td>
+                            <td class="TblTdLyt_sun4" align="left">
+                                <h:inputText id="description" value="#{property.description}" size="20" styleClass="TxtFld_sun4"
+                                             pt:aria-label="#{i18n['common.description.header']}" xmlns:pt="jakarta.faces.passthrough"/>
+                            </td>
+                        </tr>
+                    </ui:repeat>
+                </tbody>
+            </table>
+        </div>
+    </cc:implementation>
+</ui:component>

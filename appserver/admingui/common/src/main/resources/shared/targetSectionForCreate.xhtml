@@ -1,0 +1,105 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype (docs/試作計画.md P-7): the Facelets content of the integration point
+    org.glassfish:admingui:TargetSectionForResource (registered with the content /shared/targetSectionForCreate.inc).
+    The page reads the chosen targets from the targetSelection bean.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <adm:propertySheet id="targetSection" legend="#{i18n['common.TargetTableTitle']}" rendered="#{targetSelection.visible}">
+        <tr>
+            <td valign="top" nowrap="nowrap"><div class="ConTblCl1Div_sun4"><span class="LblLev2Txt_sun4">&#160;</span></div></td>
+            <td>
+                <div class="ConTblCl2Div_sun4">
+                    <h:panelGroup id="addRemove" layout="block">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td valign="top">
+                                        <div class="AddRmvHrzDiv_sun4">
+                                            <h:outputLabel for="available" styleClass="AddRmvLbl2_sun4 LblLev2Txt_sun4" value="#{i18n['manageTargets.AvailableTargets']}:"/>
+                                            <h:selectManyListbox id="available" styleClass="Lst_sun4" size="12" value="#{targetSelection.availableChoice}">
+                                                <f:selectItems value="#{targetSelection.available}"/>
+                                                <f:ajax render="addRemove"/>
+                                            </h:selectManyListbox>
+                                        </div>
+                                    </td>
+                                    <td valign="top">
+                                        <div class="AddRmvHrzDiv_sun4">
+                                            <table class="AddRmvBtnTbl_sun4">
+                                                <tbody>
+                                                    <tr>
+                                                        <td align="center" width="125px">
+                                                            <div class="AddRmvHrzWin_sun4">
+                                                                <h:commandButton id="addButton" value="#{i18n['button.Add']} &gt;" action="#{targetSelection.add}"
+                                                                                 styleClass="#{empty targetSelection.availableChoice ? 'Btn2Dis_sun4' : 'Btn2_sun4'}"
+                                                                                 disabled="#{empty targetSelection.availableChoice}">
+                                                                    <f:ajax execute="available" render="addRemove"/>
+                                                                </h:commandButton>
+                                                            </div>
+                                                            <div class="AddRmvHrzWin_sun4">
+                                                                <h:commandButton id="addAllButton" value="#{i18n['button.AddAll']} &gt;&gt;" action="#{targetSelection.addAll}"
+                                                                                 styleClass="#{empty targetSelection.available ? 'Btn2Dis_sun4' : 'Btn2_sun4'}"
+                                                                                 disabled="#{empty targetSelection.available}">
+                                                                    <f:ajax execute="@this" render="addRemove"/>
+                                                                </h:commandButton>
+                                                            </div>
+                                                            <div class="AddRmvHrzBwn_sun4">
+                                                                <h:commandButton id="removeButton" value="&lt; #{i18n['button.Remove']}" action="#{targetSelection.remove}"
+                                                                                 styleClass="#{empty targetSelection.selectedChoice ? 'Btn2Dis_sun4' : 'Btn2_sun4'}"
+                                                                                 disabled="#{empty targetSelection.selectedChoice}">
+                                                                    <f:ajax execute="selected" render="addRemove"/>
+                                                                </h:commandButton>
+                                                            </div>
+                                                            <div class="AddRmvHrzWin_sun4">
+                                                                <h:commandButton id="removeAllButton" value="&lt;&lt; #{i18n['button.RemoveAll']}" action="#{targetSelection.removeAll}"
+                                                                                 styleClass="#{empty targetSelection.selected ? 'Btn2Dis_sun4' : 'Btn2_sun4'}"
+                                                                                 disabled="#{empty targetSelection.selected}">
+                                                                    <f:ajax execute="@this" render="addRemove"/>
+                                                                </h:commandButton>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                    <td valign="top">
+                                        <div class="AddRmvHrzDiv_sun4">
+                                            <h:outputLabel for="selected" styleClass="AddRmvLbl2_sun4 LblLev2Txt_sun4" value="#{i18n['manageTargets.SelectedTargets']}:"/>
+                                            <h:selectManyListbox id="selected" styleClass="Lst_sun4" size="12" value="#{targetSelection.selectedChoice}">
+                                                <f:selectItems value="#{targetSelection.selected}"/>
+                                                <f:ajax render="addRemove"/>
+                                            </h:selectManyListbox>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </h:panelGroup>
+                </div>
+            </td>
+        </tr>
+    </adm:propertySheet>
+</ui:composition>

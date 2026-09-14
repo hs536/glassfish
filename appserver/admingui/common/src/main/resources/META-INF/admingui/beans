@@ -1,3 +1,4 @@
 # Prototype (docs/試作計画.md P-4): CDI bean classes in this plugin bundle, registered by
 # org.glassfish.admingui.cdi.PluginBeanExtension in console-core.
 org.glassfish.admingui.common.util.AdminRestService
+org.glassfish.admingui.common.util.TargetSelection

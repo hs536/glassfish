@@ -36,6 +36,8 @@ import java.util.Map;
 public class AdminRestService {
 
     private static final String REST_URL = "REST_URL";
+    /** Nesting depth of the JSON documents sent: a list of property maps. */
+    private static final int JSON_DEPTH = 3;
 
     /** The URL of the admin REST interface for the current session, followed by the given path segments, each encoded. */
     public String url(String... segments) {
@@ -65,6 +67,32 @@ public class AdminRestService {
 
     public Map<String, Object> delete(String url, Map<String, Object> attributes) {
         return request(url, attributes, "delete");
+    }
+
+    /**
+     * Creates a resource, as {@code gf.createEntity} does: the attribute names start with a lower case letter, and the
+     * attributes in {@code convertToFalse} without a value are sent as {@code false}.
+     */
+    public void create(String url, Map<String, Object> attributes, List<String> convertToFalse) {
+        Map<String, Object> copy = new HashMap<>(attributes);
+        RestResponse response = RestUtil.sendCreateRequest(url, copy, null, null, convertToFalse);
+        RestUtil.parseResponse(response, null, url, copy, false, true);
+    }
+
+    /** Sends a JSON document, as the property tables of the JSFTemplating pages do. */
+    public void postJson(String url, Object value) {
+        String json = JSONUtil.javaToJSON(value, JSON_DEPTH);
+        RestResponse response = RestUtil.post(url, json, "application/json");
+        RestUtil.parseResponse(response, null, url, json, false, true);
+    }
+
+    /** The default values of the attributes of a resource type. */
+    public Map<String, String> defaults(String url) {
+        try {
+            return new HashMap<>(RestUtil.buildDefaultValueMap(url));
+        } catch (Exception e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
     /** The names of the child resources of the given collection, sorted. */

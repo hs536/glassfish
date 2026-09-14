@@ -1,0 +1,74 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype (docs/試作計画.md P-4, P-5, P-7): the new JDBC resource page as a Facelets page. It takes precedence over
+    jdbcResourceNew.jsf. The target section comes from the integration point TargetSectionForResource.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18njdbc" value="#{consoleBundles.get('jdbc', 'org.glassfish.jdbc.admingui.Strings')}"/>
+
+    <h:form id="form">
+        <adm:pageTitle id="propertyContentPage" title="#{i18njdbc['jdbcResource.newPageTitle']}"
+                       helpText="#{i18njdbc['jdbcResource.newPageTitleHelp']}">
+            <f:facet name="buttons">
+                <h:panelGroup id="topButtons">
+                    <h:commandButton id="newButton" value="#{i18n['button.OK']}" styleClass="Btn1_sun4" action="#{jdbcResourceNewView.create}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <input id="form:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
+                           onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/jdbc/jdbcResources.jsf'}); return false;"/>
+                </h:panelGroup>
+            </f:facet>
+        </adm:pageTitle>
+        <br/><br/>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <adm:propertySheet id="propertySheet">
+            <adm:property id="nameNew" label="#{i18n['common.jndiName']}" for="name" required="true">
+                <h:inputText id="name" value="#{jdbcResourceNewView.name}" size="30" maxlength="512" styleClass="required TxtFld_sun4"
+                             required="true" requiredMessage="#{i18n['msg.JS.enterValue']} #{i18n['common.jndiName']}"
+                             validator="#{jdbcResourceNewView.validateName}"/>
+            </adm:property>
+            <adm:property id="poolNameProp" label="#{i18n['common.poolName']}" for="PoolName"
+                          helpText="#{jdbcResourceNewView.poolHelp}" helpTextEscape="false">
+                <h:selectOneMenu id="PoolName" value="#{jdbcResourceNewView.poolName}" styleClass="MnuStd_sun4">
+                    <f:selectItems value="#{jdbcResourceNewView.pools}"/>
+                </h:selectOneMenu>
+            </adm:property>
+            <adm:property id="descProp" label="#{i18n['common.description']}" for="desc">
+                <h:inputText id="desc" value="#{jdbcResourceNewView.description}" size="55" maxlength="512" styleClass="TxtFld_sun4"/>
+            </adm:property>
+            <adm:property id="statusProp" label="#{i18n['common.status']}" for="enabled">
+                <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="enabled" value="#{jdbcResourceNewView.enabled}"/></span>
+            </adm:property>
+        </adm:propertySheet>
+
+        <adm:propertyTable id="basicTable" rows="#{jdbcResourceNewView.properties}" title="#{i18n['common.AdditionalProperties']}"/>
+
+        <c:forEach items="#{consoleIntegrationPoints.faceletsViews('org.glassfish.admingui:TargetSectionForResource')}" var="view">
+            <ui:include src="#{view}"/>
+        </c:forEach>
+    </h:form>
+    <script>document.title = '#{i18njdbc['jdbcResource.newPageTitle']}';</script>
+</ui:composition>

@@ -2,3 +2,4 @@
 # org.glassfish.admingui.cdi.PluginBeanExtension in console-core.
 org.glassfish.jdbc.admingui.prototype.JdbcPrototypeProbe
 org.glassfish.jdbc.admingui.prototype.JdbcResourcesView
+org.glassfish.jdbc.admingui.prototype.JdbcResourceNewView
