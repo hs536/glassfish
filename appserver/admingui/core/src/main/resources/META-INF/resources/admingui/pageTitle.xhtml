@@ -16,9 +16,9 @@
 
 -->
 <!--
-    Prototype (docs/試作計画.md P-5): the title of a console page, with an optional help text and buttons.
-    The style classes are those of the console theme, so that the page looks like the other pages while both
-    kinds of pages exist.
+    Prototype (docs/試作計画.md P-5): the title of a console page, with an optional help text, buttons at the right
+    of the title (facet "buttons") and further content under the help text (children). The style classes are those
+    of the console theme, so that the page looks like the other pages while both kinds of pages exist.
 -->
 <ui:component xmlns="http://www.w3.org/1999/xhtml"
               xmlns:ui="jakarta.faces.facelets"
@@ -30,19 +30,30 @@
     </cc:interface>
     <cc:implementation>
         <div id="#{cc.clientId}">
-            <div class="TtlTxtDiv_sun4">
-                <h1 class="TtlTxt_sun4">#{cc.attrs.title}</h1>
-            </div>
-            <ui:fragment rendered="#{not empty cc.facets.buttons}">
-                <div class="TtlBtnDiv_sun4">
-                    <cc:renderFacet name="buttons"/>
-                </div>
-            </ui:fragment>
+            <table border="0" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tbody>
+                    <tr valign="bottom">
+                        <td nowrap="nowrap" valign="bottom">
+                            <div class="TtlTxtDiv_sun4">
+                                <h1 class="TtlTxt_sun4">#{cc.attrs.title}</h1>
+                            </div>
+                        </td>
+                        <ui:fragment rendered="#{not empty cc.facets.buttons}">
+                            <td align="right" nowrap="nowrap" valign="bottom">
+                                <div class="TtlBtnDiv_sun4">
+                                    <cc:renderFacet name="buttons"/>
+                                </div>
+                            </td>
+                        </ui:fragment>
+                    </tr>
+                </tbody>
+            </table>
             <ui:fragment rendered="#{not empty cc.attrs.helpText}">
                 <div class="TtlHlpDiv_sun4">
                     <div class="inlinePageHelp_sun4">#{cc.attrs.helpText}</div>
                 </div>
             </ui:fragment>
+            <cc:insertChildren/>
         </div>
     </cc:implementation>
 </ui:component>

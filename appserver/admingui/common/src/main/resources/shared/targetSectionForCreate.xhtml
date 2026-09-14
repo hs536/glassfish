@@ -41,6 +41,7 @@
                                             <h:outputLabel for="available" styleClass="AddRmvLbl2_sun4 LblLev2Txt_sun4" value="#{i18n['manageTargets.AvailableTargets']}:"/>
                                             <h:selectManyListbox id="available" styleClass="Lst_sun4" size="12" value="#{targetSelection.availableChoice}">
                                                 <f:selectItems value="#{targetSelection.available}"/>
+                                                <f:selectItem itemValue="" itemLabel="_______________________" itemDisabled="true" noSelectionOption="true"/>
                                                 <f:ajax render="addRemove"/>
                                             </h:selectManyListbox>
                                         </div>
@@ -90,6 +91,7 @@
                                             <h:outputLabel for="selected" styleClass="AddRmvLbl2_sun4 LblLev2Txt_sun4" value="#{i18n['manageTargets.SelectedTargets']}:"/>
                                             <h:selectManyListbox id="selected" styleClass="Lst_sun4" size="12" value="#{targetSelection.selectedChoice}">
                                                 <f:selectItems value="#{targetSelection.selected}"/>
+                                                <f:selectItem itemValue="" itemLabel="_______________________" itemDisabled="true" noSelectionOption="true"/>
                                                 <f:ajax render="addRemove"/>
                                             </h:selectManyListbox>
                                         </div>
