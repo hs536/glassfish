@@ -21,7 +21,6 @@ import jakarta.faces.application.ViewHandlerWrapper;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.render.ResponseStateManager;
 
 import java.util.Map;
 
@@ -86,28 +85,33 @@ public class AdminGuiViewHandler extends ViewHandlerWrapper {
         if (servletPath == null || !servletPath.endsWith(TEMPLATING_SUFFIX)) {
             // No view lookup and no request map write; also the case during application startup, where the request
             // map cannot be written
-            return route(servletPath, viewId -> false, Map::of);
+            return route(servletPath, viewId -> false, "GET", null);
         }
         Map<String, Object> requestMap = externalContext.getRequestMap();
         Route route = (Route) requestMap.get(ROUTE);
         if (route == null) {
+            Object request = externalContext.getRequest();
+            String method = request instanceof jakarta.servlet.http.HttpServletRequest http ? http.getMethod() : "GET";
+            String queryString = request instanceof jakarta.servlet.http.HttpServletRequest http ? http.getQueryString() : null;
             route = route(servletPath,
                     viewId -> context.getApplication().getResourceHandler().createViewResource(context, viewId) != null,
-                    externalContext::getRequestParameterMap);
+                    method, queryString);
             requestMap.put(ROUTE, route);
         }
         return route;
     }
 
     /**
-     * The routing rule. The request parameters are read only for a {@code .jsf} page that has a Facelets view.
+     * The routing rule. It reads neither the request parameters nor the request body, so that the body of a post is
+     * decoded later with the character encoding of the request (X-19): every post to a page that has a Facelets view is a
+     * postback of that view, and {@code bare=true} is looked up in the query string.
      *
      * @param servletPath the servlet path of the request, or {@code null}
      * @param hasFaceletsView tells whether a Facelets view with the given view id exists
-     * @param parameters the request parameters
+     * @param method the HTTP method of the request
+     * @param queryString the query string of the request, or {@code null}
      */
-    static Route route(String servletPath, java.util.function.Predicate<String> hasFaceletsView,
-            java.util.function.Supplier<Map<String, String>> parameters) {
+    static Route route(String servletPath, java.util.function.Predicate<String> hasFaceletsView, String method, String queryString) {
         if (servletPath == null) {
             return Route.TEMPLATING;
         }
@@ -121,10 +125,24 @@ public class AdminGuiViewHandler extends ViewHandlerWrapper {
         if (!hasFaceletsView.test(viewId)) {
             return Route.TEMPLATING;
         }
-        Map<String, String> requestParameters = parameters.get();
-        if ("true".equals(requestParameters.get(BARE_PARAMETER)) || requestParameters.containsKey(ResponseStateManager.VIEW_STATE_PARAM)) {
+        if ("POST".equalsIgnoreCase(method) || isQueryParameterTrue(queryString, BARE_PARAMETER)) {
             return Route.FACELETS;
         }
         return Route.SHELL;
+    }
+
+    private static boolean isQueryParameterTrue(String queryString, String name) {
+        if (queryString == null) {
+            return false;
+        }
+        for (String parameter : queryString.split("&")) {
+            int equals = parameter.indexOf('=');
+            if (equals > 0
+                    && name.equals(java.net.URLDecoder.decode(parameter.substring(0, equals), java.nio.charset.StandardCharsets.UTF_8))
+                    && "true".equals(java.net.URLDecoder.decode(parameter.substring(equals + 1), java.nio.charset.StandardCharsets.UTF_8))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

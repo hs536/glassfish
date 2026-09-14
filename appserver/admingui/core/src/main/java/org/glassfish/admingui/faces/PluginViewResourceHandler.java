@@ -49,15 +49,36 @@ public class PluginViewResourceHandler extends ResourceHandlerWrapper {
 
     /** The URL of the resource in the plugin named by the first path segment, or null. */
     static URL findInPlugin(String resourceName) {
-        if (resourceName == null || !resourceName.startsWith("/") || resourceName.contains("..")) {
+        if (!isServableViewName(resourceName)) {
             return null;
         }
         int slash = resourceName.indexOf('/', 1);
-        if (slash < 0) {
-            return null;
-        }
         ClassLoader pluginClassLoader = ConsoleClassLoader.findModuleClassLoader(resourceName.substring(1, slash));
         return pluginClassLoader == null ? null : pluginClassLoader.getResource(resourceName.substring(slash + 1));
+    }
+
+    /**
+     * Whether a view id may be looked up in a plugin (X-18): a Facelets file ({@code .xhtml}) below a plugin id, outside
+     * {@code META-INF} and {@code WEB-INF}, without hidden, empty or parent segments, and without characters that could
+     * change the meaning of the path (backslash, percent, colon).
+     */
+    static boolean isServableViewName(String resourceName) {
+        if (resourceName == null || !resourceName.startsWith("/") || !resourceName.endsWith(".xhtml")) {
+            return false;
+        }
+        if (resourceName.indexOf('\\') >= 0 || resourceName.indexOf('%') >= 0 || resourceName.indexOf(':') >= 0) {
+            return false;
+        }
+        String[] segments = resourceName.substring(1).split("/", -1);
+        if (segments.length < 2) {
+            return false;
+        }
+        for (String segment : segments) {
+            if (segment.isEmpty() || segment.startsWith(".") || segment.equalsIgnoreCase("META-INF") || segment.equalsIgnoreCase("WEB-INF")) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static final class PluginViewResource extends ViewResource {

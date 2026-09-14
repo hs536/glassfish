@@ -18,38 +18,35 @@ package org.glassfish.admingui.common;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 import org.glassfish.admingui.common.AdminGuiViewHandler.Route;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AdminGuiViewHandlerTest {
 
-    private static final String VIEW_STATE = "jakarta.faces.ViewState";
+    private static final String MIGRATED_PAGE = "/jdbc/jdbcResources.jsf";
 
     @Test
     public void requestWithoutServletPathGoesToTemplating() {
-        assertEquals(Route.TEMPLATING, AdminGuiViewHandler.route(null, viewId -> true, failingParameters()));
+        assertEquals(Route.TEMPLATING, AdminGuiViewHandler.route(null, viewId -> true, "GET", null));
     }
 
     @Test
     public void faceletsViewGoesToFacelets() {
-        assertEquals(Route.FACELETS, AdminGuiViewHandler.route("/jdbc/prototype/page.xhtml", viewId -> false, failingParameters()));
+        assertEquals(Route.FACELETS, AdminGuiViewHandler.route("/jdbc/prototype/page.xhtml", viewId -> false, "GET", null));
     }
 
     @Test
     public void otherRequestsGoToTemplating() {
-        assertEquals(Route.TEMPLATING, AdminGuiViewHandler.route("/resource/common/css/style.css", viewId -> true, failingParameters()));
+        assertEquals(Route.TEMPLATING, AdminGuiViewHandler.route("/resource/common/css/style.css", viewId -> true, "GET", null));
     }
 
     @Test
-    public void pageWithoutFaceletsViewGoesToTemplatingWithoutReadingParameters() {
+    public void pageWithoutFaceletsViewGoesToTemplating() {
         List<String> lookedUp = new ArrayList<>();
-        Route route = AdminGuiViewHandler.route("/jdbc/jdbcConnectionPools.jsf", viewId -> lookedUp.add(viewId) && false, failingParameters());
+        Route route = AdminGuiViewHandler.route("/jdbc/jdbcConnectionPools.jsf", viewId -> lookedUp.add(viewId) && false, "POST", "bare=true");
 
         assertEquals(Route.TEMPLATING, route);
         assertEquals(List.of("/jdbc/jdbcConnectionPools.xhtml"), lookedUp);
@@ -57,32 +54,33 @@ public class AdminGuiViewHandlerTest {
 
     @Test
     public void directRequestForMigratedPageGoesToShell() {
-        assertEquals(Route.SHELL, AdminGuiViewHandler.route("/jdbc/jdbcResources.jsf", viewId -> true, () -> Map.of("name", "jdbc/x")));
+        assertEquals(Route.SHELL, AdminGuiViewHandler.route(MIGRATED_PAGE, viewId -> true, "GET", "name=jdbc%2Fx"));
+    }
+
+    @Test
+    public void directRequestWithoutQueryGoesToShell() {
+        assertEquals(Route.SHELL, AdminGuiViewHandler.route(MIGRATED_PAGE, viewId -> true, "GET", null));
     }
 
     @Test
     public void contentRequestForMigratedPageGoesToFacelets() {
-        assertEquals(Route.FACELETS, AdminGuiViewHandler.route("/jdbc/jdbcResources.jsf", viewId -> true, () -> Map.of("bare", "true")));
+        assertEquals(Route.FACELETS, AdminGuiViewHandler.route(MIGRATED_PAGE, viewId -> true, "GET", "name=jdbc%2Fx&bare=true"));
+    }
+
+    @Test
+    public void encodedBareParameterIsDecoded() {
+        assertEquals(Route.FACELETS, AdminGuiViewHandler.route(MIGRATED_PAGE, viewId -> true, "GET", "b%61re=tru%65"));
     }
 
     @Test
     public void bareOtherThanTrueGoesToShell() {
-        assertEquals(Route.SHELL, AdminGuiViewHandler.route("/jdbc/jdbcResources.jsf", viewId -> true, () -> Map.of("bare", "false")));
+        assertEquals(Route.SHELL, AdminGuiViewHandler.route(MIGRATED_PAGE, viewId -> true, "GET", "bare=false"));
+        assertEquals(Route.SHELL, AdminGuiViewHandler.route(MIGRATED_PAGE, viewId -> true, "GET", "bare=trueish"));
+        assertEquals(Route.SHELL, AdminGuiViewHandler.route(MIGRATED_PAGE, viewId -> true, "GET", "notbare=true"));
     }
 
     @Test
-    public void postbackToMigratedPageGoesToFacelets() {
-        assertEquals(Route.FACELETS, AdminGuiViewHandler.route("/jdbc/jdbcResources.jsf", viewId -> true, () -> Map.of(VIEW_STATE, "x")));
-    }
-
-    @Test
-    public void viewStateParameterNameIsTheFacesConstant() {
-        assertTrue(VIEW_STATE.equals(jakarta.faces.render.ResponseStateManager.VIEW_STATE_PARAM));
-    }
-
-    private static Supplier<Map<String, String>> failingParameters() {
-        return () -> {
-            throw new AssertionError("the request parameters must not be read");
-        };
+    public void postToMigratedPageGoesToFacelets() {
+        assertEquals(Route.FACELETS, AdminGuiViewHandler.route(MIGRATED_PAGE, viewId -> true, "POST", null));
     }
 }
