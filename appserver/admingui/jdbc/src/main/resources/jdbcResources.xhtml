@@ -1,0 +1,37 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype only (docs/試作計画.md P-3): the JDBC resources list as a Facelets page. It takes precedence over
+    jdbcResources.jsf and renders only the page content; the page frame comes from facesShell.jsf or from the page
+    that loads it with Ajax.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html">
+    <div id="facesPage" class="guiPageContent">
+        <h1 id="pageTitle">JDBC Resources</h1>
+        <p>JDBC resources provide applications with a means to connect to a database.</p>
+        <h:dataTable id="resources" value="#{jdbcResourcesView.names}" var="name">
+            <h:column>
+                <f:facet name="header" xmlns:f="jakarta.faces.core">JNDI Name</f:facet>
+                #{name}
+            </h:column>
+        </h:dataTable>
+    </div>
+    <script>document.title = 'JDBC Resources';</script>
+</ui:composition>

@@ -40,6 +40,7 @@
           <supported-locale>pt_BR</supported-locale>
         </locale-config>
         <el-resolver>com.sun.webui.jsf.faces.UIComponentELResolver</el-resolver>
+        <resource-handler>org.glassfish.admingui.faces.PluginViewResourceHandler</resource-handler>
     </application>
     <factory>
         <application-factory>org.glassfish.admingui.common.AdminGuiApplicationFactory</application-factory>

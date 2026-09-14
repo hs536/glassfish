@@ -1,0 +1,4 @@
+# Prototype only (docs/試作計画.md P-1): CDI bean classes in this plugin bundle, registered by
+# org.glassfish.admingui.cdi.PluginBeanExtension in console-core.
+org.glassfish.jdbc.admingui.prototype.JdbcPrototypeProbe
+org.glassfish.jdbc.admingui.prototype.JdbcResourcesView

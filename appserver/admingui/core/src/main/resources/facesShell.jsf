@@ -1,0 +1,33 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<!--
+    Prototype only (docs/試作計画.md P-3): the page frame (masthead and navigation tree) for a page that has moved to
+    Facelets. AdminGuiViewHandler renders this view when such a page is opened directly; the frame then loads the
+    page itself into the content area, in the same way as a click in the navigation tree.
+-->
+<!initPage
+    setResourceBundle(key="i18n" bundle="org.glassfish.admingui.core.Strings");
+/>
+<!composition template="/templates/default.layout"
+    guiTemplateOnLoad="if (window.location.pathname.indexOf('/facesShell.jsf') == -1) { admingui.ajax.loadPage({url: window.location.pathname + window.location.search}); }"
+>
+<!define name="content">
+"<div id="facesShellContent"></div>
+</define>
+</composition>
