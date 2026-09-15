@@ -8,3 +8,6 @@ org.glassfish.jdbc.admingui.prototype.JdbcConnectionPoolsView
 org.glassfish.jdbc.admingui.prototype.JdbcConnectionPoolEditView
 org.glassfish.jdbc.admingui.prototype.JdbcConnectionPoolAdvanceView
 org.glassfish.jdbc.admingui.prototype.JdbcConnectionPoolPropertyView
+org.glassfish.jdbc.admingui.prototype.JdbcConnectionPoolWizard
+org.glassfish.jdbc.admingui.prototype.JdbcConnectionPoolNew1View
+org.glassfish.jdbc.admingui.prototype.JdbcConnectionPoolNew2View

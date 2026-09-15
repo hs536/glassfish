@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0006, adr/0008): the second page of the new JDBC connection pool wizard as a Facelets page. It takes
+    precedence over jdbcConnectionPoolNew2.jsf. Choosing another data source class renders the properties table again,
+    where the JSFTemplating page submitted the form and rendered the whole page.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18njdbc" value="#{consoleBundles.get('jdbc', 'org.glassfish.jdbc.admingui.Strings')}"/>
+    <c:set var="bean" value="#{jdbcConnectionPoolNew2View}"/>
+    <c:set var="wizard" value="#{bean.wizard}"/>
+
+    <h:form id="form2">
+        <adm:pageTitle id="propertyContentPage" title="#{i18njdbc['jdbcConnectionPool.Step2PageTitle']}"
+                       helpText="#{i18njdbc['jdbcConnection.step2PageHelp']}">
+            <f:facet name="buttons">
+                <h:panelGroup id="topButtons">
+                    <h:commandButton id="previousButton" value="#{i18n['button.Previous']}" styleClass="Btn2_sun4" action="#{bean.previous}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <h:commandButton id="finishButton" value="#{i18n['button.Finish']}" styleClass="Btn1_sun4" action="#{bean.finish}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <h:commandButton id="cancelButton" value="#{i18n['button.Cancel']}" styleClass="Btn2_sun4" action="#{bean.cancel}">
+                        <f:ajax execute="@this"/>
+                    </h:commandButton>
+                </h:panelGroup>
+            </f:facet>
+        </adm:pageTitle>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <adm:propertySheet id="generalSheet" legend="#{i18njdbc['jdbcPool.general']}">
+            <adm:property id="jndiProp" label="#{i18njdbc['jdbcPool.poolName']}">
+                <h:outputText id="Jndi" value="#{wizard.name}"/>
+            </adm:property>
+            <adm:property id="resTypeWizProp" label="#{i18n['common.resType']}">
+                <h:outputText id="resType" value="#{wizard.resType}"/>
+            </adm:property>
+            <adm:property id="dbProp" label="#{i18njdbc['jdbcPool.dbVendor']}">
+                <h:outputText id="db" value="#{wizard.chosenVendor}"/>
+            </adm:property>
+            <adm:property id="dsProp" label="#{i18njdbc['jdbcPool.datasource']}" for="datasource" helpText="#{i18njdbc['jdbcPool.datasourceHelpEnter']}">
+                <h:selectOneMenu id="datasource" value="#{wizard.datasourceClassname}" styleClass="MnuStd_sun4" disabled="#{not wizard.dataSource}">
+                    <f:selectItems value="#{wizard.dataSourceClassNames}"/>
+                    <f:ajax execute="@this" listener="#{bean.datasourceChanged}" render=":form2:basicTable :form2:messages"/>
+                </h:selectOneMenu>
+                <br/>
+                <h:inputText id="datasourceField" value="#{wizard.datasourceClassnameText}" size="60" maxlength="512" styleClass="TxtFld_sun4"
+                             disabled="#{not wizard.dataSource}"/>
+            </adm:property>
+            <adm:property id="ddsProp" label="#{i18njdbc['jdbcPool.driver']}" for="ddatasource" helpText="#{i18njdbc['jdbcPool.driverHelpEnter']}">
+                <h:selectOneMenu id="ddatasource" value="#{wizard.driverClassname}" styleClass="MnuStd_sun4" disabled="#{wizard.dataSource}">
+                    <f:selectItems value="#{wizard.driverClassNames}"/>
+                </h:selectOneMenu>
+                <br/>
+                <h:inputText id="ddatasourceField" value="#{wizard.driverClassnameText}" size="60" maxlength="512" styleClass="TxtFld_sun4"
+                             disabled="#{wizard.dataSource}"/>
+            </adm:property>
+            <adm:property id="pingProp" label="#{i18njdbc['jdbcPool.ping']}" for="ping" helpText="#{i18njdbc['jdbcPool.pingHelp']}">
+                <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="ping" value="#{wizard.flags['ping']}"/></span>
+            </adm:property>
+            <adm:property id="descProp" label="#{i18n['common.description']}" for="desc">
+                <h:inputText id="desc" value="#{wizard.values['description']}" size="60" maxlength="512" styleClass="TxtFld_sun4"/>
+            </adm:property>
+        </adm:propertySheet>
+
+        <adm:propertySheet id="poolSettingsPropertySheet" legend="#{i18njdbc['jdbcPool.poolSettings']}">
+            <adm:property id="initSizeProp" label="#{i18njdbc['jdbcPool.initPoolSize']}" for="steadyPoolSize" helpText="#{i18njdbc['jdbcPool.initPoolSizeHelp']}">
+                <h:inputText id="steadyPoolSize" value="#{wizard.values['steadyPoolSize']}" size="10" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                <h:outputText value="#{i18n['common.Connections']}" style="padding: 8pt"/>
+            </adm:property>
+            <adm:property id="maxProp" label="#{i18njdbc['jdbcPool.maxPoolSize']}" for="maxPoolSize" helpText="#{i18njdbc['jdbcPool.maxPoolSizeHelp']}">
+                <h:inputText id="maxPoolSize" value="#{wizard.values['maxPoolSize']}" size="10" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                <h:outputText value="#{i18n['common.Connections']}" style="padding: 8pt"/>
+            </adm:property>
+            <adm:property id="resizeProp" label="#{i18njdbc['jdbcPool.poolResize']}" for="poolResizeQuantity" helpText="#{i18njdbc['jdbcPool.poolResizeHelp']}">
+                <h:inputText id="poolResizeQuantity" value="#{wizard.values['poolResizeQuantity']}" size="10" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                <h:outputText value="#{i18n['common.Connections']}" style="padding: 8pt"/>
+            </adm:property>
+            <adm:property id="idleProp" label="#{i18njdbc['jdbcPool.idleTimeout']}" for="idleTimeout" helpText="#{i18njdbc['jdbcPool.idleTimeoutHelp']}">
+                <h:inputText id="idleTimeout" value="#{wizard.values['idleTimeoutInSeconds']}" size="10" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                <h:outputText value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+            </adm:property>
+            <adm:property id="maxWaitProp" label="#{i18njdbc['jdbcPool.maxWait']}" for="maxWait" helpText="#{i18njdbc['jdbcPool.maxWaitHelp']}">
+                <h:inputText id="maxWait" value="#{wizard.values['maxWaitTimeInMillis']}" size="10" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                <h:outputText value="#{i18n['common.Milliseconds']}" style="padding: 8pt"/>
+            </adm:property>
+        </adm:propertySheet>
+
+        <adm:propertySheet id="transactionPropertySheet" legend="#{i18njdbc['jdbcPool.transIsolationSection']}">
+            <adm:property id="nonTransProp" label="#{i18njdbc['jdbcPool.nonTransConnection']}" for="nonTransactional"
+                          helpText="#{i18njdbc['jdbcPool.nonTransConnectionHelp']}">
+                <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="nonTransactional" value="#{wizard.flags['nonTransactionalConnections']}"/></span>
+            </adm:property>
+            <adm:property id="transProp" label="#{i18njdbc['jdbcPool.transIsolation']}" for="transIso" helpText="#{i18njdbc['jdbcPool.transIsolationHelp']}">
+                <h:selectOneMenu id="transIso" value="#{wizard.values['transactionIsolationLevel']}" styleClass="MnuStd_sun4">
+                    <f:selectItems value="#{wizard.isolationLevels}"/>
+                </h:selectOneMenu>
+            </adm:property>
+            <adm:property id="levelProp" label="#{i18njdbc['jdbcPool.isoLevel']}" for="isolationGuaranteed" helpText="#{i18njdbc['jdbcPool.isoLevelHelp']}">
+                <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="isolationGuaranteed" value="#{wizard.flags['isIsolationLevelGuaranteed']}"/></span>
+                <h:outputLabel for="isolationGuaranteed" value="#{i18njdbc['jdbcPool.Guaranteed']}"/>
+            </adm:property>
+        </adm:propertySheet>
+
+        <adm:propertyTable id="basicTable" rows="#{wizard.properties}" title="#{i18n['common.AdditionalProperties']}"/>
+    </h:form>
+    <script>document.title = '#{i18njdbc['jdbcConnectionPool.Step2PageTitle']}';</script>
+</ui:composition>

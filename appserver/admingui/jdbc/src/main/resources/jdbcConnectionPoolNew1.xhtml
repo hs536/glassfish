@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0006, adr/0008): the first page of the new JDBC connection pool wizard as a Facelets page. It takes
+    precedence over jdbcConnectionPoolNew1.jsf. Where the JSFTemplating page emptied the other vendor field with
+    JavaScript, choosing or starting to type a vendor renders the other field again.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18njdbc" value="#{consoleBundles.get('jdbc', 'org.glassfish.jdbc.admingui.Strings')}"/>
+    <c:set var="bean" value="#{jdbcConnectionPoolNew1View}"/>
+    <c:set var="wizard" value="#{bean.wizard}"/>
+
+    <h:form id="propertyForm">
+        <adm:pageTitle id="propertyContentPage" title="#{i18njdbc['jdbcConnectionPool.step1PageTitle']}"
+                       helpText="#{i18njdbc['jdbcConnection.step1PageHelp']}">
+            <f:facet name="buttons">
+                <h:panelGroup id="topButtons">
+                    <h:commandButton id="nextButton" value="#{i18n['button.Next']}" styleClass="Btn1_sun4" action="#{bean.next}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <h:commandButton id="cancelButton" value="#{i18n['button.Cancel']}" styleClass="Btn2_sun4" action="#{bean.cancel}">
+                        <f:ajax execute="@this"/>
+                    </h:commandButton>
+                </h:panelGroup>
+            </f:facet>
+        </adm:pageTitle>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <adm:propertySheet id="generalPropertySheet" legend="#{i18njdbc['jdbcPool.general']}">
+            <adm:property id="jndiProp" label="#{i18njdbc['jdbcPool.poolName']}" for="name" required="true">
+                <h:inputText id="name" value="#{wizard.name}" size="30" maxlength="512" styleClass="TxtFld_sun4" required="true"
+                             requiredMessage="#{i18n['msg.JS.enterValue']} #{i18njdbc['jdbcPool.poolName']}" validator="#{bean.validateName}"/>
+            </adm:property>
+            <adm:property id="resTypeProp" label="#{i18n['common.resType']}" for="resType" helpText="#{i18njdbc['jdbcPool.resTypeHelp']}">
+                <h:selectOneMenu id="resType" value="#{wizard.resType}" styleClass="MnuStd_sun4">
+                    <f:selectItems value="#{wizard.resourceTypes}"/>
+                </h:selectOneMenu>
+            </adm:property>
+            <adm:property id="dbProp" label="#{i18njdbc['jdbcPool.dbVendor']}" for="db" helpText="#{i18njdbc['jdbcPool.dbVendorHelp']}">
+                <h:selectOneMenu id="db" value="#{wizard.vendor}" styleClass="MnuStd_sun4">
+                    <f:selectItems value="#{wizard.vendors}"/>
+                    <f:ajax execute="@this" listener="#{bean.vendorChosen}" render=":propertyForm:generalPropertySheet:dbProp:dbField"/>
+                </h:selectOneMenu>
+                <br/>
+                <h:inputText id="dbField" value="#{wizard.vendorText}" size="60" maxlength="512" styleClass="TxtFld_sun4">
+                    <f:ajax event="focus" execute="@this" listener="#{bean.vendorTyped}" render=":propertyForm:generalPropertySheet:dbProp:db"/>
+                </h:inputText>
+            </adm:property>
+            <adm:property id="introspect" label="#{i18njdbc['jdbcPool.introspect']}" for="introspectValue" helpText="#{i18njdbc['jdbcPool.introspectHelp']}">
+                <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="introspectValue" value="#{wizard.introspect}"/></span>
+            </adm:property>
+        </adm:propertySheet>
+    </h:form>
+    <script>document.title = '#{i18njdbc['jdbcConnectionPool.step1PageTitle']}';</script>
+</ui:composition>

@@ -47,4 +47,7 @@
         <exception-handler-factory>org.glassfish.admingui.common.AdminGuiExceptionHandlerFactory</exception-handler-factory>
         <partial-view-context-factory>org.glassfish.admingui.common.AdminGuiPartialViewContextFactory</partial-view-context-factory>
     </factory>
+    <lifecycle>
+        <phase-listener>org.glassfish.admingui.common.AdminGuiAlertPhaseListener</phase-listener>
+    </lifecycle>
 </faces-config>
