@@ -1,0 +1,5 @@
+# Prototype (adr/0008): CDI bean classes in this plugin bundle, registered by
+# org.glassfish.admingui.cdi.PluginBeanExtension in console-core.
+org.glassfish.jca.admingui.prototype.ConnectorResourcesView
+org.glassfish.jca.admingui.prototype.ConnectorResourceNewView
+org.glassfish.jca.admingui.prototype.ConnectorResourceEditView
