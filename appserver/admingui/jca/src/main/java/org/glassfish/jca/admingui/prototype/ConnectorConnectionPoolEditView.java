@@ -25,7 +25,6 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +91,7 @@ public class ConnectorConnectionPoolEditView implements Serializable {
                 values.put(attribute, attributes.get(attribute));
             }
         }
-        adapters = adapterNames();
+        adapters = ConnectorModules.poolAdapters(rest);
         connectionDefinitions = connectionDefinitionNames(text(values.get("resourceAdapterName")));
     }
 
@@ -209,22 +208,6 @@ public class ConnectorConnectionPoolEditView implements Serializable {
 
     public String getSecurityMapsPage() {
         return tabPage("/jca/connectorSecurityMaps.jsf");
-    }
-
-    /**
-     * The resource adapters, as the JSFTemplating page lists them: the system adapters that allow pools, when the JMS
-     * plugin is present, then the connector modules of the deployed applications, a module of an enterprise application
-     * without its {@code .rar} extension ({@code filterOutRarExtension}).
-     */
-    private List<String> adapterNames() {
-        List<String> names = new ArrayList<>();
-        if (ConnectorModules.jmsExists()) {
-            names.addAll(names(rest.get(rest.url("resources", "get-system-rars-allowing-pool-creation"), null), "rarList"));
-        }
-        for (String module : ConnectorModules.names(rest)) {
-            names.add(module.contains("#") && module.endsWith(".rar") ? module.substring(0, module.length() - ".rar".length()) : module);
-        }
-        return names;
     }
 
     private List<String> connectionDefinitionNames(String adapter) {

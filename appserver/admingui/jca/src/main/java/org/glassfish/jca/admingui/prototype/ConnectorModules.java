@@ -54,6 +54,26 @@ final class ConnectorModules {
         return names;
     }
 
+    /**
+     * The resource adapters that a connector connection pool can use, as the JSFTemplating pool pages list them: the
+     * system adapters that allow pools, when the JMS plugin is present, then the connector modules of the deployed
+     * applications, a module of an enterprise application without its {@code .rar} extension
+     * ({@code filterOutRarExtension}).
+     */
+    static List<String> poolAdapters(AdminRestService rest) {
+        List<String> adapters = new ArrayList<>();
+        if (jmsExists()) {
+            Object rars = AdminRestService.extraProperties(rest.get(rest.url("resources", "get-system-rars-allowing-pool-creation"), null)).get("rarList");
+            if (rars instanceof List<?> list) {
+                list.forEach(rar -> adapters.add(String.valueOf(rar)));
+            }
+        }
+        for (String module : names(rest)) {
+            adapters.add(module.contains("#") && module.endsWith(".rar") ? module.substring(0, module.length() - ".rar".length()) : module);
+        }
+        return adapters;
+    }
+
     /** True when the JMS plugin is present. */
     static boolean jmsExists() {
         return "true".equals(String.valueOf(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(JMS_EXISTS)));
