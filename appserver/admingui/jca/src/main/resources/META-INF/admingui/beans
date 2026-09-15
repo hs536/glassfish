@@ -9,3 +9,4 @@ org.glassfish.jca.admingui.prototype.AdminObjectEditView
 org.glassfish.jca.admingui.prototype.ConnectorConnectionPoolsView
 org.glassfish.jca.admingui.prototype.ConnectorConnectionPoolEditView
 org.glassfish.jca.admingui.prototype.ConnectorConnectionPoolAdvanceView
+org.glassfish.jca.admingui.prototype.ConnectorConnectionPoolPropertyView
