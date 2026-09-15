@@ -50,21 +50,4 @@ final class ResourceLookups {
         return names;
     }
 
-    /** The additional properties of a resource, from its {@code property.json}. */
-    static PropertyRows properties(AdminRestService rest, String resourceUrl) {
-        PropertyRows rows = new PropertyRows();
-        Map<String, Object> response = rest.get(resourceUrl + "/property.json", null);
-        if (AdminRestService.extraProperties(response).get("properties") instanceof List<?> list) {
-            for (Object item : list) {
-                if (item instanceof Map<?, ?> map) {
-                    rows.add();
-                    PropertyRows.Row row = rows.getRows().get(rows.getRows().size() - 1);
-                    row.setName(ResourceListView.text(map.get("name")));
-                    row.setValue(ResourceListView.text(map.get("value")));
-                    row.setDescription(ResourceListView.text(map.get("description")));
-                }
-            }
-        }
-        return rows;
-    }
 }

@@ -41,6 +41,24 @@ public class PropertyRows implements Serializable {
 
     private final List<Row> rows = new ArrayList<>();
 
+    /** The additional properties of a resource, from its {@code property.json}. */
+    public static PropertyRows read(AdminRestService rest, String resourceUrl) {
+        PropertyRows rows = new PropertyRows();
+        Map<String, Object> response = rest.get(resourceUrl + "/property.json", null);
+        if (AdminRestService.extraProperties(response).get("properties") instanceof List<?> list) {
+            for (Object item : list) {
+                if (item instanceof Map<?, ?> map) {
+                    Row row = new Row();
+                    row.setName(ResourceListView.text(map.get("name")));
+                    row.setValue(ResourceListView.text(map.get("value")));
+                    row.setDescription(ResourceListView.text(map.get("description")));
+                    rows.rows.add(row);
+                }
+            }
+        }
+        return rows;
+    }
+
     public List<Row> getRows() {
         return rows;
     }

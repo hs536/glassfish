@@ -127,7 +127,7 @@ public abstract class ResourceEditView implements Serializable {
         values.clear();
         attributes.forEach((key, value) -> values.put(key, ResourceListView.text(value)));
         logicalJndiName = logicalJndiName(context);
-        properties = ResourceLookups.properties(rest, propertiesResource());
+        properties = PropertyRows.read(rest, propertiesResource());
 
         ResourceTargets targets = ResourceTargets.load(rest);
         onlyServer = targets.onlyServer();
