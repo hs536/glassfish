@@ -16,8 +16,6 @@
 
 package org.glassfish.jca.admingui.prototype;
 
-import jakarta.faces.context.FacesContext;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,9 +45,6 @@ public class AdminObjectChoices implements Serializable {
 
     private static final String JMS_ADAPTER = "jmsra";
 
-    /** The session attribute that the JMS plugin sets when it adds its tree nodes. */
-    private static final String JMS_EXISTS = "_jms_exist";
-
     private List<String> adapters = List.of();
     private List<String> types = List.of();
     private List<String> classNames = List.of();
@@ -64,22 +59,12 @@ public class AdminObjectChoices implements Serializable {
      * plugin the list starts with an empty choice. The JMS adapter is chosen when the values have no adapter.
      */
     void loadAdapters(AdminRestService rest, Map<String, Object> values) {
-        boolean jms = jmsExists();
+        boolean jms = ConnectorModules.jmsExists();
         List<String> names = new ArrayList<>();
         if (!jms) {
             names.add("");
         }
-        String applications = rest.url("applications", "application");
-        for (String application : rest.childNames(applications)) {
-            String applicationUrl = rest.child(applications, application);
-            boolean enterpriseApplication = rest.childNames(rest.child(applicationUrl, "engine")).contains("ear");
-            String modules = rest.child(applicationUrl, "module");
-            for (String module : rest.childNames(modules)) {
-                if (rest.childNames(rest.child(modules, module, "engine")).contains("connector")) {
-                    names.add(enterpriseApplication ? application + "#" + module : application);
-                }
-            }
-        }
+        names.addAll(ConnectorModules.names(rest));
         if (jms) {
             names.add(JMS_ADAPTER);
             if (text(values.get("resAdapter")).isEmpty()) {
@@ -132,10 +117,6 @@ public class AdminObjectChoices implements Serializable {
 
     public List<String> getClassNames() {
         return classNames;
-    }
-
-    private static boolean jmsExists() {
-        return "true".equals(String.valueOf(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(JMS_EXISTS)));
     }
 
     private static List<String> names(AdminRestService rest, String command, Map<String, Object> query, String key) {
