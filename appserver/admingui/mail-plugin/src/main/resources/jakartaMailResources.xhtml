@@ -23,14 +23,10 @@
                 xmlns:ui="jakarta.faces.facelets"
                 xmlns:h="jakarta.faces.html"
                 xmlns:f="jakarta.faces.core"
-                xmlns:c="jakarta.tags.core"
-                xmlns:pt="jakarta.faces.passthrough"
-                xmlns:adm="jakarta.faces.composite/admingui">
+                xmlns:c="jakarta.tags.core"                xmlns:adm="jakarta.faces.composite/admingui">
     <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
     <c:set var="i18nfull" value="#{consoleBundles.get('full', 'org.glassfish.full.admingui.Strings')}"/>
-    <c:set var="i18njmail" value="#{consoleBundles.get('jmail', 'org.glassfish.jmail.admingui.Strings')}"/>
-    <c:set var="themeImages" value="#{request.contextPath}/theme/com/sun/webui/jsf/suntheme/images"/>
-    <c:set var="bean" value="#{mailResourcesView}"/>
+    <c:set var="i18njmail" value="#{consoleBundles.get('jmail', 'org.glassfish.jmail.admingui.Strings')}"/>    <c:set var="bean" value="#{mailResourcesView}"/>
 
     <h:form id="propertyForm">
         <adm:pageTitle id="propertyContentPage" title="#{i18njmail['javaMailSessions.pageTitle']}"
@@ -40,34 +36,8 @@
 
         <adm:table id="resourcesTable" title="#{i18njmail['resourcesTable.sessions']}" count="#{bean.rows.size()}" columns="4">
             <f:facet name="actions">
-                <h:panelGroup id="actions">
-                    <h:commandLink id="selectAll" title="#{i18n['table.selectAll']}" action="#{bean.selectAll}">
-                        <f:ajax execute="@form" render="@form"/>
-                        <img src="#{themeImages}/table/select_multiple.gif" alt="#{i18n['table.selectAll']}" height="20" width="23" border="0" align="top"/>
-                    </h:commandLink>
-                    <h:commandLink id="deselectAll" title="#{i18n['table.deselectAll']}" action="#{bean.deselectAll}">
-                        <f:ajax execute="@form" render="@form"/>
-                        <img src="#{themeImages}/table/deselect_multiple.gif" alt="#{i18n['table.deselectAll']}" height="20" width="23" border="0" align="top"/>
-                    </h:commandLink>
-                    <input id="propertyForm:newButton" type="button" class="Btn1_sun4" value="#{i18n['button.New']}"
-                           onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/jmail/mailResourceNew.jsf'}); return false;"/>
-                    <h:commandButton id="deleteButton" value="#{i18n['button.Delete']}"
-                                     styleClass="#{bean.anySelected ? 'Btn2_sun4' : 'Btn2Dis_sun4'}" disabled="#{not bean.anySelected}"
-                                     pt:data-confirm="#{i18nfull['msg.JS.confirmDeleteCR']}"
-                                     onclick="if (!confirm(this.dataset.confirm)) { return false; }" action="#{bean.delete}">
-                        <f:ajax execute="@form" render="@form"/>
-                    </h:commandButton>
-                    <h:commandButton id="enableButton" value="#{i18n['button.Enable']}"
-                                     styleClass="#{bean.anySelected ? 'Btn2_sun4' : 'Btn2Dis_sun4'}" disabled="#{not bean.anySelected}"
-                                     action="#{bean.enable}">
-                        <f:ajax execute="@form" render="@form"/>
-                    </h:commandButton>
-                    <h:commandButton id="disableButton" value="#{i18n['button.Disable']}"
-                                     styleClass="#{bean.anySelected ? 'Btn2_sun4' : 'Btn2Dis_sun4'}" disabled="#{not bean.anySelected}"
-                                     action="#{bean.disable}">
-                        <f:ajax execute="@form" render="@form"/>
-                    </h:commandButton>
-                </h:panelGroup>
+                <adm:resourceTableActions id="actions" bean="#{bean}" newPage="/jmail/mailResourceNew.jsf"
+                                          deleteConfirmation="#{i18nfull['msg.JS.confirmDeleteCR']}"/>
             </f:facet>
             <f:facet name="header">
                 <h:panelGroup>
