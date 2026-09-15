@@ -34,7 +34,11 @@
         <tr id="#{cc.clientId}">
             <td valign="top" nowrap="nowrap" align="left">
                 <div class="ConTblCl1Div_sun4">
-                    <h:outputLabel for="#{cc.attrs.for}" styleClass="LblLev2Txt_sun4">
+                    <!-- A row without an input, such as a name shown as text, has a label that is not for a field -->
+                    <ui:fragment rendered="#{empty cc.attrs.for}">
+                        <label class="LblLev2Txt_sun4">#{cc.attrs.label}</label>
+                    </ui:fragment>
+                    <h:outputLabel for="#{cc.attrs.for}" styleClass="LblLev2Txt_sun4" rendered="#{not empty cc.attrs.for}">
                         #{cc.attrs.label}
                         <h:graphicImage rendered="#{cc.attrs.required}" value="/theme/com/sun/webui/jsf/suntheme/images/other/required.gif"
                                         alt="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')['common.requiredIndicator']}"

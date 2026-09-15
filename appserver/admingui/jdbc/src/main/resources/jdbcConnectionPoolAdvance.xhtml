@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0006, adr/0008): the Advanced tab of a JDBC connection pool as a Facelets page. It takes precedence
+    over jdbcConnectionPoolAdvance.jsf. The General tab is a Facelets page, the Additional Properties tab opens the
+    JSFTemplating page. Where the JSFTemplating page enabled and disabled the fields with JavaScript, the check boxes,
+    the validation method and the options render the rows again.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18njdbc" value="#{consoleBundles.get('jdbc', 'org.glassfish.jdbc.admingui.Strings')}"/>
+    <c:set var="bean" value="#{jdbcConnectionPoolAdvanceView}"/>
+    <c:set var="validationRows"
+           value=":propertyForm:connectionValidationPropertySheet:tableProp :propertyForm:connectionValidationPropertySheet:validCNProp :propertyForm:messages"/>
+
+    <h:form id="propertyForm">
+        <adm:tabSet id="jdbcPoolSet" rendered="#{bean.found}">
+            <adm:tab label="#{i18n['common.General']}" url="#{bean.generalPage}"/>
+            <adm:tab label="#{i18n['common.Advanced']}" selected="true"/>
+            <adm:tab label="#{i18n['common.AdditonalProperties']}" url="#{bean.propertiesPage}"/>
+        </adm:tabSet>
+
+        <adm:pageTitle id="propertyContentPage" title="#{i18njdbc['jdbcConnectionPool.advancePageTitle']}"
+                       helpText="#{i18njdbc['jdbcConnectionPool.advancePageTitleHelp']}">
+            <f:facet name="buttons">
+                <h:panelGroup id="topButtons">
+                    <h:commandButton id="saveButton" value="#{i18n['button.Save']}" styleClass="Btn1_sun4" rendered="#{bean.found}" action="#{bean.save}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <input id="propertyForm:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
+                           onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/jdbc/jdbcConnectionPools.jsf'}); return false;"/>
+                </h:panelGroup>
+            </f:facet>
+            <h:commandButton id="loadDefaultsButton" value="#{i18n['button.LoadDefaults']}" styleClass="Btn2_sun4" style="margin-left: 8pt"
+                             rendered="#{bean.found}" action="#{bean.loadDefaults}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+        </adm:pageTitle>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <ui:fragment rendered="#{bean.found}">
+            <adm:propertySheet id="generalPropertySheet">
+                <adm:property id="jndiProp" label="#{i18njdbc['jdbcPool.poolName']}">
+                    <h:outputText id="Jndi" value="#{bean.name}"/>
+                </adm:property>
+                <adm:property id="p2" label="#{i18njdbc['jdbcPool.statementTimeoutInSeconds']}" for="va"
+                              helpText="#{i18njdbc['jdbcPool.statementTimeoutInSecondsHelp']}">
+                    <h:inputText id="va" value="#{bean.values['statementTimeoutInSeconds']}" size="10" maxlength="512" styleClass="TxtFld_sun4"/>
+                    <h:outputText value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+                </adm:property>
+                <adm:property id="cacheSizeProp" label="#{i18njdbc['jdbcPool.statementCacheSize']}" for="cachesize"
+                              helpText="#{i18njdbc['jdbcPool.statementCacheSizeHelp']}">
+                    <h:inputText id="cachesize" value="#{bean.values['statementCacheSize']}" size="10" maxlength="512" styleClass="TxtFld_sun4"/>
+                </adm:property>
+                <adm:property id="initSqlProp" label="#{i18njdbc['jdbcPool.initSql']}" for="initsql" helpText="#{i18njdbc['jdbcPool.initSqlHelp']}">
+                    <h:inputText id="initsql" value="#{bean.values['initSql']}" size="50" maxlength="512" styleClass="TxtFld_sun4"/>
+                </adm:property>
+                <adm:property id="sqlTLProp" label="#{i18njdbc['jdbcPool.sqlTL']}" for="sqlTL" helpText="#{i18njdbc['jdbcPool.sqlTLHelp']}">
+                    <h:inputText id="sqlTL" value="#{bean.values['sqlTraceListeners']}" size="50" maxlength="512" styleClass="TxtFld_sun4"/>
+                </adm:property>
+                <adm:property id="p1" label="#{i18njdbc['jdbcPool.wrapJdbcObjects']}" for="wrap" helpText="#{i18njdbc['jdbcPool.wrapJdbcObjectsHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="wrap" value="#{bean.flags['wrapJdbcObjects']}"/></span>
+                </adm:property>
+                <adm:property id="poolingProp" label="#{i18njdbc['jdbcPool.pooling']}" for="pooling" helpText="#{i18njdbc['jdbcPool.poolingHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="pooling" value="#{bean.flags['pooling']}"/></span>
+                </adm:property>
+            </adm:propertySheet>
+
+            <adm:propertySheet id="connectionPropertySheet" legend="#{i18njdbc['jdbcPool.connectionSettings']}">
+                <adm:property id="p1" label="#{i18njdbc['jdbcPool.validateAtmostOnceInSeconds']}" for="va"
+                              helpText="#{i18njdbc['jdbcPool.validateAtmostOnceInSecondsHelp']}">
+                    <h:inputText id="va" value="#{bean.values['validateAtmostOncePeriodInSeconds']}" size="30" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                    <h:outputText value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+                </adm:property>
+                <adm:property id="p2" label="#{i18njdbc['jdbcPool.connectionLeakTimeoutInSeconds']}" for="leakTimeout"
+                              helpText="#{i18njdbc['jdbcPool.connectionLeakTimeoutInSecondsHelp']}">
+                    <h:inputText id="leakTimeout" value="#{bean.values['connectionLeakTimeoutInSeconds']}" size="30" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                    <h:outputText value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+                </adm:property>
+                <adm:property id="p3" label="#{i18njdbc['jdbcPool.connectionLeakReclaim']}" for="leakReclaim"
+                              helpText="#{i18njdbc['jdbcPool.connectionLeakReclaimHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="leakReclaim" value="#{bean.flags['connectionLeakReclaim']}"/></span>
+                </adm:property>
+                <adm:property id="statementLeakTimeoutInSeconds" label="#{i18njdbc['jdbcPool.statementLeakTimeoutInSeconds']}"
+                              for="statementLeakTimeout" helpText="#{i18njdbc['jdbcPool.statementLeakTimeoutInSecondsHelp']}">
+                    <h:inputText id="statementLeakTimeout" value="#{bean.values['statementLeakTimeoutInSeconds']}" size="30" maxlength="512"
+                                 styleClass="integer TxtFld_sun4"/>
+                    <h:outputText value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+                </adm:property>
+                <adm:property id="statementLeakReclaim" label="#{i18njdbc['jdbcPool.statementLeakReclaim']}" for="statementReclaim"
+                              helpText="#{i18njdbc['jdbcPool.statementLeakReclaimHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="statementReclaim" value="#{bean.flags['statementLeakReclaim']}"/></span>
+                </adm:property>
+                <adm:property id="p4" label="#{i18njdbc['jdbcPool.connectionCreationRetryAttempts']}" for="retryAttempts"
+                              helpText="#{i18njdbc['jdbcPool.connectionCreationRetryAttemptsHelp']}">
+                    <h:inputText id="retryAttempts" value="#{bean.values['connectionCreationRetryAttempts']}" size="30" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                </adm:property>
+                <adm:property id="p5" label="#{i18njdbc['jdbcPool.connectionCreationRetryIntervalInSeconds']}" for="retryInterval"
+                              helpText="#{i18njdbc['jdbcPool.connectionCreationRetryIntervalInSecondsHelp']}">
+                    <h:inputText id="retryInterval" value="#{bean.values['connectionCreationRetryIntervalInSeconds']}" size="30" maxlength="512"
+                                 styleClass="integer TxtFld_sun4"/>
+                    <h:outputText value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+                </adm:property>
+                <adm:property id="p7" label="#{i18njdbc['jdbcPool.lazyConnectionAssociation']}" for="associate"
+                              helpText="#{i18njdbc['jdbcPool.lazyConnectionAssociationHelp']}">
+                    <span class="CbSpn_sun4">
+                        <h:selectBooleanCheckbox id="associate" value="#{bean.flags['lazyConnectionAssociation']}">
+                            <f:ajax execute="@this" listener="#{bean.associationChanged}" render=":propertyForm:connectionPropertySheet:p6"/>
+                        </h:selectBooleanCheckbox>
+                    </span>
+                </adm:property>
+                <adm:property id="p6" label="#{i18njdbc['jdbcPool.lazyConnectionEnlistment']}" for="enlist"
+                              helpText="#{i18njdbc['jdbcPool.lazyConnectionEnlistmentHelp']}">
+                    <span class="CbSpn_sun4">
+                        <h:selectBooleanCheckbox id="enlist" value="#{bean.flags['lazyConnectionEnlistment']}" disabled="#{bean.enlistmentFixed}"/>
+                    </span>
+                </adm:property>
+                <adm:property id="p8" label="#{i18njdbc['jdbcPool.associationWithThread']}" for="thread"
+                              helpText="#{i18njdbc['jdbcPool.associationWithThreadHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="thread" value="#{bean.flags['associateWithThread']}"/></span>
+                </adm:property>
+                <adm:property id="p9" label="#{i18njdbc['jdbcPool.matchConnections']}" for="match" helpText="#{i18njdbc['jdbcPool.matchConnectionsHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="match" value="#{bean.flags['matchConnections']}"/></span>
+                </adm:property>
+                <adm:property id="p10" label="#{i18njdbc['jdbcPool.maxConnectionUsageCount']}" for="maxUsage"
+                              helpText="#{i18njdbc['jdbcPool.maxConnectionUsageCountHelp']}">
+                    <h:inputText id="maxUsage" value="#{bean.values['maxConnectionUsageCount']}" size="30" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                </adm:property>
+            </adm:propertySheet>
+
+            <adm:propertySheet id="connectionValidationPropertySheet" legend="#{i18njdbc['jdbcPool.Validation']}">
+                <adm:property id="conValidationProp" label="#{i18njdbc['jdbcPool.conValidation']}" for="conValidation"
+                              helpText="#{i18njdbc['jdbcPool.conValidationHelp']}">
+                    <span class="CbSpn_sun4">
+                        <h:selectBooleanCheckbox id="conValidation" value="#{bean.flags['isConnectionValidationRequired']}">
+                            <f:ajax execute="@this" listener="#{bean.validationChanged}" render="#{validationRows}"/>
+                        </h:selectBooleanCheckbox>
+                    </span>
+                    <h:outputLabel for="conValidation" value="#{i18n['common.Required']}"/>
+                </adm:property>
+                <adm:property id="methodProp" label="#{i18njdbc['jdbcPool.valMethod']}" for="valMethod">
+                    <h:selectOneMenu id="valMethod" value="#{bean.values['connectionValidationMethod']}" styleClass="MnuStd_sun4">
+                        <f:selectItems value="#{bean.validationMethods}"/>
+                        <f:ajax execute="@this" listener="#{bean.validationChanged}" render="#{validationRows}"/>
+                    </h:selectOneMenu>
+                </adm:property>
+                <adm:property id="tableProp" label="#{i18njdbc['jdbcPool.tableName']}" for="tableText" helpText="#{i18njdbc['jdbcPool.tableNameHelp']}">
+                    <h:selectOneRadio id="optA" group="tableOption" value="#{bean.table.option}" disabled="#{not bean.tableMethod}">
+                        <f:selectItem itemValue="dropdown" itemLabel=""/>
+                        <f:ajax execute="@this" render=":propertyForm:connectionValidationPropertySheet:tableProp"/>
+                    </h:selectOneRadio>
+                    <h:selectOneMenu id="tableTextField" value="#{bean.table.selected}" styleClass="MnuStd_sun4"
+                                     disabled="#{not bean.tableMethod or not bean.table.dropdown}">
+                        <f:selectItems value="#{bean.table.names}"/>
+                    </h:selectOneMenu>
+                    <h:commandButton id="tableNamesButton" value="#{i18njdbc['jdbcPool.populatetableNames']}" styleClass="Btn2_sun4"
+                                     disabled="#{not bean.tableMethod}" action="#{bean.populateTableNames}">
+                        <f:ajax execute="@this" render=":propertyForm:connectionValidationPropertySheet:tableProp :propertyForm:messages"/>
+                    </h:commandButton>
+                    <br/>
+                    <h:selectOneRadio id="optB" group="tableOption" value="#{bean.table.option}" disabled="#{not bean.tableMethod}">
+                        <f:selectItem itemValue="text" itemLabel=""/>
+                        <f:ajax execute="@this" render=":propertyForm:connectionValidationPropertySheet:tableProp"/>
+                    </h:selectOneRadio>
+                    <h:inputText id="tableText" value="#{bean.table.text}" size="55" maxlength="512" styleClass="TxtFld_sun4"
+                                 disabled="#{not bean.tableMethod or bean.table.dropdown}"/>
+                </adm:property>
+                <adm:property id="validCNProp" label="#{i18njdbc['jdbcPool.valCN']}" for="validCNText" helpText="#{i18njdbc['jdbcPool.valCNHelp']}">
+                    <h:selectOneRadio id="optA" group="classNameOption" value="#{bean.validationClass.option}" disabled="#{not bean.classNameMethod}">
+                        <f:selectItem itemValue="dropdown" itemLabel=""/>
+                        <f:ajax execute="@this" render=":propertyForm:connectionValidationPropertySheet:validCNProp"/>
+                    </h:selectOneRadio>
+                    <h:selectOneMenu id="validCNTextField" value="#{bean.validationClass.selected}" styleClass="MnuStd_sun4"
+                                     disabled="#{not bean.classNameMethod or not bean.validationClass.dropdown}">
+                        <f:selectItems value="#{bean.validationClass.names}"/>
+                    </h:selectOneMenu>
+                    <br/>
+                    <h:selectOneRadio id="optB" group="classNameOption" value="#{bean.validationClass.option}" disabled="#{not bean.classNameMethod}">
+                        <f:selectItem itemValue="text" itemLabel=""/>
+                        <f:ajax execute="@this" render=":propertyForm:connectionValidationPropertySheet:validCNProp"/>
+                    </h:selectOneRadio>
+                    <h:inputText id="validCNText" value="#{bean.validationClass.text}" size="55" maxlength="512" styleClass="TxtFld_sun4"
+                                 disabled="#{not bean.classNameMethod or bean.validationClass.dropdown}"/>
+                </adm:property>
+                <adm:property id="failProp" label="#{i18njdbc['jdbcPool.failOnAny']}" for="failAll" helpText="#{i18njdbc['jdbcPool.failOnAnyHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="failAll" value="#{bean.flags['failAllConnections']}"/></span>
+                    <h:outputLabel for="failAll" value="#{i18njdbc['jdbcPool.closeAll']}"/>
+                </adm:property>
+                <adm:property id="allowProp" label="#{i18njdbc['jdbcPool.allowCaller']}" for="allowCallers" helpText="#{i18njdbc['jdbcPool.allowCallerHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="allowCallers" value="#{bean.flags['allowNonComponentCallers']}"/></span>
+                </adm:property>
+            </adm:propertySheet>
+        </ui:fragment>
+    </h:form>
+    <script>document.title = '#{i18njdbc['jdbcConnectionPool.advancePageTitle']}';</script>
+</ui:composition>
