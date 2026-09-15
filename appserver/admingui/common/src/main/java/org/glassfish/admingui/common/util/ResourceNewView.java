@@ -97,6 +97,8 @@ public abstract class ResourceNewView implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         String name = ResourceListView.text(values.get("name"));
         try {
+            // Checked before any request, so that nothing is created when a confidential property does not match
+            List<Map<String, String>> propertiesToSend = properties.toSend();
             Map<String, Object> attributes = new HashMap<>(values);
             // The enabled state is kept on the resource references; the resource itself is always enabled
             attributes.put("enabled", "true");
@@ -107,7 +109,7 @@ public abstract class ResourceNewView implements Serializable {
                 Map<String, Object> reference = Map.of("id", name, "enabled", String.valueOf(enabled), "target", target);
                 rest.create(resourceTargets.referencesUrl(target), reference, List.of("enabled"));
             }
-            rest.postJson(rest.url("resources", childType(), name, "property.json"), properties.toSend());
+            rest.postJson(rest.url("resources", childType(), name, "property.json"), propertiesToSend);
             String page = context.getExternalContext().getRequestContextPath() + listPage();
             context.getPartialViewContext().getEvalScripts().add("admingui.ajax.loadPage({url: '" + page + "'});");
         } catch (RuntimeException e) {

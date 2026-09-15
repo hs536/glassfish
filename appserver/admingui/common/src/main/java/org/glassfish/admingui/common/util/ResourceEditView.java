@@ -117,6 +117,8 @@ public abstract class ResourceEditView implements Serializable {
 
     public void save() {
         try {
+            // Checked before any request, so that nothing is saved when a confidential property does not match
+            List<Map<String, String>> propertiesToSend = properties.toSend();
             Map<String, Object> attributes = new HashMap<>(values);
             readOnlyAttributes().forEach(attributes::remove);
             // The enabled state is kept on the resource references; the resource itself stays enabled
@@ -130,7 +132,7 @@ public abstract class ResourceEditView implements Serializable {
                     rest.create(rest.child(references, name), Map.of("enabled", String.valueOf(enabled)), List.of("enabled"));
                 }
             }
-            rest.postJson(selfUrl() + "/property.json", properties.toSend());
+            rest.postJson(selfUrl() + "/property.json", propertiesToSend);
             load();
             ConsoleMessages.info(ConsoleMessages.core("msg.saveSuccessful"));
         } catch (RuntimeException e) {
