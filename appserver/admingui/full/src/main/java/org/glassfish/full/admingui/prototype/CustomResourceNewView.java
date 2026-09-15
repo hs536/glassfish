@@ -16,53 +16,25 @@
 
 package org.glassfish.full.admingui.prototype;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
-
-import org.glassfish.admingui.common.util.ResourceNewView;
 
 /**
  * The new custom resource page (prototype, adr/0008).
  */
 @Named
 @ViewScoped
-public class CustomResourceNewView extends ResourceNewView {
+public class CustomResourceNewView extends JndiResourceNewView {
 
     private static final long serialVersionUID = 1L;
 
-    private final CustomResourceType type = new CustomResourceType();
-
     @Override
     protected String childType() {
-        return CustomResourcePages.CHILD_TYPE;
+        return CustomResourcesView.CHILD_TYPE;
     }
 
     @Override
     protected String listPage() {
         return "/full/customResources.jsf";
-    }
-
-    // An overriding method is a post construct method only when it is annotated again
-    @PostConstruct
-    @Override
-    protected void loadDefaults() {
-        super.loadDefaults();
-        type.init(CustomResourcePages.builtInTypes(rest()), null);
-    }
-
-    public CustomResourceType getType() {
-        return type;
-    }
-
-    /** Called when the built-in type or the choice between a built-in and a typed class changes. */
-    public void typeChanged() {
-        type.fillFactoryClass(getValues());
-    }
-
-    @Override
-    public void create() {
-        getValues().put("resType", type.resourceType());
-        super.create();
     }
 }

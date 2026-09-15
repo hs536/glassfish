@@ -23,15 +23,15 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * The resource type of a custom resource: one of the built-in types, each with its factory class, or a class name
- * typed in. The built-in type also fills in the factory class.
+ * The resource type of a custom or external resource: one of the built-in types, each with its factory class, or a
+ * class name typed in. The built-in type also fills in the factory class.
  *
  * <p>
  * Prototype (adr/0008): the Facelets counterpart of the resource type choice of {@code full/jndiResourceAttr.inc} and
  * the handlers {@code gf.getJndiResourceForCreate}, {@code gf.getJndiResourceAttrForEdit} and
  * {@code updateJndiResourceAttrs}.
  */
-public class CustomResourceType implements Serializable {
+public class JndiResourceType implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

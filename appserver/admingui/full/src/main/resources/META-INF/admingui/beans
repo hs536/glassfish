@@ -3,3 +3,6 @@
 org.glassfish.full.admingui.prototype.CustomResourcesView
 org.glassfish.full.admingui.prototype.CustomResourceNewView
 org.glassfish.full.admingui.prototype.CustomResourceEditView
+org.glassfish.full.admingui.prototype.ExternalResourcesView
+org.glassfish.full.admingui.prototype.ExternalResourceNewView
+org.glassfish.full.admingui.prototype.ExternalResourceEditView

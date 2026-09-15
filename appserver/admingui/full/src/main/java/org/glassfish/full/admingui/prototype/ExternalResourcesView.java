@@ -19,22 +19,21 @@ package org.glassfish.full.admingui.prototype;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
+import org.glassfish.admingui.common.util.ResourceListView;
+
 /**
- * The edit custom resource page (prototype, adr/0008).
+ * The external resources list page (prototype, adr/0008).
  */
 @Named
 @ViewScoped
-public class CustomResourceEditView extends JndiResourceEditView {
+public class ExternalResourcesView extends ResourceListView {
 
     private static final long serialVersionUID = 1L;
 
-    @Override
-    protected String childType() {
-        return CustomResourcesView.CHILD_TYPE;
-    }
+    static final String CHILD_TYPE = "external-jndi-resource";
 
     @Override
-    protected String editPage() {
-        return "/full/customResourceEdit.jsf";
+    protected String childType() {
+        return CHILD_TYPE;
     }
 }

@@ -30,8 +30,10 @@ public class CustomResourcesView extends ResourceListView {
 
     private static final long serialVersionUID = 1L;
 
+    static final String CHILD_TYPE = "custom-resource";
+
     @Override
     protected String childType() {
-        return CustomResourcePages.CHILD_TYPE;
+        return CHILD_TYPE;
     }
 }

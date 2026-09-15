@@ -22,13 +22,11 @@ import java.util.TreeMap;
 import org.glassfish.admingui.common.util.AdminRestService;
 
 /**
- * What the custom resource pages share (prototype, adr/0008).
+ * What the custom and external resource pages share (prototype, adr/0008).
  */
-final class CustomResourcePages {
+final class JndiResourcePages {
 
-    static final String CHILD_TYPE = "custom-resource";
-
-    private CustomResourcePages() {
+    private JndiResourcePages() {
     }
 
     /** The built-in resource types and their factory classes, as the admin REST command returns them. */

@@ -16,8 +16,8 @@
 
 -->
 <!--
-    Prototype (adr/0006, adr/0008): the new custom resource page as a Facelets page. It takes precedence over
-    customResourceNew.jsf. The target section comes from the TargetSectionForResource integration point.
+    Prototype (adr/0006, adr/0008): the new external resource page as a Facelets page. It takes precedence over
+    externalResourceNew.jsf. The target section comes from the TargetSectionForResource integration point.
 -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
@@ -27,18 +27,18 @@
                 xmlns:adm="jakarta.faces.composite/admingui">
     <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
     <c:set var="i18nfull" value="#{consoleBundles.get('full', 'org.glassfish.full.admingui.Strings')}"/>
-    <c:set var="bean" value="#{customResourceNewView}"/>
+    <c:set var="bean" value="#{externalResourceNewView}"/>
 
     <h:form id="form">
-        <adm:pageTitle id="propertyContentPage" title="#{i18nfull['customResource.newPageTitle']}"
-                       helpText="#{i18nfull['customResource.newPageTitleHelp']}">
+        <adm:pageTitle id="propertyContentPage" title="#{i18nfull['jndiResource.newPageTitle']}"
+                       helpText="#{i18nfull['jndiResource.newPageTitleHelp']}">
             <f:facet name="buttons">
                 <h:panelGroup id="topButtons">
                     <h:commandButton id="newButton" value="#{i18n['button.OK']}" styleClass="Btn1_sun4" action="#{bean.create}">
                         <f:ajax execute="@form" render="@form"/>
                     </h:commandButton>
                     <input id="form:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
-                           onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/full/customResources.jsf'}); return false;"/>
+                           onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/full/externalResources.jsf'}); return false;"/>
                 </h:panelGroup>
             </f:facet>
         </adm:pageTitle>
@@ -47,8 +47,8 @@
         <ui:include src="/full/jndiResourceAttr.xhtml">
             <ui:param name="bean" value="#{bean}"/>
             <ui:param name="edit" value="#{false}"/>
-            <ui:param name="lookup" value="#{false}"/>
-            <ui:param name="factoryClassHelp" value="customResource.factoryClassHelp"/>
+            <ui:param name="lookup" value="#{true}"/>
+            <ui:param name="factoryClassHelp" value="jndiResource.factoryClassHelp"/>
             <ui:param name="formId" value="form"/>
         </ui:include>
 
@@ -58,5 +58,5 @@
             <ui:include src="#{targetView}"/>
         </c:forEach>
     </h:form>
-    <script>document.title = '#{i18nfull['customResource.newPageTitle']}';</script>
+    <script>document.title = '#{i18nfull['jndiResource.newPageTitle']}';</script>
 </ui:composition>

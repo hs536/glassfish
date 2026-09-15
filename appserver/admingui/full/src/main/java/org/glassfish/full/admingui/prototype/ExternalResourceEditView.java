@@ -20,21 +20,21 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 /**
- * The edit custom resource page (prototype, adr/0008).
+ * The edit external resource page (prototype, adr/0008).
  */
 @Named
 @ViewScoped
-public class CustomResourceEditView extends JndiResourceEditView {
+public class ExternalResourceEditView extends JndiResourceEditView {
 
     private static final long serialVersionUID = 1L;
 
     @Override
     protected String childType() {
-        return CustomResourcesView.CHILD_TYPE;
+        return ExternalResourcesView.CHILD_TYPE;
     }
 
     @Override
     protected String editPage() {
-        return "/full/customResourceEdit.jsf";
+        return "/full/externalResourceEdit.jsf";
     }
 }

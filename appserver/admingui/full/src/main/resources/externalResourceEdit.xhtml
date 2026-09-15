@@ -16,8 +16,8 @@
 
 -->
 <!--
-    Prototype (adr/0006, adr/0008): the edit custom resource page as a Facelets page. It takes precedence over
-    customResourceEdit.jsf. The Target tab opens the JSFTemplating page common/resourceNode/resourceEditTargets.jsf.
+    Prototype (adr/0006, adr/0008): the edit external resource page as a Facelets page. It takes precedence over
+    externalResourceEdit.jsf. The Target tab opens the JSFTemplating page common/resourceNode/resourceEditTargets.jsf.
 -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
@@ -27,7 +27,7 @@
                 xmlns:adm="jakarta.faces.composite/admingui">
     <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
     <c:set var="i18nfull" value="#{consoleBundles.get('full', 'org.glassfish.full.admingui.Strings')}"/>
-    <c:set var="bean" value="#{customResourceEditView}"/>
+    <c:set var="bean" value="#{externalResourceEditView}"/>
 
     <h:form id="propertyForm">
         <adm:tabSet id="resEditTabs" rendered="#{bean.found and not bean.onlyServer}">
@@ -35,15 +35,15 @@
             <adm:tab label="#{i18n['common.TargetTab']}" url="#{bean.targetPage}"/>
         </adm:tabSet>
 
-        <adm:pageTitle id="propertyContentPage" title="#{i18nfull['customResource.editPageTitle']}"
-                       helpText="#{i18nfull['customResource.editPageTitleHelp']}">
+        <adm:pageTitle id="propertyContentPage" title="#{i18nfull['jndiResource.editPageTitle']}"
+                       helpText="#{i18nfull['jndiResource.editPageTitleHelp']}">
             <f:facet name="buttons">
                 <h:panelGroup id="topButtons">
                     <h:commandButton id="saveButton" value="#{i18n['button.Save']}" styleClass="Btn1_sun4" rendered="#{bean.found}" action="#{bean.save}">
                         <f:ajax execute="@form" render="@form"/>
                     </h:commandButton>
                     <input id="propertyForm:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
-                           onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/full/customResources.jsf'}); return false;"/>
+                           onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/full/externalResources.jsf'}); return false;"/>
                 </h:panelGroup>
             </f:facet>
             <h:commandButton id="loadDefaultsButton" value="#{i18n['button.LoadDefaults']}" styleClass="Btn2_sun4" style="margin-left: 8pt"
@@ -57,12 +57,12 @@
             <ui:include src="/full/jndiResourceAttr.xhtml">
                 <ui:param name="bean" value="#{bean}"/>
                 <ui:param name="edit" value="#{true}"/>
-                <ui:param name="lookup" value="#{false}"/>
-                <ui:param name="factoryClassHelp" value="customResource.factoryClassHelp"/>
+                <ui:param name="lookup" value="#{true}"/>
+                <ui:param name="factoryClassHelp" value="jndiResource.factoryClassHelp"/>
                 <ui:param name="formId" value="propertyForm"/>
             </ui:include>
             <adm:propertyTable id="basicTable" rows="#{bean.properties}" title="#{i18n['common.AdditionalProperties']}"/>
         </ui:fragment>
     </h:form>
-    <script>document.title = '#{i18nfull['customResource.editPageTitle']}';</script>
+    <script>document.title = '#{i18nfull['jndiResource.editPageTitle']}';</script>
 </ui:composition>

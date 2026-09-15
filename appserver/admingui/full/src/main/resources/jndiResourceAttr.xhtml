@@ -16,10 +16,11 @@
 
 -->
 <!--
-    Prototype (adr/0008): the attributes of a custom resource, shared by the new and edit pages (the Facelets
-    counterpart of full/jndiResourceAttr.inc). Parameters: bean (CustomResourceNewView or CustomResourceEditView),
-    edit (true on the edit page), formId (the id of the enclosing form, for the rows rendered again when the resource
-    type changes).
+    Prototype (adr/0008): the attributes of a custom or external resource, shared by the new and edit pages (the
+    Facelets counterpart of full/jndiResourceAttr.inc). Parameters: bean (a JndiResourceNewView or JndiResourceEditView),
+    edit (true on the edit page), lookup (true to show the JNDI lookup name of an external resource), factoryClassHelp
+    (the message key of the help text of the factory class), formId (the id of the enclosing form, for the rows rendered
+    again when the resource type changes).
 -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
@@ -61,9 +62,14 @@
                          styleClass="TxtFld_sun4" pt:aria-label="#{i18n['common.resType']}"/>
         </adm:property>
         <adm:property id="factoryClassProp" label="#{i18nfull['jndiResource.factoryClass']}" for="factoryClass" required="true"
-                      helpText="#{i18nfull['customResource.factoryClassHelp']}">
+                      helpText="#{i18nfull[factoryClassHelp]}">
             <h:inputText id="factoryClass" value="#{bean.values['factoryClass']}" size="70" maxlength="1024" styleClass="required TxtFld_sun4"
                          required="true" requiredMessage="#{i18n['msg.JS.enterValue']} #{i18nfull['jndiResource.factoryClass']}"/>
+        </adm:property>
+        <adm:property id="jndiLookupProp" label="#{i18nfull['jndiResource.jndiLookup']}" for="jndiLookup" required="true" rendered="#{lookup}"
+                      helpText="#{i18nfull['jndiResource.jndiLookupHelp']}">
+            <h:inputText id="jndiLookup" value="#{bean.values['jndiLookupName']}" size="70" maxlength="1024" styleClass="required TxtFld_sun4"
+                         required="#{lookup}" requiredMessage="#{i18n['msg.JS.enterValue']} #{i18nfull['jndiResource.jndiLookup']}"/>
         </adm:property>
         <adm:property id="deploymentOrderProp" label="#{i18n['common.resource.deploymentOrder']}" for="deploymentOrder" rendered="#{edit}"
                       helpText="#{i18n['common.resource.deploymentOrderHelp']}">
