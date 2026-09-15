@@ -3,3 +3,6 @@
 org.glassfish.admingui.plugin.jms.prototype.JmsDestinationsView
 org.glassfish.admingui.plugin.jms.prototype.JmsDestinationNewView
 org.glassfish.admingui.plugin.jms.prototype.JmsDestinationEditView
+org.glassfish.admingui.plugin.jms.prototype.JmsConnectionFactoriesView
+org.glassfish.admingui.plugin.jms.prototype.JmsConnectionFactoryNewView
+org.glassfish.admingui.plugin.jms.prototype.JmsConnectionFactoryEditView

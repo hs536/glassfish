@@ -79,6 +79,19 @@ public abstract class ResourceNewView implements Serializable {
         return properties.toSend();
     }
 
+    /**
+     * Creates the resource itself, before its references and properties: the attributes (the values with the enabled
+     * state and the target) are sent to the collection of the type by default.
+     */
+    protected void createResource(String name, Map<String, Object> attributes) {
+        rest.create(rest.url("resources", childType()), attributes, convertToFalse());
+    }
+
+    /** The URL the additional properties of the created resource are sent to. */
+    protected String propertiesUrl(String name) {
+        return rest.url("resources", childType(), name, "property.json");
+    }
+
     @PostConstruct
     protected void loadDefaults() {
         values.putAll(rest.defaults(rest.url("resources", childType())));
@@ -112,13 +125,13 @@ public abstract class ResourceNewView implements Serializable {
             // The enabled state is kept on the resource references; the resource itself is always enabled
             attributes.put("enabled", "true");
             attributes.put("target", createTarget());
-            rest.create(rest.url("resources", childType()), attributes, convertToFalse());
+            createResource(name, attributes);
             ResourceTargets resourceTargets = ResourceTargets.load(rest);
             for (String target : targets.getSelected()) {
                 Map<String, Object> reference = Map.of("id", name, "enabled", String.valueOf(enabled), "target", target);
                 rest.create(resourceTargets.referencesUrl(target), reference, List.of("enabled"));
             }
-            rest.postJson(rest.url("resources", childType(), name, "property.json"), propertiesToSend);
+            rest.postJson(propertiesUrl(name), propertiesToSend);
             String page = context.getExternalContext().getRequestContextPath() + listPage();
             context.getPartialViewContext().getEvalScripts().add("admingui.ajax.loadPage({url: '" + page + "'});");
         } catch (RuntimeException e) {

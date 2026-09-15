@@ -92,6 +92,22 @@ public abstract class ResourceEditView implements Serializable {
         return properties.toSend();
     }
 
+    /**
+     * Saves the resource itself, before its server reference and properties: the attributes (the values without the
+     * read-only ones, with the enabled state) are sent to the resource by default.
+     */
+    protected void saveResource(Map<String, Object> attributes) {
+        rest.create(selfUrl(), attributes, convertToFalse());
+    }
+
+    /**
+     * The URL of the resource whose additional properties the page edits; the resource itself by default. It is called
+     * after the attribute values are loaded.
+     */
+    protected String propertiesResource() {
+        return selfUrl();
+    }
+
     @PostConstruct
     protected void load() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -111,7 +127,7 @@ public abstract class ResourceEditView implements Serializable {
         values.clear();
         attributes.forEach((key, value) -> values.put(key, ResourceListView.text(value)));
         logicalJndiName = logicalJndiName(context);
-        properties = ResourceLookups.properties(rest, selfUrl());
+        properties = ResourceLookups.properties(rest, propertiesResource());
 
         ResourceTargets targets = ResourceTargets.load(rest);
         onlyServer = targets.onlyServer();
@@ -132,7 +148,7 @@ public abstract class ResourceEditView implements Serializable {
             readOnlyAttributes().forEach(attributes::remove);
             // The enabled state is kept on the resource references; the resource itself stays enabled
             attributes.put("enabled", "true");
-            rest.create(selfUrl(), attributes, convertToFalse());
+            saveResource(attributes);
             if (onlyServer) {
                 String references = ResourceTargets.load(rest).referencesUrl("server");
                 if (rest.attributes(rest.child(references, name)).isEmpty()) {
@@ -141,7 +157,7 @@ public abstract class ResourceEditView implements Serializable {
                     rest.create(rest.child(references, name), Map.of("enabled", String.valueOf(enabled)), List.of("enabled"));
                 }
             }
-            rest.postJson(selfUrl() + "/property.json", propertiesToSend);
+            rest.postJson(propertiesResource() + "/property.json", propertiesToSend);
             load();
             ConsoleMessages.info(ConsoleMessages.core("msg.saveSuccessful"));
         } catch (RuntimeException e) {

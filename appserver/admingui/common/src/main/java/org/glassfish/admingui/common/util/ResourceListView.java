@@ -151,8 +151,13 @@ public abstract class ResourceListView implements Serializable {
             for (String target : row.getTargets()) {
                 rest.delete(rest.child(targets.referencesUrl(target), row.getName()), Map.of("target", target));
             }
-            rest.delete(rest.url("resources", childType(), row.getName()), Map.of("target", deleteTarget()));
+            deleteResource(row);
         }, null);
+    }
+
+    /** Deletes the resource itself, after its references; with {@link #deleteTarget()} by default. */
+    protected void deleteResource(ResourceRow row) {
+        rest.delete(rest.url("resources", childType(), row.getName()), Map.of("target", deleteTarget()));
     }
 
     public void enable() {
