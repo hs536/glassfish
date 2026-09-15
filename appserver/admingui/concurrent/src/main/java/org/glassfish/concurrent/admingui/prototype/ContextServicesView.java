@@ -16,23 +16,36 @@
 
 package org.glassfish.concurrent.admingui.prototype;
 
-import java.util.List;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
 
-import org.glassfish.admingui.common.util.ResourceNewView;
+import org.glassfish.admingui.common.util.ResourceListView;
 
 /**
- * The new page of a concurrent resource type (prototype, adr/0008).
+ * The context services list page (prototype, adr/0008).
  */
-public abstract class ConcurrentResourceNewView extends ResourceNewView {
+@Named
+@ViewScoped
+public class ContextServicesView extends ResourceListView {
 
     private static final long serialVersionUID = 1L;
 
+    static final String CHILD_TYPE = "context-service";
+    static final String LIST_COMMAND = "list-context-services";
+    static final String LIST_KEY = "contextServices";
+
     @Override
-    protected List<String> convertToFalse() {
-        return ConcurrentValues.convertToFalse(childType());
+    protected String childType() {
+        return CHILD_TYPE;
     }
 
-    public ConcurrentValues getConcurrent() {
-        return new ConcurrentValues(getValues());
+    @Override
+    protected String logicalNamesCommand() {
+        return LIST_COMMAND;
+    }
+
+    @Override
+    protected String logicalNamesKey() {
+        return LIST_KEY;
     }
 }

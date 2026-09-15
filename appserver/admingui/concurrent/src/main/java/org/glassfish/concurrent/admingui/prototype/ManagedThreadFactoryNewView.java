@@ -16,23 +16,25 @@
 
 package org.glassfish.concurrent.admingui.prototype;
 
-import java.util.List;
-
-import org.glassfish.admingui.common.util.ResourceNewView;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
 
 /**
- * The new page of a concurrent resource type (prototype, adr/0008).
+ * The new managed thread factory page (prototype, adr/0008).
  */
-public abstract class ConcurrentResourceNewView extends ResourceNewView {
+@Named
+@ViewScoped
+public class ManagedThreadFactoryNewView extends ConcurrentResourceNewView {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected List<String> convertToFalse() {
-        return ConcurrentValues.convertToFalse(childType());
+    protected String childType() {
+        return ManagedThreadFactoriesView.CHILD_TYPE;
     }
 
-    public ConcurrentValues getConcurrent() {
-        return new ConcurrentValues(getValues());
+    @Override
+    protected String listPage() {
+        return "/concurrent/managedThreadFactories.jsf";
     }
 }

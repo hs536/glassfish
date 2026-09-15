@@ -29,7 +29,7 @@ public abstract class ConcurrentResourceEditView extends ResourceEditView {
 
     @Override
     protected List<String> convertToFalse() {
-        return ConcurrentValues.CONVERT_TO_FALSE;
+        return ConcurrentValues.convertToFalse(childType());
     }
 
     public ConcurrentValues getConcurrent() {

@@ -33,9 +33,14 @@ import java.util.stream.Collectors;
  */
 public class ConcurrentValues {
 
-    /** The boolean attributes, sent as {@code false} when they are not set. */
-    static final List<String> CONVERT_TO_FALSE = List.of("enabled", "contextInfoEnabled", "useVirtualThreads", "longRunningTasks",
-            "hungLoggerPrintOnce");
+    /** The boolean attributes of a resource type, sent as {@code false} when they are not set. */
+    static List<String> convertToFalse(String childType) {
+        return switch (childType) {
+            case ContextServicesView.CHILD_TYPE -> List.of("enabled", "contextInfoEnabled");
+            case ManagedThreadFactoriesView.CHILD_TYPE -> List.of("enabled", "contextInfoEnabled", "useVirtualThreads");
+            default -> List.of("enabled", "contextInfoEnabled", "useVirtualThreads", "longRunningTasks", "hungLoggerPrintOnce");
+        };
+    }
 
     private static final List<String> CONTEXTS = List.of("Classloader", "JNDI", "Security", "WorkArea");
 

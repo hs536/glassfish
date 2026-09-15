@@ -16,23 +16,35 @@
 
 package org.glassfish.concurrent.admingui.prototype;
 
-import java.util.List;
-
-import org.glassfish.admingui.common.util.ResourceNewView;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
 
 /**
- * The new page of a concurrent resource type (prototype, adr/0008).
+ * The edit context service page (prototype, adr/0008).
  */
-public abstract class ConcurrentResourceNewView extends ResourceNewView {
+@Named
+@ViewScoped
+public class ContextServiceEditView extends ConcurrentResourceEditView {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected List<String> convertToFalse() {
-        return ConcurrentValues.convertToFalse(childType());
+    protected String childType() {
+        return ContextServicesView.CHILD_TYPE;
     }
 
-    public ConcurrentValues getConcurrent() {
-        return new ConcurrentValues(getValues());
+    @Override
+    protected String editPage() {
+        return "/concurrent/contextServiceEdit.jsf";
+    }
+
+    @Override
+    protected String logicalNamesCommand() {
+        return ContextServicesView.LIST_COMMAND;
+    }
+
+    @Override
+    protected String logicalNamesKey() {
+        return ContextServicesView.LIST_KEY;
     }
 }

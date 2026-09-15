@@ -6,3 +6,9 @@ org.glassfish.concurrent.admingui.prototype.ManagedExecutorServiceEditView
 org.glassfish.concurrent.admingui.prototype.ManagedScheduledExecutorServicesView
 org.glassfish.concurrent.admingui.prototype.ManagedScheduledExecutorServiceNewView
 org.glassfish.concurrent.admingui.prototype.ManagedScheduledExecutorServiceEditView
+org.glassfish.concurrent.admingui.prototype.ContextServicesView
+org.glassfish.concurrent.admingui.prototype.ContextServiceNewView
+org.glassfish.concurrent.admingui.prototype.ContextServiceEditView
+org.glassfish.concurrent.admingui.prototype.ManagedThreadFactoriesView
+org.glassfish.concurrent.admingui.prototype.ManagedThreadFactoryNewView
+org.glassfish.concurrent.admingui.prototype.ManagedThreadFactoryEditView
