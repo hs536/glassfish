@@ -13,20 +13,24 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
+
 package org.glassfish.admingui.common.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * The rows of an additional properties table (name, value, description) that the user edits.
+ * The rows of an additional properties table (name, value, description) that the user edits. A confidential row takes
+ * its value twice, and the two values must match.
  *
  * <p>
  * Prototype (docs/試作計画.md P-5): the model of the {@code adm:propertyTable} component, the Facelets counterpart of
- * {@code shared/propertyDescTable.inc}.
+ * {@code shared/propertyDescTable.inc} and {@code resourceNode/confidentialPropsTable.inc}.
  */
 public class PropertyRows implements Serializable {
 
@@ -53,13 +57,44 @@ public class PropertyRows implements Serializable {
         return rows.stream().anyMatch(Row::isSelected);
     }
 
+    public boolean isAnyConfidential() {
+        return rows.stream().anyMatch(Row::isConfidential);
+    }
+
+    /** Replaces the rows with the given names and values, in their order, without descriptions. */
+    public void replace(Map<String, String> values) {
+        rows.clear();
+        values.forEach((name, value) -> {
+            Row row = new Row();
+            row.setName(name);
+            row.setValue(value == null ? "" : value);
+            rows.add(row);
+        });
+    }
+
+    /** Marks the rows with the given names as confidential, with the current value as the confirmation. */
+    public void markConfidential(Collection<String> names) {
+        for (Row row : rows) {
+            if (names.contains(row.name)) {
+                row.confidential = true;
+                row.confirmValue = row.value;
+            }
+        }
+    }
+
     /**
      * The properties to send: rows without a name or without a value are left out, and the value {@code ()} stands for
      * an empty value (as {@code removeEmptyProps} does for the JSFTemplating pages).
+     *
+     * @throws IllegalArgumentException when the two values of a confidential row differ (as {@code gf.combineProperties}
+     *             reports)
      */
     public List<Map<String, String>> toSend() {
         List<Map<String, String>> properties = new ArrayList<>();
         for (Row row : rows) {
+            if (!isEmpty(row.name) && row.confidential && !Objects.equals(row.value, row.confirmValue)) {
+                throw new IllegalArgumentException("Confidential property '" + row.name + "' does not match.");
+            }
             if (isEmpty(row.name) || isEmpty(row.value)) {
                 continue;
             }
@@ -85,6 +120,8 @@ public class PropertyRows implements Serializable {
         private String value = "";
         private String description = "";
         private boolean selected;
+        private boolean confidential;
+        private String confirmValue = "";
 
         public String getName() {
             return name;
@@ -116,6 +153,19 @@ public class PropertyRows implements Serializable {
 
         public void setSelected(boolean selected) {
             this.selected = selected;
+        }
+
+        /** A confidential value is entered in password fields, twice. */
+        public boolean isConfidential() {
+            return confidential;
+        }
+
+        public String getConfirmValue() {
+            return confirmValue;
+        }
+
+        public void setConfirmValue(String confirmValue) {
+            this.confirmValue = confirmValue;
         }
     }
 }

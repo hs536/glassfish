@@ -61,6 +61,11 @@ public abstract class ResourceNewView implements Serializable {
         return List.of("enabled");
     }
 
+    /** The target sent with the resource itself; {@code domain} by default. */
+    protected String createTarget() {
+        return "domain";
+    }
+
     protected AdminRestService rest() {
         return rest;
     }
@@ -95,7 +100,7 @@ public abstract class ResourceNewView implements Serializable {
             Map<String, Object> attributes = new HashMap<>(values);
             // The enabled state is kept on the resource references; the resource itself is always enabled
             attributes.put("enabled", "true");
-            attributes.put("target", "domain");
+            attributes.put("target", createTarget());
             rest.create(rest.url("resources", childType()), attributes, convertToFalse());
             ResourceTargets resourceTargets = ResourceTargets.load(rest);
             for (String target : targets.getSelected()) {

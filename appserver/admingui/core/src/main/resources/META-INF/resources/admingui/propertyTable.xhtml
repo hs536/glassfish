@@ -37,7 +37,7 @@
                 <caption class="TblTtlTxt_sun4">#{cc.attrs.title} (#{cc.attrs.rows.rows.size()})</caption>
                 <tbody>
                     <tr>
-                        <td class="TblActTd_sun4" colspan="4" nowrap="nowrap">
+                        <td class="TblActTd_sun4" colspan="#{cc.attrs.rows.anyConfidential ? 5 : 4}" nowrap="nowrap">
                             <h:panelGroup id="actions">
                                 <h:commandButton id="addButton" value="#{i18n['button.AddProperty']}" styleClass="Btn1_sun4"
                                                  action="#{cc.attrs.rows.add()}">
@@ -56,11 +56,14 @@
                         <th class="TblColHdr_sun4" nowrap="nowrap" align="left" scope="col" width="3%"><span class="TblHdrTxt_sun4">#{i18n['common.SelectHeader']}</span></th>
                         <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18n['common.PropertyName']}</span></th>
                         <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18n['common.PropertyValue']}</span></th>
+                        <ui:fragment rendered="#{cc.attrs.rows.anyConfidential}">
+                            <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18n['common.ConfirmConfidentialPropertyValue']}</span></th>
+                        </ui:fragment>
                         <th class="TblColHdr_sun4" align="left" scope="col"><span class="TblHdrTxt_sun4">#{i18n['common.description.header']}</span></th>
                     </tr>
                     <ui:fragment rendered="#{empty cc.attrs.rows.rows}">
                         <tr>
-                            <td class="TblTdLyt_sun4" align="left" colspan="4"><span class="TblMsgTxt_sun4">#{i18n['table.noItems']}</span></td>
+                            <td class="TblTdLyt_sun4" align="left" colspan="#{cc.attrs.rows.anyConfidential ? 5 : 4}"><span class="TblMsgTxt_sun4">#{i18n['table.noItems']}</span></td>
                         </tr>
                     </ui:fragment>
                     <ui:repeat id="rows" value="#{cc.attrs.rows.rows}" var="property">
@@ -77,9 +80,19 @@
                                              pt:aria-label="#{i18n['common.PropertyName']}" xmlns:pt="jakarta.faces.passthrough"/>
                             </td>
                             <td class="TblTdLyt_sun4" align="left">
-                                <h:inputText id="value" value="#{property.value}" size="40" styleClass="TxtFld_sun4"
+                                <h:inputText id="value" value="#{property.value}" size="40" styleClass="TxtFld_sun4" rendered="#{not property.confidential}"
                                              pt:aria-label="#{i18n['common.PropertyValue']}" xmlns:pt="jakarta.faces.passthrough"/>
+                                <h:inputSecret id="confValue" value="#{property.value}" size="40" styleClass="TxtFld_sun4" redisplay="true"
+                                               rendered="#{property.confidential}"
+                                               pt:aria-label="#{i18n['common.ConfidentialPropertyValue']}" xmlns:pt="jakarta.faces.passthrough"/>
                             </td>
+                            <ui:fragment rendered="#{cc.attrs.rows.anyConfidential}">
+                                <td class="TblTdLyt_sun4" align="left">
+                                    <h:inputSecret id="confValue2" value="#{property.confirmValue}" size="40" styleClass="TxtFld_sun4" redisplay="true"
+                                                   rendered="#{property.confidential}"
+                                                   pt:aria-label="#{i18n['common.ConfirmConfidentialPropertyValue']}" xmlns:pt="jakarta.faces.passthrough"/>
+                                </td>
+                            </ui:fragment>
                             <td class="TblTdLyt_sun4" align="left">
                                 <h:inputText id="description" value="#{property.description}" size="20" styleClass="TxtFld_sun4"
                                              pt:aria-label="#{i18n['common.description.header']}" xmlns:pt="jakarta.faces.passthrough"/>
