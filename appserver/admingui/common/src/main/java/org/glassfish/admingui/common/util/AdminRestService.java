@@ -36,8 +36,6 @@ import java.util.Map;
 public class AdminRestService {
 
     private static final String REST_URL = "REST_URL";
-    /** Nesting depth of the JSON documents sent: a list of property maps. */
-    private static final int JSON_DEPTH = 3;
 
     /** The URL of the admin REST interface for the current session, followed by the given path segments, each encoded. */
     public String url(String... segments) {
@@ -79,9 +77,9 @@ public class AdminRestService {
         RestUtil.parseResponse(response, null, url, copy, false, true);
     }
 
-    /** Sends a JSON document, as the property tables of the JSFTemplating pages do. */
+    /** Sends a JSON document, as the property tables of the JSFTemplating pages do, but as valid JSON text (B-37). */
     public void postJson(String url, Object value) {
-        String json = JSONUtil.javaToJSON(value, JSON_DEPTH);
+        String json = JsonText.of(value);
         RestResponse response = RestUtil.post(url, json, "application/json");
         RestUtil.parseResponse(response, null, url, json, false, true);
     }

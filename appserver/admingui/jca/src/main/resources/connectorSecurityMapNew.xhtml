@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0006, adr/0008): the new security map page of a connector connection pool as a Facelets page. It takes
+    precedence over connectorSecurityMapNew.jsf. Where the JSFTemplating page enabled one of the user groups and
+    principals fields with JavaScript, choosing an option renders both rows again.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:pt="jakarta.faces.passthrough"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18njca" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Strings')}"/>
+    <c:set var="bean" value="#{connectorSecurityMapNewView}"/>
+    <c:set var="optionRows" value=":propertyForm:propertSectionTextField:groupProp :propertyForm:propertSectionTextField:principalsProp"/>
+
+    <h:form id="propertyForm" pt:autocomplete="off">
+        <adm:tabSet id="connectorPoolSet">
+            <adm:tab label="#{i18n['common.General']}" url="#{bean.generalPage}"/>
+            <adm:tab label="#{i18n['common.Advanced']}" url="#{bean.advancedPage}"/>
+            <adm:tab label="#{i18n['common.AdditonalProperties']}" url="#{bean.propertiesPage}"/>
+            <adm:tab label="#{i18njca['connectorSecurityMaps.tabTitle']}" selected="true"/>
+        </adm:tabSet>
+
+        <adm:pageTitle id="propertyContentPage" title="#{i18njca['connectorSecurityMap.newPageTitle']}"
+                       helpText="#{i18njca['connectorSecurityMap.newPageTitleHelp']}">
+            <f:facet name="buttons">
+                <h:panelGroup id="topButtons">
+                    <h:commandButton id="newButton" value="#{i18n['button.OK']}" styleClass="Btn1_sun4" action="#{bean.create}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <input id="propertyForm:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
+                           onclick="admingui.ajax.loadPage({url: '#{bean.listPage}'}); return false;"/>
+                </h:panelGroup>
+            </f:facet>
+        </adm:pageTitle>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <adm:propertySheet id="propertSectionTextField">
+            <adm:property id="poolName" label="#{i18njca['connectorSecurityMap.poolName']}">
+                <h:outputText id="pool" value="#{bean.poolName}"/>
+            </adm:property>
+            <adm:property id="mapNameNew" label="#{i18njca['connectorSecurityMap.securityMapName']}" for="mapName" required="true">
+                <h:inputText id="mapName" value="#{bean.mapName}" size="30" maxlength="512" styleClass="TxtFld_sun4" required="true"
+                             requiredMessage="#{i18n['msg.JS.enterValue']} #{i18njca['connectorSecurityMap.securityMapName']}" validator="#{bean.validateName}"/>
+            </adm:property>
+            <adm:property id="groupProp" label="#{i18njca['connectorSecurityMap.userGroups']}" for="group"
+                          helpText="#{i18njca['connectorSecurityMap.userGroupsHelp']}">
+                <h:selectOneRadio id="optA" group="usersOption" value="#{bean.option}">
+                    <f:selectItem itemValue="users" itemLabel=""/>
+                    <f:ajax execute="@this" listener="#{bean.optionChanged}" render="#{optionRows}"/>
+                </h:selectOneRadio>
+                <h:inputText id="group" value="#{bean.userGroups}" size="55" maxlength="512" styleClass="TxtFld_sun4" disabled="#{not bean.users}"/>
+            </adm:property>
+            <adm:property id="principalsProp" label="#{i18njca['connectorSecurityMap.principals']}" for="principals"
+                          helpText="#{i18njca['connectorSecurityMap.principalsHelp']}">
+                <h:selectOneRadio id="optB" group="usersOption" value="#{bean.option}">
+                    <f:selectItem itemValue="principals" itemLabel=""/>
+                    <f:ajax execute="@this" listener="#{bean.optionChanged}" render="#{optionRows}"/>
+                </h:selectOneRadio>
+                <h:inputText id="principals" value="#{bean.principals}" size="55" maxlength="512" styleClass="TxtFld_sun4" disabled="#{bean.users}"/>
+            </adm:property>
+        </adm:propertySheet>
+
+        <adm:propertySheet id="propertSectionTextField2" legend="#{i18njca['connectorSecurityMap.backendPrincipal']}">
+            <adm:property id="userNameEdit" label="#{i18njca['connectorSecurityMap.userName']}" for="userName" required="true">
+                <h:inputText id="userName" value="#{bean.userName}" size="55" maxlength="512" styleClass="TxtFld_sun4" required="true"
+                             requiredMessage="#{i18n['msg.JS.enterValue']} #{i18njca['connectorSecurityMap.userName']}"/>
+            </adm:property>
+            <adm:property id="passwordEdit" label="#{i18njca['connectorSecurityMap.password']}" for="password">
+                <h:inputSecret id="password" value="#{bean.password}" size="55" styleClass="TxtFld_sun4" redisplay="false"/>
+            </adm:property>
+        </adm:propertySheet>
+    </h:form>
+    <script>document.title = '#{i18njca['connectorSecurityMap.newPageTitle']}';</script>
+</ui:composition>
