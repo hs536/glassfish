@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0006, adr/0008): the Advanced tab of a connector connection pool as a Facelets page. It takes
+    precedence over connectorConnectionPoolAdvance.jsf. The General tab is a Facelets page; the Additional Properties
+    and Security Maps tabs open the JSFTemplating pages. Where the JSFTemplating page checked and disabled lazy
+    enlistment with JavaScript, checking lazy association renders the lazy enlistment row again.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18njca" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Strings')}"/>
+    <c:set var="bean" value="#{connectorConnectionPoolAdvanceView}"/>
+
+    <h:form id="propertyForm">
+        <adm:tabSet id="connectorPoolSet" rendered="#{bean.found}">
+            <adm:tab label="#{i18n['common.General']}" url="#{bean.generalPage}"/>
+            <adm:tab label="#{i18n['common.Advanced']}" selected="true"/>
+            <adm:tab label="#{i18n['common.AdditonalProperties']}" url="#{bean.propertiesPage}"/>
+            <adm:tab label="#{i18njca['connectorSecurityMaps.tabTitle']}" url="#{bean.securityMapsPage}"/>
+        </adm:tabSet>
+
+        <adm:pageTitle id="propertyContentPage" title="#{i18njca['connectorConnectionPool.advancePageTitle']}"
+                       helpText="#{i18njca['connectorConnectionPool.advancePageTitleHelp']}">
+            <f:facet name="buttons">
+                <h:panelGroup id="topButtons">
+                    <h:commandButton id="saveButton" value="#{i18n['button.Save']}" styleClass="Btn1_sun4" rendered="#{bean.found}" action="#{bean.save}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <input id="propertyForm:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
+                           onclick="admingui.ajax.loadPage({url: '#{request.contextPath}/jca/connectorConnectionPools.jsf'}); return false;"/>
+                </h:panelGroup>
+            </f:facet>
+            <h:commandButton id="loadDefaultsButton" value="#{i18n['button.LoadDefaults']}" styleClass="Btn2_sun4" style="margin-left: 8pt"
+                             rendered="#{bean.found}" action="#{bean.loadDefaults}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+        </adm:pageTitle>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <ui:fragment rendered="#{bean.found}">
+            <adm:propertySheet id="connectionPropertySheet" legend="#{i18njca['jcaPool.connectionSettings']}">
+                <adm:property id="name" label="#{i18njca['poolName']}">
+                    <h:outputText id="poolName" value="#{bean.name}"/>
+                </adm:property>
+                <adm:property id="p1" label="#{i18njca['jcaPool.validateAtmostOnceInSeconds']}" for="va"
+                              helpText="#{i18njca['jcaPool.validateAtmostOnceInSecondsHelp']}">
+                    <h:inputText id="va" value="#{bean.values['validateAtmostOncePeriodInSeconds']}" size="30" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                    <h:outputText value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+                </adm:property>
+                <adm:property id="p2" label="#{i18njca['jcaPool.connectionLeakTimeoutInSeconds']}" for="leakTimeout"
+                              helpText="#{i18njca['jcaPool.connectionLeakTimeoutInSecondsHelp']}">
+                    <h:inputText id="leakTimeout" value="#{bean.values['connectionLeakTimeoutInSeconds']}" size="30" maxlength="512"
+                                 styleClass="integer TxtFld_sun4"/>
+                    <h:outputText value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+                </adm:property>
+                <adm:property id="p3" label="#{i18njca['jcaPool.connectionLeakReclaim']}" for="leakReclaim"
+                              helpText="#{i18njca['jcaPool.connectionLeakReclaimHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="leakReclaim" value="#{bean.flags['connectionLeakReclaim']}"/></span>
+                </adm:property>
+                <adm:property id="p4" label="#{i18njca['jcaPool.connectionCreationRetryAttempts']}" for="retryAttempts"
+                              helpText="#{i18njca['jcaPool.connectionCreationRetryAttemptsHelp']}">
+                    <h:inputText id="retryAttempts" value="#{bean.values['connectionCreationRetryAttempts']}" size="30" maxlength="512"
+                                 styleClass="integer TxtFld_sun4"/>
+                </adm:property>
+                <adm:property id="p5" label="#{i18njca['jcaPool.connectionCreationRetryIntervalInSeconds']}" for="retryInterval"
+                              helpText="#{i18njca['jcaPool.connectionCreationRetryIntervalInSecondsHelp']}">
+                    <h:inputText id="retryInterval" value="#{bean.values['connectionCreationRetryIntervalInSeconds']}" size="30" maxlength="512"
+                                 styleClass="integer TxtFld_sun4"/>
+                    <h:outputText value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+                </adm:property>
+                <adm:property id="poolingProp" label="#{i18njca['jcaPool.pooling']}" for="pooling" helpText="#{i18njca['jcaPool.poolingHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="pooling" value="#{bean.flags['pooling']}"/></span>
+                </adm:property>
+                <adm:property id="p7" label="#{i18njca['jcaPool.lazyConnectionAssociation']}" for="associate"
+                              helpText="#{i18njca['jcaPool.lazyConnectionAssociationHelp']}">
+                    <span class="CbSpn_sun4">
+                        <h:selectBooleanCheckbox id="associate" value="#{bean.flags['lazyConnectionAssociation']}">
+                            <f:ajax execute="@this" listener="#{bean.associationChanged}" render=":propertyForm:connectionPropertySheet:p6"/>
+                        </h:selectBooleanCheckbox>
+                    </span>
+                </adm:property>
+                <adm:property id="p6" label="#{i18njca['jcaPool.lazyConnectionEnlistment']}" for="enlist"
+                              helpText="#{i18njca['jcaPool.lazyConnectionEnlistmentHelp']}">
+                    <span class="CbSpn_sun4">
+                        <h:selectBooleanCheckbox id="enlist" value="#{bean.flags['lazyConnectionEnlistment']}" disabled="#{bean.enlistmentFixed}"/>
+                    </span>
+                </adm:property>
+                <adm:property id="p8" label="#{i18njca['jcaPool.associationWithThread']}" for="thread"
+                              helpText="#{i18njca['jcaPool.associationWithThreadHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="thread" value="#{bean.flags['associateWithThread']}"/></span>
+                </adm:property>
+                <adm:property id="p9" label="#{i18njca['jcaPool.matchConnections']}" for="match" helpText="#{i18njca['jcaPool.matchConnectionsHelp']}">
+                    <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="match" value="#{bean.flags['matchConnections']}"/></span>
+                </adm:property>
+                <adm:property id="p10" label="#{i18njca['jcaPool.maxConnectionUsageCount']}" for="maxUsage"
+                              helpText="#{i18njca['jcaPool.maxConnectionUsageCountHelp']}">
+                    <h:inputText id="maxUsage" value="#{bean.values['maxConnectionUsageCount']}" size="30" maxlength="512" styleClass="integer TxtFld_sun4"/>
+                </adm:property>
+            </adm:propertySheet>
+        </ui:fragment>
+    </h:form>
+    <script>document.title = '#{i18njca['connectorConnectionPool.advancePageTitle']}';</script>
+</ui:composition>

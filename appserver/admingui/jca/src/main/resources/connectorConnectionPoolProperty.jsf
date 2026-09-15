@@ -26,6 +26,7 @@
 <!define name="content">
 <event>
     <!beforeCreate
+    setSessionAttribute(key="connectorPoolTabs" value="propertyTab");
     getRequestValue(key="name" value="#{pageSession.Name}");
     urlencode(value="#{pageSession.Name}" encoding="UTF-8" result="#{pageSession.encodedName}");
     getRequestValue(key="isAppScopedRes" value="#{pageSession.isAppScopedRes}");
