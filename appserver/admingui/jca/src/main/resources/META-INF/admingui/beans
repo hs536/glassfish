@@ -16,3 +16,6 @@ org.glassfish.jca.admingui.prototype.ConnectorConnectionPoolNew2View
 org.glassfish.jca.admingui.prototype.ConnectorSecurityMapsView
 org.glassfish.jca.admingui.prototype.ConnectorSecurityMapNewView
 org.glassfish.jca.admingui.prototype.ConnectorSecurityMapEditView
+org.glassfish.jca.admingui.prototype.WorkSecurityMapsView
+org.glassfish.jca.admingui.prototype.WorkSecurityMapNewView
+org.glassfish.jca.admingui.prototype.WorkSecurityMapEditView
