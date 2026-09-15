@@ -35,6 +35,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish.main.admingui</groupId>
             <artifactId>console-plugin-service</artifactId>
             <version>${project.version}</version>
@@ -55,7 +60,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.glassfish.full.admingui</Export-Package>
+                        <Export-Package>org.glassfish.full.admingui,org.glassfish.full.admingui.prototype</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
