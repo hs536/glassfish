@@ -83,6 +83,15 @@ public abstract class ResourceEditView implements Serializable {
         return rest;
     }
 
+    /**
+     * The additional properties to send when the resource is saved; the rows of the properties table by default.
+     *
+     * @throws IllegalArgumentException when the two values of a confidential property differ
+     */
+    protected List<Map<String, String>> propertiesToSend() {
+        return properties.toSend();
+    }
+
     @PostConstruct
     protected void load() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -118,7 +127,7 @@ public abstract class ResourceEditView implements Serializable {
     public void save() {
         try {
             // Checked before any request, so that nothing is saved when a confidential property does not match
-            List<Map<String, String>> propertiesToSend = properties.toSend();
+            List<Map<String, String>> propertiesToSend = propertiesToSend();
             Map<String, Object> attributes = new HashMap<>(values);
             readOnlyAttributes().forEach(attributes::remove);
             // The enabled state is kept on the resource references; the resource itself stays enabled

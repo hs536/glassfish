@@ -1,0 +1,5 @@
+# Prototype (adr/0008): CDI bean classes in this plugin bundle, registered by
+# org.glassfish.admingui.cdi.PluginBeanExtension in console-core.
+org.glassfish.admingui.plugin.jms.prototype.JmsDestinationsView
+org.glassfish.admingui.plugin.jms.prototype.JmsDestinationNewView
+org.glassfish.admingui.plugin.jms.prototype.JmsDestinationEditView

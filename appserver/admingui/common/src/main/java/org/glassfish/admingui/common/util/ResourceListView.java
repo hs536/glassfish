@@ -65,6 +65,11 @@ public abstract class ResourceListView implements Serializable {
         return "domain";
     }
 
+    /** The names of the resources to list, below the given collection URL; all the resources of the type by default. */
+    protected List<String> resourceNames(String collection) {
+        return rest.childNames(collection);
+    }
+
     protected AdminRestService rest() {
         return rest;
     }
@@ -77,7 +82,7 @@ public abstract class ResourceListView implements Serializable {
         Map<String, List<String>> references = targets.references(rest);
         Map<String, String> logicalNames = ResourceLookups.logicalJndiNames(rest, logicalNamesCommand(), logicalNamesKey());
         String collection = rest.url("resources", childType());
-        for (String name : rest.childNames(collection)) {
+        for (String name : resourceNames(collection)) {
             ResourceRow row = new ResourceRow(name);
             rest.attributes(rest.child(collection, name)).forEach((key, value) -> row.getAttributes().put(key, text(value)));
             row.setEnabled("true".equals(row.attribute("enabled")));

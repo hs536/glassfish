@@ -70,6 +70,15 @@ public abstract class ResourceNewView implements Serializable {
         return rest;
     }
 
+    /**
+     * The additional properties to send when the resource is created; the rows of the properties table by default.
+     *
+     * @throws IllegalArgumentException when the two values of a confidential property differ
+     */
+    protected List<Map<String, String>> propertiesToSend() {
+        return properties.toSend();
+    }
+
     @PostConstruct
     protected void loadDefaults() {
         values.putAll(rest.defaults(rest.url("resources", childType())));
@@ -98,7 +107,7 @@ public abstract class ResourceNewView implements Serializable {
         String name = ResourceListView.text(values.get("name"));
         try {
             // Checked before any request, so that nothing is created when a confidential property does not match
-            List<Map<String, String>> propertiesToSend = properties.toSend();
+            List<Map<String, String>> propertiesToSend = propertiesToSend();
             Map<String, Object> attributes = new HashMap<>(values);
             // The enabled state is kept on the resource references; the resource itself is always enabled
             attributes.put("enabled", "true");
