@@ -1,0 +1,76 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype (adr/0006, adr/0008, adr/0009): the JDBC connection pools list as a Facelets page. It takes precedence over
+    jdbcConnectionPools.jsf and renders only the page content. The new button starts the JSFTemplating wizard
+    (jdbcConnectionPoolNew1.jsf).
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18njdbc" value="#{consoleBundles.get('jdbc', 'org.glassfish.jdbc.admingui.Strings')}"/>
+    <c:set var="bean" value="#{jdbcConnectionPoolsView}"/>
+
+    <h:form id="propertyForm">
+        <adm:pageTitle id="propertyContentPage" title="#{i18njdbc['jdbcConnectionPools.pageTitle']}"
+                       helpText="#{i18njdbc['jdbcConnectionPools.pageTitleHelp']}"/>
+        <br/><br/>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <adm:table id="poolTable" title="#{i18njdbc['resourcesTable.Pools']}" count="#{bean.rows.size()}" columns="5">
+            <f:facet name="actions">
+                <adm:resourceTableActions id="actions" bean="#{bean}" newPage="/jdbc/jdbcConnectionPoolNew1.jsf" newOnServer="true"
+                                          enableActions="false" deleteConfirmation="#{i18n['msg.JS.confirmDeletePools']}"/>
+            </f:facet>
+            <f:facet name="header">
+                <h:panelGroup>
+                    <adm:sortHeader text="#{i18n['common.SelectHeader']}" width="3%"/>
+                    <adm:sortHeader id="nameHeader" text="#{i18njdbc['resourcesTable.colPoolName']}" key="name" sorter="#{bean}"/>
+                    <adm:sortHeader id="typeHeader" text="#{i18njdbc['resourcesTable.colResType']}" key="resType" sorter="#{bean}"/>
+                    <adm:sortHeader id="classNameHeader" text="#{i18njdbc['resourcesTable.colClassname']}" key="className" sorter="#{bean}"/>
+                    <adm:sortHeader text="#{i18njdbc['resourcesTable.colDesc']}"/>
+                </h:panelGroup>
+            </f:facet>
+            <ui:repeat id="rows" value="#{bean.rows}" var="row">
+                <tr>
+                    <td class="TblTdSel_sun4" align="left">
+                        <span class="CbSpn_sun4">
+                            <h:selectBooleanCheckbox id="select" value="#{row.selected}" title="#{i18n['common.select']}">
+                                <f:ajax render=":propertyForm:poolTable:actions"/>
+                            </h:selectBooleanCheckbox>
+                        </span>
+                    </td>
+                    <th class="TblTdLyt_sun4" align="left" scope="row">
+                        <h:outputLink id="link" value="#{request.contextPath}/jdbc/jdbcConnectionPoolEdit.jsf">
+                            <f:param name="name" value="#{row.name}"/>
+                            #{row.name}
+                        </h:outputLink>
+                    </th>
+                    <td class="TblTdLyt_sun4" align="left">#{row.attributes['resType']}</td>
+                    <td class="TblTdLyt_sun4" align="left">#{row.attributes['className']}</td>
+                    <td class="TblTdLyt_sun4" align="left">#{row.attributes['description']}</td>
+                </tr>
+            </ui:repeat>
+        </adm:table>
+    </h:form>
+    <script>document.title = '#{i18njdbc['jdbcConnectionPools.pageTitle']}';</script>
+</ui:composition>

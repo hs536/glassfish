@@ -33,6 +33,8 @@
         <cc:attribute name="newPage" required="true"/>
         <cc:attribute name="deleteConfirmation" required="true"/>
         <cc:attribute name="enableActions" default="true"/>
+        <!-- True when the new button calls the newItem() action of the bean (to prepare the new page) instead of opening newPage directly -->
+        <cc:attribute name="newOnServer" default="false"/>
     </cc:interface>
     <cc:implementation>
         <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
@@ -46,8 +48,15 @@
                 <f:ajax execute="@form" render="@form"/>
                 <img src="#{tableImages}/deselect_multiple.gif" alt="#{i18n['table.deselectAll']}" height="20" width="23" border="0" align="top"/>
             </h:commandLink>
-            <input id="#{cc.clientId}:newButton" type="button" class="Btn1_sun4" value="#{i18n['button.New']}"
-                   onclick="admingui.ajax.loadPage({url: '#{request.contextPath}#{cc.attrs.newPage}'}); return false;"/>
+            <c:if test="#{not cc.attrs.newOnServer}">
+                <input id="#{cc.clientId}:newButton" type="button" class="Btn1_sun4" value="#{i18n['button.New']}"
+                       onclick="admingui.ajax.loadPage({url: '#{request.contextPath}#{cc.attrs.newPage}'}); return false;"/>
+            </c:if>
+            <c:if test="#{cc.attrs.newOnServer}">
+                <h:commandButton id="newButton" value="#{i18n['button.New']}" styleClass="Btn1_sun4" action="#{cc.attrs.bean.newItem()}">
+                    <f:ajax execute="@this" render="@none"/>
+                </h:commandButton>
+            </c:if>
             <h:commandButton id="deleteButton" value="#{i18n['button.Delete']}"
                              styleClass="#{cc.attrs.bean.anySelected ? 'Btn2_sun4' : 'Btn2Dis_sun4'}" disabled="#{not cc.attrs.bean.anySelected}"
                              pt:data-confirm="#{cc.attrs.deleteConfirmation}"
