@@ -19,3 +19,6 @@ org.glassfish.jca.admingui.prototype.ConnectorSecurityMapEditView
 org.glassfish.jca.admingui.prototype.WorkSecurityMapsView
 org.glassfish.jca.admingui.prototype.WorkSecurityMapNewView
 org.glassfish.jca.admingui.prototype.WorkSecurityMapEditView
+org.glassfish.jca.admingui.prototype.ResourceAdapterConfigsView
+org.glassfish.jca.admingui.prototype.ResourceAdapterConfigNewView
+org.glassfish.jca.admingui.prototype.ResourceAdapterConfigEditView
