@@ -45,5 +45,6 @@
     <factory>
         <application-factory>org.glassfish.admingui.common.AdminGuiApplicationFactory</application-factory>
         <exception-handler-factory>org.glassfish.admingui.common.AdminGuiExceptionHandlerFactory</exception-handler-factory>
+        <partial-view-context-factory>org.glassfish.admingui.common.AdminGuiPartialViewContextFactory</partial-view-context-factory>
     </factory>
 </faces-config>

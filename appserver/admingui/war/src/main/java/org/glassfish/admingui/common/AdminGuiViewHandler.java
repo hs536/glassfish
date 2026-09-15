@@ -79,7 +79,7 @@ public class AdminGuiViewHandler extends ViewHandlerWrapper {
      * the same name goes to Facelets when it asks for the page content only ({@code bare=true}) or posts back to the
      * view, and to the page frame otherwise. Other requests go to JSFTemplating.
      */
-    private static Route route(FacesContext context) {
+    static Route route(FacesContext context) {
         ExternalContext externalContext = context.getExternalContext();
         String servletPath = externalContext.getRequestServletPath();
         if (servletPath == null || !servletPath.endsWith(TEMPLATING_SUFFIX)) {
