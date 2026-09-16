@@ -106,6 +106,21 @@ public class AdminRestService {
         }
     }
 
+    /**
+     * The attributes of the given resource, or an empty map when it has none and when it cannot be read, which the
+     * server also answers with a failure for a resource that is not there (X-33).
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> attributesOrEmpty(String url) {
+        Map<String, Object> response = RestUtil.restRequest(url, new HashMap<>(), "get", null, true, false);
+        if (response != null && response.get("data") instanceof Map<?, ?> data
+                && data.get("extraProperties") instanceof Map<?, ?> extraProperties
+                && extraProperties.get("entity") instanceof Map<?, ?> entity) {
+            return (Map<String, Object>) entity;
+        }
+        return Map.of();
+    }
+
     /** The attributes of the given resource. */
     public Map<String, Object> attributes(String url) {
         Map<String, Object> attributes = RestUtil.getEntityAttrs(url, "entity");

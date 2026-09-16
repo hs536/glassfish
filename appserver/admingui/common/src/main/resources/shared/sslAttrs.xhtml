@@ -1,0 +1,86 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype (adr/0006): the SSL settings and the four lists of cipher suites, which the SSL pages of several plugins
+    share. It is the Facelets counterpart of shared/sslAttrs.inc; "bean" is a page bean that extends
+    org.glassfish.admingui.common.util.SslEditView.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+
+    <adm:propertySheet id="propertySheet">
+        <adm:property id="TLSProp" label="#{i18n['ssl.tlsLabel']}" for="TLS">
+            <h:selectBooleanCheckbox id="TLS" value="#{bean.tls}"/>
+        </adm:property>
+        <adm:property id="TLS11Prop" label="#{i18n['ssl.tls11Label']}" for="TLS11">
+            <h:selectBooleanCheckbox id="TLS11" value="#{bean.tls11}"/>
+        </adm:property>
+        <adm:property id="TLS12Prop" label="#{i18n['ssl.tls12Label']}" for="TLS12">
+            <h:selectBooleanCheckbox id="TLS12" value="#{bean.tls12}"/>
+        </adm:property>
+        <adm:property id="TLS13Prop" label="#{i18n['ssl.tls13Label']}" for="TLS13">
+            <h:selectBooleanCheckbox id="TLS13" value="#{bean.tls13}"/>
+        </adm:property>
+        <adm:property id="ClientAuthProp" label="#{i18n['ssl.clientAuthLabel']}" for="ClientAuth" helpText="#{i18n['ssl.clientAuthHelp']}">
+            <h:selectBooleanCheckbox id="ClientAuth" value="#{bean.clientAuth}"/>
+        </adm:property>
+        <adm:property id="CertNicknameProp" label="#{i18n['ssl.certNicknameLabel']}" for="CertNickname" required="true"
+                      helpText="#{i18n['ssl.certNicknameHelp']}">
+            <h:inputText id="CertNickname" value="#{bean.values['certNickname']}" size="20" maxlength="512" styleClass="required TxtFld_sun4"
+                         required="true" requiredMessage="#{i18n['msg.JS.enterValue']} #{i18n['ssl.certNicknameLabel']}"/>
+        </adm:property>
+        <adm:property id="keystoreProp" label="#{i18n['ssl.keyStore']}" for="keystore" helpText="#{i18n['ssl.keyStoreHelp']}">
+            <h:inputText id="keystore" value="#{bean.values['keyStore']}" size="20" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="trustedAlgProp" label="#{i18n['ssl.TrustAlgorithm']}" for="trustedAlg" helpText="#{i18n['ssl.TrustAlgorithmHelp']}">
+            <h:inputText id="trustedAlg" value="#{bean.values['trustAlgorithm']}" size="20" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="maxCertLengthProp" label="#{i18n['ssl.trustMaxCert']}" for="maxCertLength" helpText="#{i18n['ssl.trustMaxCertHelp']}">
+            <h:inputText id="maxCertLength" value="#{bean.values['trustMaxCertLength']}" size="20" maxlength="10" styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="trustStoreProp" label="#{i18n['ssl.trustStore']}" for="trustStore" helpText="#{i18n['ssl.trustStoreHelp']}">
+            <h:inputText id="trustStore" value="#{bean.values['trustStore']}" size="20" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+    </adm:propertySheet>
+
+    <adm:propertySheet id="cipherSheet" legend="#{i18n['ssl.cipherssuites']}">
+        <adm:property id="ciphersProp" label="&#160;">
+            <h:outputText id="ciphers2" value="#{i18n['ssl.ciphersHelp']}"/>
+        </adm:property>
+        <adm:property id="CommonCiphersProp" label="&#160;">
+            <adm:addRemove id="commonAddRemove" list="#{bean.commonCiphers}" availableLabel="#{i18n['ssl.availableCommonCiphersLabel']}"
+                           selectedLabel="#{i18n['ssl.selectedCommonCiphersLabel']}"/>
+        </adm:property>
+        <adm:property id="EphemeralCiphersProp" label="&#160;">
+            <adm:addRemove id="ephemeralAddRemove" list="#{bean.ephemeralCiphers}" availableLabel="#{i18n['ssl.availableEphCiphersLabel']}"
+                           selectedLabel="#{i18n['ssl.selectedEphCiphersLabel']}"/>
+        </adm:property>
+        <adm:property id="OtherCiphersProp" label="&#160;">
+            <adm:addRemove id="otherAddRemove" list="#{bean.smallKeyCiphers}" availableLabel="#{i18n['ssl.availableOtherCiphersLabel']}"
+                           selectedLabel="#{i18n['ssl.selectedOtherCiphersLabel']}"/>
+        </adm:property>
+        <adm:property id="EccCiphersProp" label="&#160;">
+            <adm:addRemove id="eccAddRemove" list="#{bean.eccCiphers}" availableLabel="#{i18n['ssl.availableEccCiphersLabel']}"
+                           selectedLabel="#{i18n['ssl.selectedEccCiphersLabel']}"/>
+        </adm:property>
+    </adm:propertySheet>
+</ui:composition>

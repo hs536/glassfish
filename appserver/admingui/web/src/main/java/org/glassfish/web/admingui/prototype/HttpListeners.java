@@ -122,11 +122,7 @@ final class HttpListeners {
 
     /** The attributes of a resource that may not be there, such as the HTTP settings of a protocol (see X-33). */
     static Map<String, Object> attributesOrEmpty(AdminRestService rest, String url) {
-        try {
-            return rest.attributes(url);
-        } catch (RuntimeException e) {
-            return Map.of();
-        }
+        return rest.attributesOrEmpty(url);
     }
 
     static String text(Object value) {

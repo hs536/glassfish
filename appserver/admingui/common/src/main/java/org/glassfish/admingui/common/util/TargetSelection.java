@@ -13,6 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
+
 package org.glassfish.admingui.common.util;
 
 import jakarta.annotation.PostConstruct;
@@ -22,7 +23,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,15 +46,13 @@ public class TargetSelection implements Serializable {
     @Inject
     private AdminRestService rest;
 
-    private final List<String> available = new ArrayList<>();
-    private final List<String> selected = new ArrayList<>();
+    private final AddRemoveList targets = new AddRemoveList();
     private final Set<String> clusters = new HashSet<>();
     private boolean visible;
-    private List<String> availableChoice = new ArrayList<>();
-    private List<String> selectedChoice = new ArrayList<>();
 
     @PostConstruct
     void load() {
+        List<String> available = targets.getAvailable();
         available.add(SERVER);
         Map<String, Object> instances = rest.get(rest.url("list-instances"), Map.of("standaloneonly", "true", "nostatus", "true"));
         if (AdminRestService.extraProperties(instances).get("instanceList") instanceof List<?> list) {
@@ -71,9 +69,9 @@ public class TargetSelection implements Serializable {
         visible = available.size() > 1;
         String requested = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("target");
         if (!visible) {
-            move(List.of(SERVER), available, selected);
+            targets.select(List.of(SERVER));
         } else if (requested != null && available.contains(requested)) {
-            move(List.of(requested), available, selected);
+            targets.select(List.of(requested));
         }
     }
 
@@ -81,60 +79,17 @@ public class TargetSelection implements Serializable {
         return visible;
     }
 
-    public List<String> getAvailable() {
-        return available;
+    /** The two lists the page shows. */
+    public AddRemoveList getTargets() {
+        return targets;
     }
 
     /** The chosen targets. */
     public List<String> getSelected() {
-        return selected;
+        return targets.getSelected();
     }
 
     public boolean isCluster(String target) {
         return clusters.contains(target);
-    }
-
-    public List<String> getAvailableChoice() {
-        return availableChoice;
-    }
-
-    public void setAvailableChoice(List<String> availableChoice) {
-        this.availableChoice = availableChoice == null ? new ArrayList<>() : availableChoice;
-    }
-
-    public List<String> getSelectedChoice() {
-        return selectedChoice;
-    }
-
-    public void setSelectedChoice(List<String> selectedChoice) {
-        this.selectedChoice = selectedChoice == null ? new ArrayList<>() : selectedChoice;
-    }
-
-    public void add() {
-        move(availableChoice, available, selected);
-        availableChoice = new ArrayList<>();
-    }
-
-    public void addAll() {
-        move(new ArrayList<>(available), available, selected);
-        availableChoice = new ArrayList<>();
-    }
-
-    public void remove() {
-        move(selectedChoice, selected, available);
-        selectedChoice = new ArrayList<>();
-    }
-
-    public void removeAll() {
-        move(new ArrayList<>(selected), selected, available);
-        selectedChoice = new ArrayList<>();
-    }
-
-    private static void move(List<String> targets, List<String> from, List<String> to) {
-        for (String target : targets) {
-            if (from.remove(target)) {
-                to.add(target);
-            }
-        }
     }
 }

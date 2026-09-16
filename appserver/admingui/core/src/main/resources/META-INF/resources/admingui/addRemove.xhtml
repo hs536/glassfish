@@ -1,0 +1,107 @@
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!--
+    Prototype (adr/0006): two lists side by side, one of what can be chosen and one of what is chosen, with the buttons
+    that move entries between them. It replaces the Woodstock sun:addRemove widget; "list" is an
+    org.glassfish.admingui.common.util.AddRemoveList. The buttons take only this component, so the rest of the form is
+    neither read nor checked while entries are moved.
+-->
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="jakarta.faces.facelets"
+              xmlns:h="jakarta.faces.html"
+              xmlns:f="jakarta.faces.core"
+              xmlns:c="jakarta.tags.core"
+              xmlns:cc="jakarta.faces.composite">
+    <cc:interface>
+        <cc:attribute name="list" required="true"/>
+        <cc:attribute name="availableLabel" required="true"/>
+        <cc:attribute name="selectedLabel" required="true"/>
+        <cc:attribute name="size" default="12"/>
+    </cc:interface>
+    <cc:implementation>
+        <c:set var="i18ncore" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+        <h:panelGroup id="lists" layout="block">
+            <table>
+                <tbody>
+                    <tr>
+                        <td valign="top">
+                            <div class="AddRmvHrzDiv_sun4">
+                                <h:outputLabel for="available" styleClass="AddRmvLbl2_sun4 LblLev2Txt_sun4" value="#{cc.attrs.availableLabel}"/>
+                                <h:selectManyListbox id="available" styleClass="Lst_sun4" size="#{cc.attrs.size}" value="#{cc.attrs.list.availableChoice}">
+                                    <f:selectItems value="#{cc.attrs.list.available}"/>
+                                    <f:selectItem itemValue="" itemLabel="_______________________" itemDisabled="true" noSelectionOption="true"/>
+                                    <f:ajax render="lists"/>
+                                </h:selectManyListbox>
+                            </div>
+                        </td>
+                        <td valign="top">
+                            <div class="AddRmvHrzDiv_sun4">
+                                <table class="AddRmvBtnTbl_sun4">
+                                    <tbody>
+                                        <tr>
+                                            <td align="center" width="125px">
+                                                <div class="AddRmvHrzWin_sun4">
+                                                    <h:commandButton id="addButton" value="#{i18ncore['button.Add']} &gt;" action="#{cc.attrs.list.add()}"
+                                                                     styleClass="#{empty cc.attrs.list.availableChoice ? 'Btn2Dis_sun4' : 'Btn2_sun4'}"
+                                                                     disabled="#{empty cc.attrs.list.availableChoice}">
+                                                        <f:ajax execute="available" render="lists"/>
+                                                    </h:commandButton>
+                                                </div>
+                                                <div class="AddRmvHrzWin_sun4">
+                                                    <h:commandButton id="addAllButton" value="#{i18ncore['button.AddAll']} &gt;&gt;" action="#{cc.attrs.list.addAll()}"
+                                                                     styleClass="#{empty cc.attrs.list.available ? 'Btn2Dis_sun4' : 'Btn2_sun4'}"
+                                                                     disabled="#{empty cc.attrs.list.available}">
+                                                        <f:ajax execute="@this" render="lists"/>
+                                                    </h:commandButton>
+                                                </div>
+                                                <div class="AddRmvHrzBwn_sun4">
+                                                    <h:commandButton id="removeButton" value="&lt; #{i18ncore['button.Remove']}" action="#{cc.attrs.list.remove()}"
+                                                                     styleClass="#{empty cc.attrs.list.selectedChoice ? 'Btn2Dis_sun4' : 'Btn2_sun4'}"
+                                                                     disabled="#{empty cc.attrs.list.selectedChoice}">
+                                                        <f:ajax execute="selected" render="lists"/>
+                                                    </h:commandButton>
+                                                </div>
+                                                <div class="AddRmvHrzWin_sun4">
+                                                    <h:commandButton id="removeAllButton" value="&lt;&lt; #{i18ncore['button.RemoveAll']}" action="#{cc.attrs.list.removeAll()}"
+                                                                     styleClass="#{empty cc.attrs.list.selected ? 'Btn2Dis_sun4' : 'Btn2_sun4'}"
+                                                                     disabled="#{empty cc.attrs.list.selected}">
+                                                        <f:ajax execute="@this" render="lists"/>
+                                                    </h:commandButton>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                        <td valign="top">
+                            <div class="AddRmvHrzDiv_sun4">
+                                <h:outputLabel for="selected" styleClass="AddRmvLbl2_sun4 LblLev2Txt_sun4" value="#{cc.attrs.selectedLabel}"/>
+                                <h:selectManyListbox id="selected" styleClass="Lst_sun4" size="#{cc.attrs.size}" value="#{cc.attrs.list.selectedChoice}">
+                                    <f:selectItems value="#{cc.attrs.list.selected}"/>
+                                    <f:selectItem itemValue="" itemLabel="_______________________" itemDisabled="true" noSelectionOption="true"/>
+                                    <f:ajax render="lists"/>
+                                </h:selectManyListbox>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </h:panelGroup>
+    </cc:implementation>
+</ui:component>
