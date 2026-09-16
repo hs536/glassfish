@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0008): the tabs of the web container pages (the counterpart of webContainerTabs.inc). The tab of the
+    page itself is the selected one, so the pages need no session attribute.
+    Parameters: bean (a WebContainerView), selected (general, session, manager or store).
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18nweb" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Strings')}"/>
+
+    <adm:tabSet id="webContainerTabs">
+        <adm:tab label="#{i18n['common.General']}" url="#{bean.generalPage}" selected="#{selected eq 'general'}"/>
+        <adm:tab label="#{i18nweb['webContainer.sessionProp']}" url="#{bean.sessionPage}" selected="#{selected eq 'session'}"/>
+        <adm:tab label="#{i18nweb['webContainer.managerProp']}" url="#{bean.managerPage}" selected="#{selected eq 'manager'}"/>
+        <adm:tab label="#{i18nweb['webContainer.storeProp']}" url="#{bean.storePage}" selected="#{selected eq 'store'}"/>
+    </adm:tabSet>
+</ui:composition>

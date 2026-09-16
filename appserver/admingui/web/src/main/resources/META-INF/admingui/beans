@@ -13,3 +13,7 @@ org.glassfish.web.admingui.prototype.TransportsView
 org.glassfish.web.admingui.prototype.TransportNewView
 org.glassfish.web.admingui.prototype.TransportEditView
 org.glassfish.web.admingui.prototype.ProtocolsView
+org.glassfish.web.admingui.prototype.WebContainerGeneralView
+org.glassfish.web.admingui.prototype.WebContainerSessionView
+org.glassfish.web.admingui.prototype.WebContainerManagerView
+org.glassfish.web.admingui.prototype.WebContainerStoreView
