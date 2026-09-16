@@ -22,3 +22,4 @@ org.glassfish.jca.admingui.prototype.WorkSecurityMapEditView
 org.glassfish.jca.admingui.prototype.ResourceAdapterConfigsView
 org.glassfish.jca.admingui.prototype.ResourceAdapterConfigNewView
 org.glassfish.jca.admingui.prototype.ResourceAdapterConfigEditView
+org.glassfish.jca.admingui.prototype.ConnectorServiceView
