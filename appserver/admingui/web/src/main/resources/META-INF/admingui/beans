@@ -1,0 +1,5 @@
+# Prototype (adr/0008): CDI bean classes in this plugin bundle, registered by
+# org.glassfish.admingui.cdi.PluginBeanExtension in console-core.
+org.glassfish.web.admingui.prototype.VirtualServersView
+org.glassfish.web.admingui.prototype.VirtualServerNewView
+org.glassfish.web.admingui.prototype.VirtualServerEditView

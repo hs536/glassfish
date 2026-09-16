@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0008): the attributes of a virtual server, shared by the new and the edit page (the counterpart of
+    web/configuration/virtualServerAttrs.inc).
+    Parameters: bean (VirtualServerNewView or VirtualServerEditView), edit (true on the edit page).
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18nweb" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Strings')}"/>
+
+    <adm:propertySheet id="configNameSheet">
+        <adm:property id="configName" label="#{i18n['common.ConfigurationName']}">
+            <h:outputText id="config" value="#{bean.configName}"/>
+        </adm:property>
+    </adm:propertySheet>
+
+    <adm:propertySheet id="propertSectionTextField">
+        <adm:property id="IdStaticProp" label="#{i18nweb['vs.Id']}" rendered="#{edit}">
+            <h:outputText id="IdStatic" value="#{bean.name}"/>
+        </adm:property>
+        <adm:property id="IdTextProp" label="#{i18nweb['vs.Id']}" for="IdText" required="true" rendered="#{not edit}">
+            <h:inputText id="IdText" value="#{bean.values['id']}" size="55" maxlength="512" styleClass="required TxtFld_sun4" required="#{not edit}"
+                         requiredMessage="#{i18n['msg.JS.enterValue']} #{i18nweb['vs.Id']}"/>
+        </adm:property>
+        <adm:property id="hostsProp" label="#{i18nweb['vs.Hosts']}" for="Hosts" required="true" helpText="#{i18nweb['vs.HostsHelp']}">
+            <h:inputText id="Hosts" value="#{bean.values['hosts']}" size="55" maxlength="512" styleClass="required TxtFld_sun4" required="true"
+                         requiredMessage="#{i18n['msg.JS.enterValue']} #{i18nweb['vs.Hosts']}"/>
+        </adm:property>
+        <adm:property id="stateProp" label="#{i18nweb['vs.State']}" for="state">
+            <h:selectOneMenu id="state" value="#{bean.values['state']}" styleClass="MnuStd_sun4">
+                <f:selectItem itemValue="on" itemLabel="#{i18nweb['vs.StateOn']}"/>
+                <f:selectItem itemValue="off" itemLabel="#{i18nweb['vs.StateOff']}"/>
+                <f:selectItem itemValue="disabled" itemLabel="#{i18nweb['vs.StateDisabled']}"/>
+            </h:selectOneMenu>
+        </adm:property>
+        <adm:property id="ssoProp" label="#{i18nweb['vs.sso']}" for="sso">
+            <h:selectOneMenu id="sso" value="#{bean.values['ssoEnabled']}" styleClass="MnuStd_sun4">
+                <f:selectItem itemValue="inherit" itemLabel="#{i18nweb['vs.controlByHS']}"/>
+                <f:selectItem itemValue="true" itemLabel="#{i18nweb['vs.alwaysEnable']}"/>
+                <f:selectItem itemValue="false" itemLabel="#{i18nweb['vs.alwaysDisable']}"/>
+            </h:selectOneMenu>
+        </adm:property>
+        <adm:property id="ssoCookieHttpOnly" label="#{i18nweb['vs.ssoCookieHttpOnly']}" for="httpOnly"
+                      helpText="#{i18nweb['vs.ssoCookieHttpOnlyHelp']}">
+            <h:selectBooleanCheckbox id="httpOnly" value="#{bean.ssoCookieHttpOnly}"/>
+        </adm:property>
+        <adm:property id="nwProps" label="#{i18nweb['vs.NetworkListeners']}" for="nw" helpText="#{i18nweb['vs.NetworkListenersHelp']}">
+            <h:selectManyListbox id="nw" value="#{bean.selectedListeners}" size="4" styleClass="MnuStd_sun4">
+                <f:selectItems value="#{bean.listeners}"/>
+            </h:selectManyListbox>
+        </adm:property>
+        <adm:property id="webProp" label="#{i18nweb['vs.DefaultWeb']}" for="Web" helpText="#{i18nweb['vs.DefaultWebHelp']}">
+            <h:selectOneMenu id="Web" value="#{bean.values['defaultWebModule']}" styleClass="MnuStd_sun4">
+                <f:selectItems value="#{bean.webModules}"/>
+            </h:selectOneMenu>
+        </adm:property>
+        <adm:property id="logFileProp" label="#{i18nweb['vs.LogFile']}" for="LogFile" helpText="#{i18nweb['vs.LogFileHelp']}">
+            <h:inputText id="LogFile" value="#{bean.values['logFile']}" size="55" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="docrootProp" label="#{i18nweb['vs.docroot']}" for="docroot" helpText="#{i18nweb['vs.docrootHelp']}">
+            <h:inputText id="docroot" value="#{bean.values['docroot']}" size="55" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+    </adm:propertySheet>
+
+    <adm:propertySheet id="al" legend="#{i18nweb['vs.accessLog']}">
+        <adm:property id="enableLog" label="#{i18nweb['vs.accessLogging']}" for="log">
+            <h:selectOneMenu id="log" value="#{bean.values['accessLoggingEnabled']}" styleClass="MnuStd_sun4">
+                <f:selectItem itemValue="inherit" itemLabel="#{i18nweb['vs.controlByHS']}"/>
+                <f:selectItem itemValue="true" itemLabel="#{i18nweb['vs.alwaysEnable']}"/>
+                <f:selectItem itemValue="false" itemLabel="#{i18nweb['vs.alwaysDisable']}"/>
+            </h:selectOneMenu>
+        </adm:property>
+        <adm:property id="accesslogProp" label="#{i18nweb['vs.path']}" for="accesslog" helpText="#{i18nweb['vs.pathHelp']}">
+            <h:inputText id="accesslog" value="#{bean.values['accessLog']}" size="55" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+    </adm:propertySheet>
+</ui:composition>
