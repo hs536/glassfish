@@ -3,3 +3,6 @@
 org.glassfish.web.admingui.prototype.VirtualServersView
 org.glassfish.web.admingui.prototype.VirtualServerNewView
 org.glassfish.web.admingui.prototype.VirtualServerEditView
+org.glassfish.web.admingui.prototype.HttpListenersView
+org.glassfish.web.admingui.prototype.HttpListenerNewView
+org.glassfish.web.admingui.prototype.HttpListenerEditView
