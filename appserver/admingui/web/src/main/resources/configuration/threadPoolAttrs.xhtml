@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0008): the attributes of a thread pool, shared by the new and the edit page (the counterpart of
+    web/configuration/threadPoolAttrs.inc).
+    Parameters: bean (ThreadPoolNewView or ThreadPoolEditView), edit (true on the edit page).
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18nweb" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Strings')}"/>
+
+    <adm:propertySheet id="configNameSheet">
+        <adm:property id="configName" label="#{i18n['common.ConfigurationName']}">
+            <h:outputText id="config" value="#{bean.configName}"/>
+        </adm:property>
+    </adm:propertySheet>
+
+    <adm:propertySheet id="propertSectionTextField">
+        <adm:property id="name" label="#{i18n['common.Name']}" rendered="#{edit}">
+            <h:outputText id="poolName" value="#{bean.name}"/>
+        </adm:property>
+        <adm:property id="nameProp" label="#{i18n['common.Name']}" for="nameText" required="true" rendered="#{not edit}"
+                      helpText="#{i18nweb['threadPool.nameHelp']}">
+            <h:inputText id="nameText" value="#{bean.name}" size="55" maxlength="512" styleClass="required TxtFld_sun4" required="#{not edit}"
+                         requiredMessage="#{i18n['msg.JS.enterValue']} #{i18n['common.Name']}"/>
+        </adm:property>
+        <adm:property id="classname" label="#{i18nweb['threadPool.classname']}" for="classnameField"
+                      helpText="#{i18nweb['threadPool.classnameHelp']}">
+            <h:inputText id="classnameField" value="#{bean.values['classname']}" size="50" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="virtual" label="#{i18nweb['threadPool.virtual']}" for="virtualBox" helpText="#{i18nweb['threadPool.virtualHelp']}">
+            <h:selectBooleanCheckbox id="virtualBox" value="#{bean.virtual}"/>
+        </adm:property>
+        <adm:property id="max" label="#{i18nweb['threadPool.maxQueue']}" for="maxQueue" helpText="#{i18nweb['threadPool.maxQueueHelp']}">
+            <h:inputText id="maxQueue" value="#{bean.values['maxQueueSize']}" size="10" maxlength="512" styleClass="intAllowMinusOne TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="maxThread" label="#{i18nweb['threadPool.maxThread']}" for="maxThreadField"
+                      helpText="#{i18nweb['threadPool.maxThreadHelp']}">
+            <h:inputText id="maxThreadField" value="#{bean.values['maxThreadPoolSize']}" size="10" maxlength="512"
+                         styleClass="intAllowMinusOne TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="minThread" label="#{i18nweb['threadPool.minThread']}" for="minThreadField"
+                      helpText="#{i18nweb['threadPool.minThreadHelp']}">
+            <h:inputText id="minThreadField" value="#{bean.values['minThreadPoolSize']}" size="10" maxlength="512" styleClass="integer TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="timeout" label="#{i18nweb['threadPool.timeout']}" for="timeoutField" helpText="#{i18nweb['threadPool.timeoutHelp']}">
+            <h:inputText id="timeoutField" value="#{bean.values['idleThreadTimeoutSeconds']}" size="10" maxlength="512"
+                         styleClass="integer TxtFld_sun4"/>
+            <h:outputText id="sec" value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+        </adm:property>
+    </adm:propertySheet>
+</ui:composition>
