@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0006, adr/0008, adr/0009): a new network listener as a Facelets page. It takes precedence over
+    networkListenerNew.jsf. The protocol row offers a new protocol or one that is already there; choosing one enables
+    its fields with Ajax, where the JSFTemplating page used JavaScript.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18nweb" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Strings')}"/>
+    <c:set var="bean" value="#{networkListenerNewView}"/>
+    <c:set var="protocolRow" value=":propertyForm:propertSectionTextField:prop1"/>
+
+    <h:form id="propertyForm">
+        <adm:pageTitle id="propertyContentPage" title="#{i18nweb['grizzly.networkListenerNewPageTitle']}"
+                       helpText="#{i18nweb['grizzly.networkListenerNewPageTitleHelp']}">
+            <f:facet name="buttons">
+                <h:panelGroup id="topButtons">
+                    <h:commandButton id="newButton" value="#{i18n['button.OK']}" styleClass="Btn1_sun4" action="#{bean.create}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <input id="propertyForm:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
+                           onclick="admingui.ajax.loadPage({url: '#{bean.listPage}'}); return false;"/>
+                </h:panelGroup>
+            </f:facet>
+        </adm:pageTitle>
+        <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
+
+        <adm:propertySheet id="configNameSheet">
+            <adm:property id="configName" label="#{i18n['common.ConfigurationName']}">
+                <h:outputText id="config" value="#{bean.configName}"/>
+            </adm:property>
+        </adm:propertySheet>
+
+        <adm:propertySheet id="propertSectionTextField">
+            <adm:property id="nameNew" label="#{i18nweb['common.name']}" for="name" required="true" helpText="#{i18nweb['common.nameHelp']}">
+                <h:inputText id="name" value="#{bean.name}" size="50" maxlength="512" styleClass="required TxtFld_sun4" required="true"
+                             requiredMessage="#{i18n['msg.JS.enterValue']} #{i18nweb['common.name']}">
+                    <f:ajax event="change" execute="@this" render="#{protocolRow}"/>
+                </h:inputText>
+            </adm:property>
+            <adm:property id="prop1" label="#{i18nweb['grizzly.protocol']}" for="pName">
+                <h:selectOneRadio id="rdBtn" group="protocolChoice" value="#{bean.protocolChoice}">
+                    <f:selectItem itemValue="create" itemLabel="#{i18nweb['grizzly.networkListener.createNewProtocol']}"/>
+                    <f:ajax execute="@this" render="#{protocolRow}"/>
+                </h:selectOneRadio>
+                <h:inputText id="pName" value="#{bean.newProtocolName}" size="50" maxlength="512" styleClass="TxtFld_sun4"
+                             disabled="#{not bean.createProtocol}" style="margin-left: 4pt"/>
+                <br/><br/>
+                <h:outputText id="vsLabel" value="#{i18nweb['http.defVirtualServerLabel']}" style="margin-left: 12pt"/>
+                <h:selectOneMenu id="vs" value="#{bean.defaultVirtualServer}" styleClass="MnuStd_sun4" disabled="#{not bean.createProtocol}"
+                                 style="margin-left: 4pt">
+                    <f:selectItems value="#{bean.virtualServers}"/>
+                </h:selectOneMenu>
+                <br/><br/>
+                <h:selectOneRadio id="existingRdBtn" group="protocolChoice" value="#{bean.protocolChoice}">
+                    <f:selectItem itemValue="existing" itemLabel="#{i18nweb['grizzly.networkListener.useExistingProtocol']}"/>
+                    <f:ajax execute="@this" render="#{protocolRow}"/>
+                </h:selectOneRadio>
+                <h:selectOneMenu id="protocoldw" value="#{bean.existingProtocolName}" styleClass="MnuStd_sun4" disabled="#{bean.createProtocol}"
+                                 style="margin-left: 4pt">
+                    <f:selectItems value="#{bean.protocols}"/>
+                </h:selectOneMenu>
+            </adm:property>
+            <adm:property id="port" label="#{i18nweb['grizzly.networkListener.port']}" for="portField" required="true"
+                          helpText="#{i18nweb['grizzly.networkListener.portHelp']}">
+                <h:inputText id="portField" value="#{bean.port}" size="40" maxlength="512" styleClass="required port TxtFld_sun4" required="true"
+                             requiredMessage="#{i18n['msg.JS.enterValue']} #{i18nweb['grizzly.networkListener.port']}"/>
+            </adm:property>
+            <adm:property id="addr" label="#{i18nweb['grizzly.networkListener.address']}" for="address"
+                          helpText="#{i18nweb['grizzly.networkListener.addressHelp']}">
+                <h:inputText id="address" value="#{bean.address}" size="40" maxlength="512" styleClass="TxtFld_sun4"/>
+            </adm:property>
+            <adm:property id="status" label="#{i18nweb['common.status']}" for="enabled" helpText="#{i18nweb['grizzly.networkListener.statusHelp']}">
+                <h:selectBooleanCheckbox id="enabled" value="#{bean.enabled}"/>
+            </adm:property>
+            <adm:property id="security" label="#{i18nweb['grizzly.networkListener.security']}" for="securityEnabled"
+                          helpText="#{i18nweb['grizzly.networkListener.securityHelp']}">
+                <h:selectBooleanCheckbox id="securityEnabled" value="#{bean.securityEnabled}"/>
+            </adm:property>
+            <adm:property id="JkEnabled" label="#{i18nweb['grizzly.networkListener.JkEnabled']}" for="jkEnabled"
+                          helpText="#{i18nweb['grizzly.networkListener.JkEnabledHelp']}">
+                <h:selectBooleanCheckbox id="jkEnabled" value="#{bean.jkEnabled}"/>
+            </adm:property>
+            <adm:property id="threadpool" label="#{i18nweb['grizzly.networkListener.threadPool']}" for="threadPool"
+                          helpText="#{i18nweb['grizzly.networkListener.threadPoolHelp']}">
+                <h:selectOneMenu id="threadPool" value="#{bean.threadPool}" styleClass="MnuStd_sun4">
+                    <f:selectItems value="#{bean.threadPools}"/>
+                </h:selectOneMenu>
+            </adm:property>
+            <adm:property id="transport" label="#{i18nweb['grizzly.networkListener.transport']}" for="transportField"
+                          helpText="#{i18nweb['grizzly.networkListener.transportHelp']}">
+                <h:selectOneMenu id="transportField" value="#{bean.transport}" styleClass="MnuStd_sun4">
+                    <f:selectItems value="#{bean.transports}"/>
+                </h:selectOneMenu>
+            </adm:property>
+        </adm:propertySheet>
+    </h:form>
+    <script>document.title = '#{i18nweb['grizzly.networkListenerNewPageTitle']}';</script>
+</ui:composition>
