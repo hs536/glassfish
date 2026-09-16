@@ -16,7 +16,6 @@
 
 package org.glassfish.admingui.common.util;
 
-import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 
 import java.io.Serializable;
@@ -49,6 +48,7 @@ public abstract class SslEditView implements Serializable {
     protected AdminRestService rest;
 
     private final Map<String, Object> values = new HashMap<>();
+    private final Flags flags = new Flags(values);
     private boolean edit;
     private AddRemoveList common = new AddRemoveList();
     private AddRemoveList ephemeral = new AddRemoveList();
@@ -125,44 +125,9 @@ public abstract class SslEditView implements Serializable {
         return values;
     }
 
-    public boolean isTls() {
-        return chosen("tlsEnabled");
-    }
-
-    public void setTls(boolean tls) {
-        choose("tlsEnabled", tls);
-    }
-
-    public boolean isTls11() {
-        return chosen("tls11Enabled");
-    }
-
-    public void setTls11(boolean tls11) {
-        choose("tls11Enabled", tls11);
-    }
-
-    public boolean isTls12() {
-        return chosen("tls12Enabled");
-    }
-
-    public void setTls12(boolean tls12) {
-        choose("tls12Enabled", tls12);
-    }
-
-    public boolean isTls13() {
-        return chosen("tls13Enabled");
-    }
-
-    public void setTls13(boolean tls13) {
-        choose("tls13Enabled", tls13);
-    }
-
-    public boolean isClientAuth() {
-        return chosen("clientAuthEnabled");
-    }
-
-    public void setClientAuth(boolean clientAuth) {
-        choose("clientAuthEnabled", clientAuth);
+    /** The settings that are shown as checkboxes. */
+    public Flags getFlags() {
+        return flags;
     }
 
     public AddRemoveList getCommonCiphers() {
@@ -201,7 +166,8 @@ public abstract class SslEditView implements Serializable {
                 && ecc.getSelected().isEmpty()) {
             return true;
         }
-        return chosen("ssl3Enabled") || isTls() || isTls11() || isTls12() || isTls13();
+        return chosen("ssl3Enabled") || chosen("tlsEnabled") || chosen("tls11Enabled") || chosen("tls12Enabled")
+                || chosen("tls13Enabled");
     }
 
     /** The cipher suites the Java runtime of the server supports. */
@@ -230,22 +196,6 @@ public abstract class SslEditView implements Serializable {
     }
 
     private boolean chosen(String key) {
-        return Boolean.parseBoolean(text(values.get(key)));
-    }
-
-    private void choose(String key, boolean value) {
-        values.put(key, String.valueOf(value));
-    }
-
-    protected static String text(Object value) {
-        return value == null ? "" : value.toString();
-    }
-
-    protected static String parameter(String name) {
-        return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(name);
-    }
-
-    protected static String contextPath() {
-        return FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        return flags.get(key);
     }
 }

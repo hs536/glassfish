@@ -29,19 +29,19 @@
 
     <adm:propertySheet id="propertySheet">
         <adm:property id="TLSProp" label="#{i18n['ssl.tlsLabel']}" for="TLS">
-            <h:selectBooleanCheckbox id="TLS" value="#{bean.tls}"/>
+            <h:selectBooleanCheckbox id="TLS" value="#{bean.flags['tlsEnabled']}"/>
         </adm:property>
         <adm:property id="TLS11Prop" label="#{i18n['ssl.tls11Label']}" for="TLS11">
-            <h:selectBooleanCheckbox id="TLS11" value="#{bean.tls11}"/>
+            <h:selectBooleanCheckbox id="TLS11" value="#{bean.flags['tls11Enabled']}"/>
         </adm:property>
         <adm:property id="TLS12Prop" label="#{i18n['ssl.tls12Label']}" for="TLS12">
-            <h:selectBooleanCheckbox id="TLS12" value="#{bean.tls12}"/>
+            <h:selectBooleanCheckbox id="TLS12" value="#{bean.flags['tls12Enabled']}"/>
         </adm:property>
         <adm:property id="TLS13Prop" label="#{i18n['ssl.tls13Label']}" for="TLS13">
-            <h:selectBooleanCheckbox id="TLS13" value="#{bean.tls13}"/>
+            <h:selectBooleanCheckbox id="TLS13" value="#{bean.flags['tls13Enabled']}"/>
         </adm:property>
         <adm:property id="ClientAuthProp" label="#{i18n['ssl.clientAuthLabel']}" for="ClientAuth" helpText="#{i18n['ssl.clientAuthHelp']}">
-            <h:selectBooleanCheckbox id="ClientAuth" value="#{bean.clientAuth}"/>
+            <h:selectBooleanCheckbox id="ClientAuth" value="#{bean.flags['clientAuthEnabled']}"/>
         </adm:property>
         <adm:property id="CertNicknameProp" label="#{i18n['ssl.certNicknameLabel']}" for="CertNickname" required="true"
                       helpText="#{i18n['ssl.certNicknameHelp']}">

@@ -16,9 +16,6 @@
 
 package org.glassfish.web.admingui.prototype;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import org.glassfish.admingui.common.util.SslEditView;
 
 /**
@@ -26,28 +23,28 @@ import org.glassfish.admingui.common.util.SslEditView;
  *
  * <p>
  * Prototype (adr/0006, adr/0008): what the SSL pages of a network listener and of a protocol have in common, which is
- * everything but the way the {@code <ssl>} element is created and the tabs above the page.
+ * everything but the way the {@code <ssl>} element is created.
  */
 public abstract class GrizzlySslView extends SslEditView {
 
     private static final long serialVersionUID = 1L;
 
-    private String configName;
-    private String protocolName;
-    private String cancelTo;
+    private GrizzlyTabs tabs;
 
     /** Reads the page parameters and then the settings. */
-    protected void open() {
-        String config = parameter("configName");
-        configName = config == null || config.isEmpty() ? HttpListeners.DEFAULT_CONFIG : config;
-        protocolName = text(parameter("name"));
-        cancelTo = text(parameter("cancelTo"));
+    protected void open(String defaultCancelTo) {
+        tabs = GrizzlyTabs.fromRequest(defaultCancelTo);
         load();
+    }
+
+    /** The pages of the other tabs and the page to go back to. */
+    public GrizzlyTabs getTabs() {
+        return tabs;
     }
 
     @Override
     protected String configName() {
-        return configName;
+        return tabs.getConfigName();
     }
 
     @Override
@@ -56,29 +53,10 @@ public abstract class GrizzlySslView extends SslEditView {
     }
 
     public String getConfigName() {
-        return configName;
-    }
-
-    public String getProtocolName() {
-        return protocolName;
-    }
-
-    /** The page the Cancel button goes back to, which the page that opened this one chose. */
-    public String getCancelPage() {
-        return contextPath() + "/" + cancelTo + "?configName=" + encode(configName);
+        return tabs.getConfigName();
     }
 
     protected String protocolUrl() {
-        return rest.child(HttpListeners.protocolsUrl(rest, configName), protocolName);
-    }
-
-    /** The page of one of the other tabs, with the parameters they all take. */
-    protected String tabPage(String page, String listenerName) {
-        return contextPath() + "/web/grizzly/" + page + "?configName=" + encode(configName) + "&name=" + encode(protocolName)
-                + (listenerName == null ? "" : "&listenerName=" + encode(listenerName)) + "&cancelTo=" + cancelTo;
-    }
-
-    protected static String encode(String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+        return rest.child(HttpListeners.protocolsUrl(rest, tabs.getConfigName()), tabs.getProtocolName());
     }
 }

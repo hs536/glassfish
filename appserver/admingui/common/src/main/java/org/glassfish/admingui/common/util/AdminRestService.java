@@ -93,6 +93,15 @@ public class AdminRestService {
         }
     }
 
+    /** The default values of the attributes of a resource type, or an empty map when the type is not there. */
+    public Map<String, String> defaultsOrEmpty(String url) {
+        try {
+            return defaults(url);
+        } catch (RuntimeException e) {
+            return Map.of();
+        }
+    }
+
     /** The names of the child resources of the given collection, sorted. */
     public List<String> childNames(String url) {
         try {

@@ -35,38 +35,18 @@ public class ListenerSslView extends GrizzlySslView {
 
     private static final long serialVersionUID = 1L;
 
-    private String listenerName;
-
     @PostConstruct
     protected void start() {
-        listenerName = text(parameter("listenerName"));
-        open();
+        open("web/grizzly/networkListeners.jsf");
     }
 
     @Override
     protected String createSslUrl() {
-        return rest.child(HttpListeners.listenersUrl(rest, getConfigName()), listenerName, "create-ssl");
+        return rest.child(HttpListeners.listenersUrl(rest, getConfigName()), getTabs().getListenerName(), "create-ssl");
     }
 
     @Override
     protected Map<String, Object> createParameters() {
         return Map.of("target", getConfigName());
-    }
-
-    public String getListenerName() {
-        return listenerName;
-    }
-
-    public String getGeneralPage() {
-        return contextPath() + "/web/grizzly/networkListenerEdit.jsf?configName=" + encode(getConfigName()) + "&name="
-                + encode(listenerName) + "&cancelTo=web/grizzly/networkListeners.jsf";
-    }
-
-    public String getHttpPage() {
-        return tabPage("listenerHttpEdit.jsf", listenerName);
-    }
-
-    public String getFileCachePage() {
-        return tabPage("listenerFileCache.jsf", listenerName);
     }
 }

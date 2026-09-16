@@ -20,33 +20,20 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
-import java.util.Map;
-
 /**
- * The SSL tab of a protocol.
+ * The file cache tab of a protocol.
  *
  * <p>
- * Prototype (adr/0006, adr/0008): the Facelets version of {@code web/grizzly/protocolSSLEdit.jsf}. The protocol itself
- * creates the settings, which it says with the type of the command.
+ * Prototype (adr/0008): the settings are those of the protocol; only the tabs and the page to go back to differ.
  */
 @Named
 @ViewScoped
-public class ProtocolSslView extends GrizzlySslView {
+public class ProtocolFileCacheView extends FileCacheEditView {
 
     private static final long serialVersionUID = 1L;
 
     @PostConstruct
     protected void start() {
         open("web/grizzly/protocols.jsf");
-    }
-
-    @Override
-    protected String createSslUrl() {
-        return rest.child(protocolUrl(), "create-ssl");
-    }
-
-    @Override
-    protected Map<String, Object> createParameters() {
-        return Map.of("target", getConfigName(), "type", "protocol");
     }
 }

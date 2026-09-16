@@ -29,12 +29,10 @@
     <c:set var="bean" value="#{listenerSslView}"/>
 
     <h:form id="propertyForm">
-        <adm:tabSet id="listenerTabs">
-            <adm:tab label="#{i18nweb['grizzly.networkListener.listenerTab']}" url="#{bean.generalPage}"/>
-            <adm:tab label="#{i18nweb['grizzly.sslTab']}" selected="true"/>
-            <adm:tab label="#{i18nweb['grizzly.httpTab']}" url="#{bean.httpPage}"/>
-            <adm:tab label="#{i18nweb['grizzly.fileCacheTab']}" url="#{bean.fileCachePage}"/>
-        </adm:tabSet>
+        <ui:include src="/web/grizzly/tabs.xhtml">
+            <ui:param name="tabs" value="#{bean.tabs}"/>
+            <ui:param name="selected" value="ssl"/>
+        </ui:include>
 
         <adm:pageTitle id="propertyContentPage" title="#{i18nweb['grizzly.sslPageTitle']}" helpText="#{i18nweb['grizzly.sslPageTitleHelp']}">
             <f:facet name="buttons">
@@ -44,7 +42,7 @@
                         <f:ajax execute="@form" render="@form"/>
                     </h:commandButton>
                     <input id="propertyForm:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
-                           onclick="admingui.ajax.loadPage({url: '#{bean.cancelPage}'}); return false;"/>
+                           onclick="admingui.ajax.loadPage({url: '#{bean.tabs.cancelPage}'}); return false;"/>
                 </h:panelGroup>
             </f:facet>
         </adm:pageTitle>

@@ -15,8 +15,10 @@
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 -->
 <!--
-    Prototype (adr/0006, adr/0008, adr/0009): the SSL tab of a protocol as a Facelets page. It takes precedence over
-    protocolSSLEdit.jsf and shares the settings with the SSL tab of a network listener.
+    Prototype (adr/0008): one tab of a protocol, with its tabs, its buttons and the settings it shows. It is the
+    Facelets counterpart of http.layout and fileCache.layout. A page says which Bean holds the settings ("bean"), which
+    tab it is ("selected"), what it is called ("title", "titleHelp") and which fragment shows the settings
+    ("fragment"); the fragment gets them as "settings".
 -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
@@ -25,19 +27,21 @@
                 xmlns:c="jakarta.tags.core"
                 xmlns:adm="jakarta.faces.composite/admingui">
     <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
-    <c:set var="i18nweb" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Strings')}"/>
-    <c:set var="bean" value="#{protocolSslView}"/>
 
     <h:form id="propertyForm">
         <ui:include src="/web/grizzly/tabs.xhtml">
             <ui:param name="tabs" value="#{bean.tabs}"/>
-            <ui:param name="selected" value="ssl"/>
+            <ui:param name="selected" value="#{selected}"/>
         </ui:include>
 
-        <adm:pageTitle id="propertyContentPage" title="#{i18nweb['grizzly.sslPageTitle']}" helpText="#{i18nweb['grizzly.sslPageTitleHelp']}">
+        <adm:pageTitle id="propertyContentPage" title="#{title}" helpText="#{titleHelp}">
             <f:facet name="buttons">
                 <h:panelGroup id="topButtons">
-                    <h:commandButton id="saveButton" value="#{bean.edit ? i18n['button.Save'] : i18n['button.OK']}" styleClass="Btn1_sun4"
+                    <h:commandButton id="loadDefaultButton" value="#{i18n['button.LoadDefaults']}" styleClass="Btn2_sun4"
+                                     action="#{bean.loadDefaults}">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                    <h:commandButton id="saveButton" value="#{i18n['button.Save']}" styleClass="Btn1_sun4" rendered="#{bean.found}"
                                      action="#{bean.save}">
                         <f:ajax execute="@form" render="@form"/>
                     </h:commandButton>
@@ -49,13 +53,14 @@
         <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
 
         <adm:propertySheet id="configNameSheet">
-            <adm:property id="configName" label="#{i18n['common.ConfigurationName']}">
+            <adm:property id="configNameProp" label="#{i18n['common.ConfigurationName']}">
                 <h:outputText id="config" value="#{bean.configName}"/>
             </adm:property>
         </adm:propertySheet>
-        <ui:include src="/common/shared/sslAttrs.xhtml">
-            <ui:param name="bean" value="#{protocolSslView}"/>
+        <ui:include src="#{fragment}">
+            <ui:param name="settings" value="#{bean.settings}"/>
+            <ui:param name="protocolName" value="#{bean.protocolName}"/>
         </ui:include>
     </h:form>
-    <script>document.title = '#{i18nweb['grizzly.sslPageTitle']}';</script>
+    <script>document.title = '#{title}';</script>
 </ui:composition>

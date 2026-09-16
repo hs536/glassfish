@@ -15,8 +15,8 @@
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 -->
 <!--
-    Prototype (adr/0006, adr/0008, adr/0009): the SSL tab of a protocol as a Facelets page. It takes precedence over
-    protocolSSLEdit.jsf and shares the settings with the SSL tab of a network listener.
+    Prototype (adr/0006, adr/0008, adr/0009): an existing protocol as a Facelets page. It takes precedence over
+    protocolEdit.jsf and is the first of the tabs of a protocol.
 -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
@@ -26,19 +26,21 @@
                 xmlns:adm="jakarta.faces.composite/admingui">
     <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
     <c:set var="i18nweb" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Strings')}"/>
-    <c:set var="bean" value="#{protocolSslView}"/>
+    <c:set var="bean" value="#{protocolEditView}"/>
 
     <h:form id="propertyForm">
         <ui:include src="/web/grizzly/tabs.xhtml">
             <ui:param name="tabs" value="#{bean.tabs}"/>
-            <ui:param name="selected" value="ssl"/>
+            <ui:param name="selected" value="general"/>
+            <ui:param name="otherTabs" value="#{bean.otherTabs}"/>
         </ui:include>
 
-        <adm:pageTitle id="propertyContentPage" title="#{i18nweb['grizzly.sslPageTitle']}" helpText="#{i18nweb['grizzly.sslPageTitleHelp']}">
+        <adm:pageTitle id="propertyContentPage" title="#{i18nweb['grizzly.protocolEditPageTitle']}"
+                       helpText="#{i18nweb['grizzly.protocolEditPageTitleHelp']}">
             <f:facet name="buttons">
                 <h:panelGroup id="topButtons">
-                    <h:commandButton id="saveButton" value="#{bean.edit ? i18n['button.Save'] : i18n['button.OK']}" styleClass="Btn1_sun4"
-                                     action="#{bean.save}">
+                    <h:commandButton id="saveButton" value="#{i18n['button.Save']}" styleClass="#{bean.readOnly ? 'Btn1Dis_sun4' : 'Btn1_sun4'}"
+                                     disabled="#{bean.readOnly}" rendered="#{bean.found}" action="#{bean.save}">
                         <f:ajax execute="@form" render="@form"/>
                     </h:commandButton>
                     <input id="propertyForm:cancelButton" type="button" class="Btn2_sun4" value="#{i18n['button.Cancel']}"
@@ -48,14 +50,23 @@
         </adm:pageTitle>
         <h:messages id="messages" layout="table" infoClass="inlinePageHelp_sun4" errorClass="LblLev2Txt_sun4"/>
 
-        <adm:propertySheet id="configNameSheet">
-            <adm:property id="configName" label="#{i18n['common.ConfigurationName']}">
-                <h:outputText id="config" value="#{bean.configName}"/>
-            </adm:property>
-        </adm:propertySheet>
-        <ui:include src="/common/shared/sslAttrs.xhtml">
-            <ui:param name="bean" value="#{protocolSslView}"/>
-        </ui:include>
+        <ui:fragment rendered="#{bean.found}">
+            <adm:propertySheet id="configNameSheet">
+                <adm:property id="configNameProp" label="#{i18n['common.ConfigurationName']}">
+                    <h:outputText id="config" value="#{bean.configName}"/>
+                </adm:property>
+            </adm:propertySheet>
+
+            <adm:propertySheet id="propertSectionTextField">
+                <adm:property id="nameProp" label="#{i18nweb['common.name']}">
+                    <h:outputText id="name" value="#{bean.name}"/>
+                </adm:property>
+                <adm:property id="statusProp" label="#{i18nweb['grizzly.protocol.securityEnabled']}" for="securityEnabled"
+                              helpText="#{bean.readOnly ? i18nweb['common.secureAdminHelp'] : ''}">
+                    <h:selectBooleanCheckbox id="securityEnabled" value="#{bean.protocol.flags['securityEnabled']}" disabled="#{bean.readOnly}"/>
+                </adm:property>
+            </adm:propertySheet>
+        </ui:fragment>
     </h:form>
-    <script>document.title = '#{i18nweb['grizzly.sslPageTitle']}';</script>
+    <script>document.title = '#{i18nweb['grizzly.protocolEditPageTitle']}';</script>
 </ui:composition>

@@ -82,7 +82,7 @@ final class HttpListeners {
         if (!http.isEmpty()) {
             removeFromVirtualServer(rest, configName, text(http.get("defaultVirtualServer")), listener);
         }
-        boolean ownProtocol = protocol.equals(listener + PROTOCOL_SUFFIX) && usedBy(rest, configName, protocol).size() == 1;
+        boolean ownProtocol = protocol.equals(listener + PROTOCOL_SUFFIX) && listenersOf(rest, configName, protocol).size() == 1;
         rest.delete(listenerUrl, Map.of("target", configName));
         if (ownProtocol) {
             rest.delete(protocolUrl, Map.of("target", configName));
@@ -90,7 +90,7 @@ final class HttpListeners {
     }
 
     /** The listeners that use the protocol. */
-    private static List<String> usedBy(AdminRestService rest, String configName, String protocol) {
+    static List<String> listenersOf(AdminRestService rest, String configName, String protocol) {
         List<String> listeners = new ArrayList<>();
         String url = listenersUrl(rest, configName);
         for (String name : rest.childNames(url)) {
@@ -101,12 +101,24 @@ final class HttpListeners {
         return listeners;
     }
 
+    /** Moves a listener from the virtual server it was on to the one it belongs to now. */
+    static void moveToVirtualServer(AdminRestService rest, String configName, String listener, String from, String to) {
+        changeVirtualServer(rest, configName, from, listener, false);
+        changeVirtualServer(rest, configName, to, listener, true);
+    }
+
     private static void removeFromVirtualServer(AdminRestService rest, String configName, String virtualServer, String listener) {
+        changeVirtualServer(rest, configName, virtualServer, listener, false);
+    }
+
+    /** Adds the listener to the virtual server, or removes it, and saves the virtual server. */
+    private static void changeVirtualServer(AdminRestService rest, String configName, String virtualServer, String listener,
+            boolean add) {
         if (virtualServer.isEmpty()) {
             return;
         }
         String url = rest.child(virtualServersUrl(rest, configName), virtualServer);
-        Map<String, Object> attributes = new LinkedHashMap<>(rest.attributes(url));
+        Map<String, Object> attributes = new LinkedHashMap<>(rest.attributesOrEmpty(url));
         if (attributes.isEmpty()) {
             return;
         }
@@ -115,6 +127,9 @@ final class HttpListeners {
             if (!name.isBlank() && !name.strip().equals(listener)) {
                 names.add(name.strip());
             }
+        }
+        if (add) {
+            names.add(listener);
         }
         attributes.put("networkListeners", String.join(",", names));
         rest.post(url, attributes);

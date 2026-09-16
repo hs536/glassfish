@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0008): the HTTP settings of a protocol, which the HTTP tab and the page of a new protocol share. It
+    is the Facelets counterpart of httpAttr.inc; "settings" is a org.glassfish.web.admingui.prototype.HttpSettings, and
+    "protocolName" is shown on the tab but not on the page of a new protocol.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18nweb" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Strings')}"/>
+
+    <adm:propertySheet id="httpTextField" legend="#{i18nweb['grizzly.protocolNew.httpSectionTitle']}">
+        <adm:property id="protocolNameProp" label="#{i18nweb['grizzly.protocol.protocolName']}" rendered="#{not empty protocolName}">
+            <h:outputText id="protocolName" value="#{protocolName}"/>
+        </adm:property>
+        <adm:property id="ServerNameProp" label="#{i18nweb['http.serverNameLabel']}" for="ServerName" helpText="#{i18nweb['http.serverNameHelp']}">
+            <h:inputText id="ServerName" value="#{settings.values['serverName']}" size="50" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="behindProxyProp" label="#{i18nweb['http.BehindProxy']}" for="behindProxyEnabled" helpText="#{i18nweb['http.BehindProxyHelp']}">
+            <h:selectBooleanCheckbox id="behindProxyEnabled" value="#{settings.flags['behindProxy']}"/>
+            <h:outputLabel for="behindProxyEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="DefaultVirtServersProp" label="#{i18nweb['http.defVirtualServerLabel']}" for="vs"
+                      helpText="#{i18nweb['http.defVirtualServerLabelHelp']}">
+            <h:selectOneMenu id="vs" value="#{settings.values['defaultVirtualServer']}" styleClass="MnuStd_sun4">
+                <f:selectItems value="#{settings.virtualServers}"/>
+            </h:selectOneMenu>
+        </adm:property>
+        <adm:property id="RedirectPortProp" label="#{i18nweb['http.redirectPortLabel']}" for="RedirectPort"
+                      helpText="#{i18nweb['http.redirectPortLabelHelp']}">
+            <h:inputText id="RedirectPort" value="#{settings.values['redirectPort']}" size="20" maxlength="512" styleClass="port TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="maxCProp" label="#{i18nweb['http.maxConnections']}" for="maxC" helpText="#{i18nweb['http.maxConnectionsHelp']}">
+            <h:inputText id="maxC" value="#{settings.values['maxConnections']}" size="20" maxlength="512" styleClass="integer TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="TimeoutSecondsProp" label="#{i18nweb['http.TimeoutSeconds']}" for="TimeoutSeconds"
+                      helpText="#{i18nweb['http.TimeoutSecondsHelp']}">
+            <h:inputText id="TimeoutSeconds" value="#{settings.values['timeoutSeconds']}" size="20" maxlength="512"
+                         styleClass="intAllowMinusOne TxtFld_sun4"/>
+            <h:outputText id="timeoutUnit" value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="DisableUploadTimeoutProp" label="#{i18nweb['http.DisableUploadTimeout']}" for="uploadTimeoutEnabled"
+                      helpText="#{i18nweb['http.DisableUploadTimeoutHelp']}">
+            <h:selectBooleanCheckbox id="uploadTimeoutEnabled" value="#{settings.flags['uploadTimeoutEnabled']}"/>
+            <h:outputLabel for="uploadTimeoutEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="connectionUploadTimeoutProp" label="#{i18nweb['http.ConnectionUploadTimeout']}" for="connectionUploadTimeout"
+                      helpText="#{i18nweb['http.ConnectionUploadTimeoutHelp']}">
+            <h:inputText id="connectionUploadTimeout" value="#{settings.values['connectionUploadTimeoutMillis']}" size="20" maxlength="512"
+                         styleClass="intAllowMinusOne TxtFld_sun4"/>
+            <h:outputText id="connectionUploadTimeoutUnit" value="#{i18n['common.Milliseconds']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="RequestTimeoutSecondsProp" label="#{i18nweb['http.RequestTimeoutSeconds']}" for="RequestTimeoutSeconds"
+                      helpText="#{i18nweb['http.RequestTimeoutSecondsHelp']}">
+            <h:inputText id="RequestTimeoutSeconds" value="#{settings.values['requestTimeoutSeconds']}" size="20" maxlength="512"
+                         styleClass="intAllowMinusOne TxtFld_sun4"/>
+            <h:outputText id="requestTimeoutUnit" value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="sendBsizeProp" label="#{i18nweb['http.SendBufferSize']}" for="sendBsize" helpText="#{i18nweb['http.SendBufferSizeHelp']}">
+            <h:inputText id="sendBsize" value="#{settings.values['sendBufferSizeBytes']}" size="20" maxlength="512" styleClass="integer TxtFld_sun4"/>
+            <h:outputText id="sendBsizeUnit" value="#{i18n['common.Bytes']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="headerBLengthProp" label="#{i18nweb['http.HeaderBufferLength']}" for="headerBLength"
+                      helpText="#{i18nweb['http.HeaderBufferLengthHelp']}">
+            <h:inputText id="headerBLength" value="#{settings.values['headerBufferLengthBytes']}" size="20" maxlength="512"
+                         styleClass="integer TxtFld_sun4"/>
+            <h:outputText id="headerBLengthUnit" value="#{i18n['common.Bytes']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="MaxPostSizeProp" label="#{i18nweb['http.MaxPostSize']}" for="MaxPostSize" helpText="#{i18nweb['http.MaxPostSizeHelp']}">
+            <h:inputText id="MaxPostSize" value="#{settings.values['maxPostSizeBytes']}" size="20" maxlength="512"
+                         styleClass="intAllowMinusOne TxtFld_sun4"/>
+            <h:outputText id="maxPostSizeUnit" value="#{i18n['common.Bytes']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="MaxSavePostSizeProp" label="#{i18nweb['http.MaxSavePostSize']}" for="MaxSavePostSize"
+                      helpText="#{i18nweb['http.MaxSavePostSizeHelp']}">
+            <h:inputText id="MaxSavePostSize" value="#{settings.values['maxSavePostSizeBytes']}" size="20" maxlength="512"
+                         styleClass="integer TxtFld_sun4"/>
+            <h:outputText id="maxSavePostSizeUnit" value="#{i18n['common.Bytes']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="UriEncodingProp" label="#{i18nweb['http.UriEncoding']}" for="UriEncoding" helpText="#{i18nweb['http.UriEncodingHelp']}">
+            <h:inputText id="UriEncoding" value="#{settings.values['uriEncoding']}" size="50" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="VersionProp" label="#{i18nweb['http.Version']}" for="Version" helpText="#{i18nweb['http.VersionHelp']}">
+            <h:inputText id="Version" value="#{settings.values['version']}" size="50" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="CompressionProp" label="#{i18nweb['http.Compression']}" for="Compression" helpText="#{i18nweb['http.CompressionHelp']}">
+            <h:selectOneMenu id="Compression" value="#{settings.values['compression']}" styleClass="MnuStd_sun4">
+                <f:selectItems value="#{settings.compressionChoices}"/>
+            </h:selectOneMenu>
+        </adm:property>
+        <adm:property id="CompressableMimeTypeProp" label="#{i18nweb['http.CompressableMimeType']}" for="CompressableMimeType"
+                      helpText="#{i18nweb['http.CompressableMimeTypeHelp']}">
+            <h:inputText id="CompressableMimeType" value="#{settings.values['compressableMimeType']}" size="50" maxlength="512"
+                         styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="compressableMimeProp" label="#{i18nweb['http.CompressionMinSizeBytes']}" for="compressableMime"
+                      helpText="#{i18nweb['http.CompressionMinSizeBytesHelp']}">
+            <h:inputText id="compressableMime" value="#{settings.values['compressionMinSizeBytes']}" size="20" maxlength="512"
+                         styleClass="integer TxtFld_sun4"/>
+            <h:outputText id="compressionMinSizeUnit" value="#{i18n['common.Bytes']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="NoCompressionUserAgentsProp" label="#{i18nweb['http.NoCompressionUserAgents']}" for="NoCompressionUserAgents"
+                      helpText="#{i18nweb['http.NoCompressionUserAgentsHelp']}">
+            <h:inputText id="NoCompressionUserAgents" value="#{settings.values['noCompressionUserAgents']}" size="20" maxlength="512"
+                         styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="RestrictedUserAgentsProp" label="#{i18nweb['http.RestrictedUserAgents']}" for="RestrictedUserAgents"
+                      helpText="#{i18nweb['http.RestrictedUserAgentsHelp']}">
+            <h:inputText id="RestrictedUserAgents" value="#{settings.values['restrictedUserAgents']}" size="50" maxlength="512"
+                         styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="DefaultResponseTypeProp" label="#{i18nweb['http.DefaultResponseType']}" for="DefaultResponseType"
+                      helpText="#{i18nweb['http.DefaultResponseTypeHelp']}">
+            <h:inputText id="DefaultResponseType" value="#{settings.values['defaultResponseType']}" size="50" maxlength="512"
+                         styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="ForcedResponseTypeProp" label="#{i18nweb['http.ForcedResponseType']}" for="ForcedResponseType"
+                      helpText="#{i18nweb['http.ForcedResponseTypeHelp']}">
+            <h:inputText id="ForcedResponseType" value="#{settings.values['forcedResponseType']}" size="50" maxlength="512"
+                         styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="adapterProp" label="#{i18nweb['http.Adapter']}" for="adapter" helpText="#{i18nweb['http.AdapterHelp']}">
+            <h:inputText id="adapter" value="#{settings.values['adapter']}" size="50" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+        <adm:property id="CometProp" label="#{i18nweb['http.CometSupport']}" for="cometEnabled" helpText="#{i18nweb['http.CometSupportHelp']}">
+            <h:selectBooleanCheckbox id="cometEnabled" value="#{settings.flags['cometSupportEnabled']}"/>
+            <h:outputLabel for="cometEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="DnsLookupProp" label="#{i18nweb['http.DnsLookup']}" for="dnsLookupEnabled" helpText="#{i18nweb['http.DnsLookupHelp']}">
+            <h:selectBooleanCheckbox id="dnsLookupEnabled" value="#{settings.flags['dnsLookupEnabled']}"/>
+            <h:outputLabel for="dnsLookupEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="RcmSupportProp" label="#{i18nweb['http.RcmSupport']}" for="rcmSupportEnabled" helpText="#{i18nweb['http.RcmSupportHelp']}">
+            <h:selectBooleanCheckbox id="rcmSupportEnabled" value="#{settings.flags['rcmSupportEnabled']}"/>
+            <h:outputLabel for="rcmSupportEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="TraceProp" label="#{i18nweb['http.Trace']}" for="traceEnabled" helpText="#{i18nweb['http.TraceHelp']}">
+            <h:selectBooleanCheckbox id="traceEnabled" value="#{settings.flags['traceEnabled']}"/>
+            <h:outputLabel for="traceEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="AuthPassThroughProp" label="#{i18nweb['http.AuthPassThrough']}" for="authPassThroughEnabled"
+                      helpText="#{i18nweb['http.AuthPassThroughHelp']}">
+            <h:selectBooleanCheckbox id="authPassThroughEnabled" value="#{settings.flags['authPassThroughEnabled']}"/>
+            <h:outputLabel for="authPassThroughEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="chunkingProp" label="#{i18nweb['http.Chunking']}" for="chunkingEnabled" helpText="#{i18nweb['http.ChunkingHelp']}">
+            <h:selectBooleanCheckbox id="chunkingEnabled" value="#{settings.flags['chunkingEnabled']}"/>
+            <h:outputLabel for="chunkingEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="XpoweredByProp" label="#{i18nweb['http.XpoweredBy']}" for="xpoweredByEnabled" helpText="#{i18nweb['http.XpoweredByHelp']}">
+            <h:selectBooleanCheckbox id="xpoweredByEnabled" value="#{settings.flags['xpoweredBy']}"/>
+        </adm:property>
+        <adm:property id="encodedSlashProp" label="#{i18nweb['http.EncodedSlash']}" for="encodedSlashEnabled"
+                      helpText="#{i18nweb['http.EncodedSlashHelp']}">
+            <h:selectBooleanCheckbox id="encodedSlashEnabled" value="#{settings.flags['encodedSlashEnabled']}"/>
+            <h:outputLabel for="encodedSlashEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="websocketsProp" label="#{i18nweb['http.WebsocketsSupport']}" for="websocketsEnabled"
+                      helpText="#{i18nweb['http.WebsocketsSupportHelp']}">
+            <h:selectBooleanCheckbox id="websocketsEnabled" value="#{settings.flags['websocketsSupportEnabled']}"/>
+            <h:outputLabel for="websocketsEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+    </adm:propertySheet>
+</ui:composition>

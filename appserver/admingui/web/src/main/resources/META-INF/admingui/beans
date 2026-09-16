@@ -23,3 +23,9 @@ org.glassfish.web.admingui.prototype.NetworkListenerNewView
 org.glassfish.web.admingui.prototype.NetworkListenerEditView
 org.glassfish.web.admingui.prototype.ListenerSslView
 org.glassfish.web.admingui.prototype.ProtocolSslView
+org.glassfish.web.admingui.prototype.ProtocolNewView
+org.glassfish.web.admingui.prototype.ProtocolEditView
+org.glassfish.web.admingui.prototype.ListenerHttpEditView
+org.glassfish.web.admingui.prototype.ProtocolHttpView
+org.glassfish.web.admingui.prototype.ListenerFileCacheView
+org.glassfish.web.admingui.prototype.ProtocolFileCacheView

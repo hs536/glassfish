@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+-->
+<!--
+    Prototype (adr/0008): the file cache settings of a protocol, which the File Cache tab and the page of a new protocol
+    share. It is the Facelets counterpart of fileCacheAttrs.inc; "settings" is a org.glassfish.admingui.common.util.Settings,
+    and "protocolName" is shown on the tab but not on the page of a new protocol.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:c="jakarta.tags.core"
+                xmlns:adm="jakarta.faces.composite/admingui">
+    <c:set var="i18n" value="#{consoleBundles.get('', 'org.glassfish.admingui.core.Strings')}"/>
+    <c:set var="i18nweb" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Strings')}"/>
+
+    <adm:propertySheet id="fileTextField" legend="#{i18nweb['grizzly.protocolNew.fileCacheSectionTitle']}">
+        <adm:property id="fileProtocolNameProp" label="#{i18nweb['grizzly.protocol.protocolName']}" rendered="#{not empty protocolName}">
+            <h:outputText id="fileProtocolName" value="#{protocolName}"/>
+        </adm:property>
+        <adm:property id="fileStatusProp" label="#{i18nweb['common.status']}" for="fileEnabled">
+            <h:selectBooleanCheckbox id="fileEnabled" value="#{settings.flags['enabled']}"/>
+            <h:outputLabel for="fileEnabled" value="#{i18nweb['common.enabled']}" styleClass="LblLev2Txt_sun4" style="margin-left: 4pt"/>
+        </adm:property>
+        <adm:property id="maxAgeProp" label="#{i18nweb['fileCache.maxAge']}" for="maxAge" helpText="#{i18nweb['fileCache.maxAgeHelp']}">
+            <h:inputText id="maxAge" value="#{settings.values['maxAgeSeconds']}" size="20" maxlength="512" styleClass="TxtFld_sun4"/>
+            <h:outputText id="maxAgeUnit" value="#{i18n['common.Seconds']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="maxCacheSizeBytesProp" label="#{i18nweb['fileCache.MaxCacheSizeBytes']}" for="maxCacheSizeBytes"
+                      helpText="#{i18nweb['fileCache.MaxCacheSizeBytesHelp']}">
+            <h:inputText id="maxCacheSizeBytes" value="#{settings.values['maxCacheSizeBytes']}" size="20" maxlength="512" styleClass="TxtFld_sun4"/>
+            <h:outputText id="maxCacheSizeUnit" value="#{i18n['common.Bytes']}" style="padding: 8pt"/>
+        </adm:property>
+        <adm:property id="maxFileProp" label="#{i18nweb['fileCache.MaxFileCount']}" for="maxFile" helpText="#{i18nweb['fileCache.MaxFileCountHelp']}">
+            <h:inputText id="maxFile" value="#{settings.values['maxFilesCount']}" size="20" maxlength="512" styleClass="TxtFld_sun4"/>
+        </adm:property>
+    </adm:propertySheet>
+</ui:composition>
