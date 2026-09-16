@@ -18,3 +18,4 @@ org.glassfish.web.admingui.prototype.WebContainerSessionView
 org.glassfish.web.admingui.prototype.WebContainerManagerView
 org.glassfish.web.admingui.prototype.WebContainerStoreView
 org.glassfish.web.admingui.prototype.AccessLogView
+org.glassfish.web.admingui.prototype.NetworkListenersView
