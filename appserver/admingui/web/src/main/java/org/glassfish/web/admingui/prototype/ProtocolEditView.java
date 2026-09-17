@@ -74,7 +74,7 @@ public class ProtocolEditView implements Serializable {
 
     public void save() {
         try {
-            rest.create(protocolUrl(), new HashMap<>(protocol.getValues()), List.of("securityEnabled"));
+            rest.create(protocolUrl(), protocol.toSend(), List.of("securityEnabled"));
             load();
             ConsoleMessages.info(ConsoleMessages.core("msg.saveSuccessful"));
         } catch (RuntimeException e) {

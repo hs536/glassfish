@@ -47,8 +47,7 @@ public abstract class SslEditView implements Serializable {
     @Inject
     protected AdminRestService rest;
 
-    private final Map<String, Object> values = new HashMap<>();
-    private final Flags flags = new Flags(values);
+    private final Settings settings = new Settings();
     private boolean edit;
     private AddRemoveList common = new AddRemoveList();
     private AddRemoveList ephemeral = new AddRemoveList();
@@ -70,19 +69,19 @@ public abstract class SslEditView implements Serializable {
 
     /** Reads the settings, or the defaults when the endpoint has no SSL yet. */
     protected void load() {
-        values.clear();
         Map<String, Object> attributes = rest.attributesOrEmpty(sslUrl());
         edit = !attributes.isEmpty();
         if (edit) {
-            values.putAll(attributes);
+            settings.replace(attributes);
         } else {
+            settings.replace(Map.of());
             // The server has no endpoint that tells the defaults of an <ssl> element, so they are the ones of the
             // JSFTemplating page
-            values.put("ssl3Enabled", "true");
-            values.put("tlsEnabled", "true");
-            values.put("trustMaxCertLength", "5");
+            settings.getValues().put("ssl3Enabled", "true");
+            settings.getValues().put("tlsEnabled", "true");
+            settings.getValues().put("trustMaxCertLength", "5");
         }
-        List<String> chosen = SslCiphers.parse(values.get("ssl3TlsCiphers"));
+        List<String> chosen = SslCiphers.parse(settings.getValues().get("ssl3TlsCiphers"));
         List<String> supported = supportedCiphers();
         common = list(SslCiphers.common(supported), SslCiphers.common(chosen));
         ephemeral = list(SslCiphers.ephemeral(supported), SslCiphers.ephemeral(chosen));
@@ -98,14 +97,16 @@ public abstract class SslEditView implements Serializable {
             return;
         }
         try {
-            values.put("ssl3TlsCiphers", chosenCiphers());
+            settings.getValues().put("ssl3TlsCiphers", chosenCiphers());
             if (!edit) {
                 // create-ssl does not take all the settings, so the element is created with the nickname alone
                 Map<String, Object> parameters = new HashMap<>(createParameters());
-                parameters.put("certNickname", values.get("certNickname"));
+                parameters.put("certNickname", settings.getValues().get("certNickname"));
                 rest.create(createSslUrl(), parameters, List.of());
             }
-            Map<String, Object> attributes = new HashMap<>(values);
+            Map<String, Object> attributes = settings.toSend();
+            // The cipher suites are always sent, as on the JSFTemplating page, so that removing all of them is saved
+            attributes.put("ssl3TlsCiphers", settings.getValues().get("ssl3TlsCiphers"));
             attributes.remove(NOT_SENT);
             rest.create(sslUrl(), attributes, BOOLEANS);
             load();
@@ -122,12 +123,12 @@ public abstract class SslEditView implements Serializable {
 
     /** The settings the page shows as fields. */
     public Map<String, Object> getValues() {
-        return values;
+        return settings.getValues();
     }
 
     /** The settings that are shown as checkboxes. */
     public Flags getFlags() {
-        return flags;
+        return settings.getFlags();
     }
 
     public AddRemoveList getCommonCiphers() {
@@ -196,6 +197,6 @@ public abstract class SslEditView implements Serializable {
     }
 
     private boolean chosen(String key) {
-        return flags.get(key);
+        return settings.getFlags().get(key);
     }
 }

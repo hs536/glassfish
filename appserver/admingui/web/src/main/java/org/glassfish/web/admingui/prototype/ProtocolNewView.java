@@ -77,8 +77,7 @@ public class ProtocolNewView implements Serializable {
                 ConsoleMessages.error(WebStrings.get("grizzly.protocol.alreadyExist", name));
                 return;
             }
-            rest.create(HttpListeners.protocolsUrl(rest, configName), new HashMap<>(protocol.getValues()),
-                    List.of("securityEnabled"));
+            rest.create(HttpListeners.protocolsUrl(rest, configName), protocol.toSend(), List.of("securityEnabled"));
 
             // create-http takes only the virtual server; the rest of the settings are saved right after it
             Map<String, Object> created = new LinkedHashMap<>();
@@ -86,8 +85,7 @@ public class ProtocolNewView implements Serializable {
             created.put("defaultVirtualServer", http.text("defaultVirtualServer"));
             rest.create(protocolUrl(name, "create-http"), created, List.of());
             rest.create(protocolUrl(name, "http"), http.toSend(), HttpSettings.BOOLEANS);
-            rest.create(protocolUrl(name, "http", "file-cache"), new HashMap<>(fileCache.getValues()),
-                    FileCacheEditView.BOOLEANS);
+            rest.create(protocolUrl(name, "http", "file-cache"), fileCache.toSend(), FileCacheEditView.BOOLEANS);
             loadPage(getListPage());
         } catch (RuntimeException e) {
             ConsoleMessages.error(e.getMessage());

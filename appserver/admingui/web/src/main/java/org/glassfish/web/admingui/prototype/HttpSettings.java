@@ -57,8 +57,9 @@ public class HttpSettings extends Settings {
     }
 
     /** The values to send, without the ones the server does not take without a value. */
-    Map<String, Object> toSend() {
-        Map<String, Object> attributes = new HashMap<>(getValues());
+    @Override
+    public Map<String, Object> toSend() {
+        Map<String, Object> attributes = super.toSend();
         for (String name : NOT_SENT_WHEN_EMPTY) {
             if (text(name).isEmpty()) {
                 attributes.remove(name);

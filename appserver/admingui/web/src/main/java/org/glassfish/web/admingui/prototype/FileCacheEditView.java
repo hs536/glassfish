@@ -63,7 +63,7 @@ public abstract class FileCacheEditView implements Serializable {
 
     public void save() {
         try {
-            rest.create(fileCacheUrl(), new HashMap<>(fileCache.getValues()), BOOLEANS);
+            rest.create(fileCacheUrl(), fileCache.toSend(), BOOLEANS);
             load();
             ConsoleMessages.info(ConsoleMessages.core("msg.saveSuccessful"));
         } catch (RuntimeException e) {

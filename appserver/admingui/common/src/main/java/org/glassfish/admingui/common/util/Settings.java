@@ -33,6 +33,7 @@ public class Settings implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, Object> values = new HashMap<>();
+    private final Map<String, Object> read = new HashMap<>();
     private final Flags flags = new Flags(values);
 
     /** The values as the admin REST interface has them. */
@@ -49,6 +50,22 @@ public class Settings implements Serializable {
     public void replace(Map<String, ?> attributes) {
         values.clear();
         values.putAll(attributes);
+        read.clear();
+        read.putAll(attributes);
+    }
+
+    /**
+     * The values to send to the server: an attribute that is empty and that the server had no value for is left out, as
+     * the JSFTemplating pages leave it out (X-29). An attribute the user cleared is sent, so that it is cleared.
+     */
+    public Map<String, Object> toSend() {
+        Map<String, Object> attributes = new HashMap<>(values);
+        attributes.entrySet().removeIf(attribute -> isEmpty(attribute.getValue()) && read.get(attribute.getKey()) == null);
+        return attributes;
+    }
+
+    private static boolean isEmpty(Object value) {
+        return value == null || value.toString().isEmpty();
     }
 
     /** The value of one attribute as text, which is empty when the attribute is not there. */
