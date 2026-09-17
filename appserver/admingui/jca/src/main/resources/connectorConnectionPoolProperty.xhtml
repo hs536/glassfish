@@ -59,6 +59,7 @@
             </adm:propertySheet>
             <adm:propertyTable id="basicTable" rows="#{bean.properties}" title="#{i18n['common.AdditionalProperties']}" descriptions="false"/>
         </ui:fragment>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['connectorConnectionPoolProperty']}"/>
     </h:form>
     <script>document.title = '#{i18njca['connectorConnectionPool.propertyPageTitle']}';</script>
 </ui:composition>

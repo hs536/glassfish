@@ -63,6 +63,7 @@
             </ui:include>
             <adm:propertyTable id="basicTable" rows="#{bean.properties}" title="#{i18n['common.AdditionalProperties']}"/>
         </ui:fragment>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jmail', 'org.glassfish.jmail.admingui.Helplinks')['javaMailSessionEdit']}"/>
     </h:form>
     <script>document.title = '#{i18njmail['javaMail.editPageTitle']}';</script>
 </ui:composition>

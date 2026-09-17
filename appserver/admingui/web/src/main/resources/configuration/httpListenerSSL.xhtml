@@ -57,6 +57,7 @@
         <ui:include src="/common/shared/sslAttrs.xhtml">
             <ui:param name="bean" value="#{httpListenerSslView}"/>
         </ui:include>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['protocolSSLEdit']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['grizzly.sslPageTitle']}';</script>
 </ui:composition>

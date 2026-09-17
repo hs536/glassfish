@@ -77,6 +77,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['networkListeners']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['grizzly.networkListenersPageTitle']}';</script>
 </ui:composition>

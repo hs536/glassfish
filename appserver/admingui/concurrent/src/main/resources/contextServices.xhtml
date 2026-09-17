@@ -23,6 +23,7 @@
                 xmlns:ui="jakarta.faces.facelets">
     <ui:include src="/concurrent/concurrentResourceList.xhtml">
         <ui:param name="bean" value="#{contextServicesView}"/>
+        <ui:param name="helpKey" value="contextServices"/>
         <ui:param name="titleKey" value="contextServices.pageTitle"/>
         <ui:param name="tableTitleKey" value="resourcesTable.contextServices"/>
         <ui:param name="newPage" value="/concurrent/contextServiceNew.jsf"/>

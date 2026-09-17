@@ -70,6 +70,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['httpListeners']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['configuration.httpListenersPageTitle']}';</script>
 </ui:composition>

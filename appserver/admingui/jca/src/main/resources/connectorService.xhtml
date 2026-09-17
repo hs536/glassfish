@@ -60,6 +60,7 @@
                 </h:selectOneMenu>
             </adm:property>
         </adm:propertySheet>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['connectorService']}"/>
     </h:form>
     <script>document.title = '#{i18njca['connectorService.editPageTitle']}';</script>
 </ui:composition>

@@ -61,6 +61,7 @@
             <ui:param name="settings" value="#{bean.settings}"/>
             <ui:param name="protocolName" value="#{bean.protocolName}"/>
         </ui:include>
+        <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')[helpKey]}"/>
     </h:form>
     <script>document.title = '#{title}';</script>
 </ui:composition>

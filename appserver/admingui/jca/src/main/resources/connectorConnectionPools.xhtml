@@ -71,6 +71,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['connectorConnectionPools']}"/>
     </h:form>
     <script>document.title = '#{i18njca['connectorConnectionPools.pageTitle']}';</script>
 </ui:composition>

@@ -52,6 +52,7 @@
                 </tr>
             </ui:repeat>
         </adm:propertySheet>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['networkConfig']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['grizzly.networkConfigPageTitle']}';</script>
 </ui:composition>

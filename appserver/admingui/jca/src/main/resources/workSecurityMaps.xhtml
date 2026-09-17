@@ -60,6 +60,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['workSecurityMaps']}"/>
     </h:form>
     <script>document.title = '#{i18njca['workSecurityMaps.pageTitle']}';</script>
 </ui:composition>

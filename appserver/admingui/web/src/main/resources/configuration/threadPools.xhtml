@@ -73,6 +73,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['threadPools']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['configuration.threadPoolPageTitle']}';</script>
 </ui:composition>

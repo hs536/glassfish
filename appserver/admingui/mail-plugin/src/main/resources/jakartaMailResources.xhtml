@@ -76,6 +76,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jmail', 'org.glassfish.jmail.admingui.Helplinks')['javaMailSessions']}"/>
     </h:form>
     <script>document.title = '#{i18njmail['javaMailSessions.pageTitle']}';</script>
 </ui:composition>

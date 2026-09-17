@@ -78,6 +78,7 @@
                 <h:inputText id="descAdaptor" value="#{bean.description}" size="55" maxlength="512" styleClass="TxtFld_sun4"/>
             </adm:property>
         </adm:propertySheet>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['workSecurityMapNew']}"/>
     </h:form>
     <script>document.title = '#{i18njca['workSecurityMap.newPageTitle']}';</script>
 </ui:composition>

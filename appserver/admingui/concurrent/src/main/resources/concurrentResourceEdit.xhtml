@@ -59,6 +59,7 @@
             </ui:include>
             <adm:propertyTable id="basicTable" rows="#{bean.properties}" title="#{i18n['common.AdditionalProperties']}"/>
         </ui:fragment>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('concurrent', 'org.glassfish.concurrent.admingui.Helplinks')[helpKey]}"/>
     </h:form>
     <script>document.title = '#{i18ncon[titleKey]}';</script>
 </ui:composition>

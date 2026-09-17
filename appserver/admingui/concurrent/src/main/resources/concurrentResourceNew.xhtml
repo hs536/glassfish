@@ -53,6 +53,7 @@
         <c:forEach items="#{consoleIntegrationPoints.faceletsViews('org.glassfish.admingui:TargetSectionForResource')}" var="targetView">
             <ui:include src="#{targetView}"/>
         </c:forEach>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('concurrent', 'org.glassfish.concurrent.admingui.Helplinks')[helpKey]}"/>
     </h:form>
     <script>document.title = '#{i18ncon[titleKey]}';</script>
 </ui:composition>

@@ -48,6 +48,7 @@
                 <ui:param name="edit" value="#{true}"/>
             </ui:include>
         </ui:fragment>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['transportEdit']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['transport.editPageTitle']}';</script>
 </ui:composition>

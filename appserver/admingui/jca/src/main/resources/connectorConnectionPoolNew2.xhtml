@@ -110,6 +110,7 @@
         </adm:propertySheet>
 
         <adm:propertyTable id="basicTable" rows="#{wizard.properties}" title="#{i18n['common.AdditionalProperties']}" descriptions="false"/>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['connectorConnectionPoolNew2']}"/>
     </h:form>
     <script>document.title = '#{i18njca['connectorConnectionPool.step2PageTitle']}';</script>
 </ui:composition>

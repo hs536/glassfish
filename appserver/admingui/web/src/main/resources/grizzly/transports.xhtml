@@ -68,6 +68,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['transports']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['transport.listPageTitle']}';</script>
 </ui:composition>

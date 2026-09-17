@@ -68,6 +68,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['virtualServers']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['vs.ListPageTitle']}';</script>
 </ui:composition>

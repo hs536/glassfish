@@ -47,6 +47,7 @@
             <ui:param name="bean" value="#{bean}"/>
             <ui:param name="edit" value="#{false}"/>
         </ui:include>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['threadPoolNew']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['configuration.threadPoolNewPageTitle']}';</script>
 </ui:composition>

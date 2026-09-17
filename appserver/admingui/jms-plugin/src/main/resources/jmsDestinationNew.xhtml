@@ -54,6 +54,7 @@
         <c:forEach items="#{consoleIntegrationPoints.faceletsViews('org.glassfish.admingui:TargetSectionForResource')}" var="targetView">
             <ui:include src="#{targetView}"/>
         </c:forEach>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jms', 'org.glassfish.jms.admingui.Helplinks')['jmsDestinationNew']}"/>
     </h:form>
     <script>document.title = '#{i18njms['jmsDestination.newPageTitle']}';</script>
 </ui:composition>

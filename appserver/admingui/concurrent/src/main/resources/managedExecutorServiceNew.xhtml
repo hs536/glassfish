@@ -23,6 +23,7 @@
                 xmlns:ui="jakarta.faces.facelets">
     <ui:include src="/concurrent/concurrentResourceNew.xhtml">
         <ui:param name="bean" value="#{managedExecutorServiceNewView}"/>
+        <ui:param name="helpKey" value="managedExecutorServiceNew"/>
         <ui:param name="titleKey" value="managedExecutorService.newPageTitle"/>
         <ui:param name="listPage" value="/concurrent/managedExecutorServices.jsf"/>
         <ui:param name="attributes" value="/concurrent/managedExecutorServiceAttr.xhtml"/>

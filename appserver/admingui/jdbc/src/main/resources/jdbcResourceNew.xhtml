@@ -69,6 +69,7 @@
         <c:forEach items="#{consoleIntegrationPoints.faceletsViews('org.glassfish.admingui:TargetSectionForResource')}" var="view">
             <ui:include src="#{view}"/>
         </c:forEach>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jdbc', 'org.glassfish.jdbc.admingui.Helplinks')['jdbcResourceNew']}"/>
     </h:form>
     <script>document.title = '#{i18njdbc['jdbcResource.newPageTitle']}';</script>
 </ui:composition>

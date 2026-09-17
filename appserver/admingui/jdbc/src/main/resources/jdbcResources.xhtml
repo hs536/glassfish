@@ -86,6 +86,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jdbc', 'org.glassfish.jdbc.admingui.Helplinks')['jdbcResources']}"/>
     </h:form>
     <script>document.title = '#{i18njdbc['jdbcResources.pageTitle']}';</script>
 </ui:composition>

@@ -54,6 +54,7 @@
                 <ui:param name="edit" value="#{true}"/>
             </ui:include>
         </ui:fragment>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['httpListenerEdit']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['configuration.httpListenerEditPageTitle']}';</script>
 </ui:composition>

@@ -23,6 +23,7 @@
                 xmlns:ui="jakarta.faces.facelets">
     <ui:include src="/concurrent/concurrentResourceNew.xhtml">
         <ui:param name="bean" value="#{managedThreadFactoryNewView}"/>
+        <ui:param name="helpKey" value="managedThreadFactoryNew"/>
         <ui:param name="titleKey" value="managedThreadFactory.newPageTitle"/>
         <ui:param name="listPage" value="/concurrent/managedThreadFactories.jsf"/>
         <ui:param name="attributes" value="/concurrent/managedThreadFactoryAttr.xhtml"/>

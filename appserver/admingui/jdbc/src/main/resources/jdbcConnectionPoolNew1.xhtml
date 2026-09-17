@@ -70,6 +70,7 @@
                 <span class="CbSpn_sun4"><h:selectBooleanCheckbox id="introspectValue" value="#{wizard.introspect}"/></span>
             </adm:property>
         </adm:propertySheet>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jdbc', 'org.glassfish.jdbc.admingui.Helplinks')['jdbcConnectionPoolNew1']}"/>
     </h:form>
     <script>document.title = '#{i18njdbc['jdbcConnectionPool.step1PageTitle']}';</script>
 </ui:composition>

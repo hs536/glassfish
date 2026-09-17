@@ -73,6 +73,7 @@
         </adm:propertySheet>
 
         <adm:propertyTable id="basicTable" rows="#{bean.properties}" title="#{i18n['common.AdditionalProperties']}" descriptions="false"/>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['resourceAdapterConfigNew']}"/>
     </h:form>
     <script>document.title = '#{i18njca['resourceAdapterConfig.newPageTitle']}';</script>
 </ui:composition>

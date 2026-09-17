@@ -75,6 +75,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['protocols']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['grizzly.protocolsPageTitle']}';</script>
 </ui:composition>

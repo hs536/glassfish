@@ -70,6 +70,7 @@
         <c:forEach items="#{consoleIntegrationPoints.faceletsViews('org.glassfish.admingui:TargetSectionForResource')}" var="targetView">
             <ui:include src="#{targetView}"/>
         </c:forEach>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['connectorResourceNew']}"/>
     </h:form>
     <script>document.title = '#{i18njca['connectorResource.newPageTitle']}';</script>
 </ui:composition>

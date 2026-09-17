@@ -60,6 +60,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['resourceAdapterConfigs']}"/>
     </h:form>
     <script>document.title = '#{i18njca['resourceAdapterConfig.pageTitle']}';</script>
 </ui:composition>

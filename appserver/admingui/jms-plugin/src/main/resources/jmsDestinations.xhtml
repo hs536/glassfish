@@ -79,6 +79,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jms', 'org.glassfish.jms.admingui.Helplinks')['jmsDestinations']}"/>
     </h:form>
     <script>document.title = '#{i18njms['destinationResources.pageTitle']}';</script>
 </ui:composition>

@@ -75,6 +75,7 @@
         </adm:propertySheet>
 
         <adm:propertyTable id="basicTable" rows="#{bean.properties}" title="#{i18n['common.AdditionalProperties']}"/>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['webContainerManager']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['webContainer.managerProp']}';</script>
 </ui:composition>

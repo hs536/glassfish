@@ -88,6 +88,7 @@
                 <h:inputSecret id="password" value="#{bean.password}" size="55" styleClass="TxtFld_sun4" redisplay="false"/>
             </adm:property>
         </adm:propertySheet>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['connectorSecurityMapNew']}"/>
     </h:form>
     <script>document.title = '#{i18njca['connectorSecurityMap.newPageTitle']}';</script>
 </ui:composition>

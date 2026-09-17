@@ -81,6 +81,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jms', 'org.glassfish.jms.admingui.Helplinks')['jmsConnections']}"/>
     </h:form>
     <script>document.title = '#{i18njms['connectionFactories.pageTitle']}';</script>
 </ui:composition>

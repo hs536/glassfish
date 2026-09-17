@@ -65,6 +65,7 @@
         <ui:include src="/web/grizzly/httpAttrs.xhtml">
             <ui:param name="settings" value="#{bean.http}"/>
         </ui:include>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('web', 'org.glassfish.web.admingui.Helplinks')['protocolNew']}"/>
     </h:form>
     <script>document.title = '#{i18nweb['grizzly.protocolNewPageTitle']}';</script>
 </ui:composition>

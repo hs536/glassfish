@@ -81,6 +81,7 @@
         </adm:propertySheet>
 
         <adm:propertyTable id="basicTable" rows="#{bean.properties}" title="#{i18n['common.AdditionalProperties']}" rendered="#{bean.found}"/>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('jca', 'org.glassfish.jca.admingui.Helplinks')['connectorResourceEdit']}"/>
     </h:form>
     <script>document.title = '#{i18njca['connectorResource.editPageTitle']}';</script>
 </ui:composition>

@@ -79,6 +79,7 @@
                 </tr>
             </ui:repeat>
         </adm:table>
+            <input id="helpKey" type="hidden" value="#{consoleBundles.get('full', 'org.glassfish.full.admingui.Helplinks')['customResources']}"/>
     </h:form>
     <script>document.title = '#{i18nfull['customResources.pageTitle']}';</script>
 </ui:composition>
